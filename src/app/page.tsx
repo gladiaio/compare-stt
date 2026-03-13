@@ -269,12 +269,6 @@ export default function ArenaPage() {
             </p>
           </div>
 
-          {audioUrl && (
-            <div className="w-full max-w-lg">
-              <AudioPlayer src={audioUrl} onTimeUpdate={setAudioTime} />
-            </div>
-          )}
-
           <div className="relative grid w-full grid-cols-1 gap-6 md:grid-cols-2">
             <TranscriptCard
               label="Model A"
@@ -311,6 +305,12 @@ export default function ArenaPage() {
               revealed={false}
             />
           </div>
+
+          {audioUrl && (
+            <div className="w-full max-w-lg">
+              <AudioPlayer src={audioUrl} onTimeUpdate={setAudioTime} />
+            </div>
+          )}
 
           {result.errorA && result.errorB ? (
             <div className="flex flex-col items-center gap-3">
@@ -354,18 +354,10 @@ export default function ArenaPage() {
             </h2>
           </div>
 
-          {audioUrl && (
-            <div className="w-full max-w-lg">
-              <AudioPlayer src={audioUrl} onTimeUpdate={setAudioTime} />
-            </div>
-          )}
-
           <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
             <TranscriptCard
               label="Model A"
               transcript={result.transcriptA}
-              words={result.wordsA}
-              currentTime={audioTime}
               error={result.errorA}
               providerName={reveal.providerA.name}
               providerLogo={reveal.providerA.logoUrl}
@@ -376,8 +368,6 @@ export default function ArenaPage() {
             <TranscriptCard
               label="Model B"
               transcript={result.transcriptB}
-              words={result.wordsB}
-              currentTime={audioTime}
               error={result.errorB}
               providerName={reveal.providerB.name}
               providerLogo={reveal.providerB.logoUrl}
