@@ -44,7 +44,7 @@ export async function transcribeForProvider(
   try {
     return await fn(audio, mimeType);
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+    const message = extractErrorMessage(err);
     console.error(`[${providerSlug}] transcription failed:`, err);
 
     const sentryError = new Error(`[${providerSlug}] ${message}`);
@@ -58,6 +58,32 @@ export async function transcribeForProvider(
 
     return { transcript: "", durationMs: 0, error: sanitizeError(message, providerSlug) };
   }
+}
+
+function extractErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
+  if (err && typeof err === "object") {
+    const obj = err as Record<string, unknown>;
+    if (typeof obj.message === "string") return obj.message;
+    if (typeof obj.error === "string") return obj.error;
+    if (typeof obj.detail === "string") return obj.detail;
+    if (obj.detail && typeof obj.detail === "object") {
+      const detail = obj.detail as Record<string, unknown>;
+      if (typeof detail.message === "string") return detail.message;
+    }
+    if (typeof obj.status === "number" && typeof obj.statusText === "string") {
+      return `HTTP ${obj.status}: ${obj.statusText}`;
+    }
+    try {
+      const json = JSON.stringify(err);
+      if (json.length <= 200) return json;
+      return json.slice(0, 200) + "…";
+    } catch {
+      /* circular reference */
+    }
+  }
+  return "Unknown error";
 }
 
 function sanitizeError(message: string, slug: string): string {
