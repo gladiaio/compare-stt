@@ -1,22 +1,9 @@
 import "dotenv/config";
 import fs from "fs";
 import path from "path";
-import { transcribeWithGladia } from "./src/lib/providers/gladia";
-import { transcribeWithDeepgram } from "./src/lib/providers/deepgram";
-import { transcribeWithAssemblyAI } from "./src/lib/providers/assemblyai";
-import { transcribeWithElevenLabs } from "./src/lib/providers/elevenlabs";
-import { transcribeWithSpeechmatics } from "./src/lib/providers/speechmatics";
-import { transcribeWithMistral } from "./src/lib/providers/mistral";
-import type { TranscribeResult } from "./src/lib/transcribe";
+import { transcribeForProvider } from "./src/lib/transcribe";
 
-const PROVIDERS: Record<string, (audio: Buffer, mime: string) => Promise<TranscribeResult>> = {
-  gladia: transcribeWithGladia,
-  deepgram: transcribeWithDeepgram,
-  assemblyai: transcribeWithAssemblyAI,
-  elevenlabs: transcribeWithElevenLabs,
-  speechmatics: transcribeWithSpeechmatics,
-  mistral: transcribeWithMistral,
-};
+const SLUGS = ["gladia", "deepgram", "assemblyai", "elevenlabs", "speechmatics", "mistral"];
 
 const TEST_DIR = path.join(path.dirname(new URL(import.meta.url).pathname), "test-audio");
 
@@ -48,57 +35,49 @@ async function main() {
   }
 
   const audioFile = audioFiles[0];
-  const audioBuffer = fs.readFileSync(audioFile);
+  const audioBuffer = Buffer.from(fs.readFileSync(audioFile));
   const mimeType = mimeFromExt(audioFile);
 
   console.log(`\nUsing: ${path.basename(audioFile)} (${mimeType}, ${(audioBuffer.length / 1024).toFixed(0)} KB)\n`);
   console.log("=".repeat(80));
 
-  const slugs = Object.keys(PROVIDERS);
   let passed = 0;
   let failed = 0;
 
-  for (const slug of slugs) {
-    const fn = PROVIDERS[slug];
+  for (const slug of SLUGS) {
     const label = slug.padEnd(14);
 
-    try {
-      const start = Date.now();
-      const result = await fn(audioBuffer, mimeType);
-      const elapsed = Date.now() - start;
+    const start = Date.now();
+    const result = await transcribeForProvider(slug, audioBuffer, mimeType);
+    const elapsed = Date.now() - start;
 
-      if (result.error) {
-        console.log(`  ✗ ${label}  ERROR (${elapsed}ms): ${result.error}`);
-        failed++;
-        continue;
-      }
-
-      const wordCount = result.words?.length ?? 0;
-      const preview = result.transcript.length > 80
-        ? result.transcript.slice(0, 80) + "…"
-        : result.transcript;
-
-      console.log(`  ✓ ${label}  ${elapsed}ms  ${wordCount} words  "${preview}"`);
-
-      if (wordCount === 0) {
-        console.log(`    ⚠ No word timestamps returned`);
-      }
-
-      if (!result.transcript.trim()) {
-        console.log(`    ⚠ Empty transcript`);
-        failed++;
-      } else {
-        passed++;
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.log(`  ✗ ${label}  EXCEPTION: ${msg}`);
+    if (result.error) {
+      console.log(`  ✗ ${label}  ERROR (${elapsed}ms): ${result.error}`);
       failed++;
+      continue;
+    }
+
+    const wordCount = result.words?.length ?? 0;
+    const preview = result.transcript.length > 80
+      ? result.transcript.slice(0, 80) + "…"
+      : result.transcript;
+
+    console.log(`  ✓ ${label}  ${elapsed}ms  ${wordCount} words  "${preview}"`);
+
+    if (wordCount === 0) {
+      console.log(`    ⚠ No word timestamps returned`);
+    }
+
+    if (!result.transcript.trim()) {
+      console.log(`    ⚠ Empty transcript`);
+      failed++;
+    } else {
+      passed++;
     }
   }
 
   console.log("=".repeat(80));
-  console.log(`\n  ${passed} passed, ${failed} failed, ${slugs.length} total\n`);
+  console.log(`\n  ${passed} passed, ${failed} failed, ${SLUGS.length} total\n`);
 
   process.exit(failed > 0 ? 1 : 0);
 }
