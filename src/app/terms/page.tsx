@@ -29,7 +29,7 @@ export default function TermsPage() {
       <div className="flex flex-col gap-10">
         <Section title="What is STT Arena?">
           <p>
-            STT Arena is a free, non-commercial tool built by{" "}
+            STT Arena is a free, non-commercial tool sponsored by{" "}
             <a href="https://gladia.io" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "var(--color-text-brand)" }}>
               Gladia
             </a>{" "}

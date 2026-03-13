@@ -31,7 +31,7 @@ export default function RootLayout({
             Terms &amp; Privacy
           </Link>
           <span className="mx-2">·</span>
-          Built by{" "}
+          Sponsored by{" "}
           <a href="https://gladia.io" target="_blank" rel="noopener noreferrer" className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-brand)" }}>
             Gladia
           </a>
