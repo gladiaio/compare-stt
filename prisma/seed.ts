@@ -12,6 +12,7 @@ const providers = [
   { name: "Deepgram", slug: "deepgram", logoUrl: "/providers/deepgram.svg" },
   { name: "AssemblyAI", slug: "assemblyai", logoUrl: "/providers/assemblyai.svg" },
   { name: "Speechmatics", slug: "speechmatics", logoUrl: "/providers/speechmatics.svg" },
+  { name: "Mistral", slug: "mistral", logoUrl: "/providers/mistral.svg" },
 ];
 
 const removedSlugs = ["soniox", "openai-whisper"];

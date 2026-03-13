@@ -4,6 +4,7 @@ import { transcribeWithDeepgram } from "./providers/deepgram";
 import { transcribeWithAssemblyAI } from "./providers/assemblyai";
 import { transcribeWithElevenLabs } from "./providers/elevenlabs";
 import { transcribeWithSpeechmatics } from "./providers/speechmatics";
+import { transcribeWithMistral } from "./providers/mistral";
 
 export interface TranscribeResult {
   transcript: string;
@@ -19,6 +20,7 @@ const PROVIDER_MAP: Record<string, TranscribeFn | undefined> = {
   assemblyai: transcribeWithAssemblyAI,
   elevenlabs: transcribeWithElevenLabs,
   speechmatics: transcribeWithSpeechmatics,
+  mistral: transcribeWithMistral,
 };
 
 export async function transcribeForProvider(

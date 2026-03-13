@@ -14,6 +14,7 @@
   "dependencies": {
     "@deepgram/sdk": "^5.0.0",
     "@elevenlabs/elevenlabs-js": "^2.38.1",
+    "@mistralai/mistralai": "^1.15.1",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@sentry/nextjs": "^10.43.0",
