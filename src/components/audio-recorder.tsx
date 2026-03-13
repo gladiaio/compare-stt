@@ -17,6 +17,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -26,7 +27,11 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
     }
+    if (audioCtxRef.current) {
+      audioCtxRef.current.close();
+    }
     analyserRef.current = null;
+    audioCtxRef.current = null;
     streamRef.current = null;
   }, []);
 
@@ -40,6 +45,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
       streamRef.current = stream;
 
       const audioCtx = new AudioContext();
+      audioCtxRef.current = audioCtx;
       const source = audioCtx.createMediaStreamSource(stream);
       const analyser = audioCtx.createAnalyser();
       analyser.fftSize = 64;

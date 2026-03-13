@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { AudioRecorder } from "@/components/audio-recorder";
 import { AudioUploader } from "@/components/audio-uploader";
 import { TranscriptCard, TranscriptCardSkeleton } from "@/components/transcript-card";
@@ -47,7 +46,7 @@ export default function ArenaPage() {
     if (stored) {
       setSessionId(stored);
     } else {
-      const id = uuidv4();
+      const id = crypto.randomUUID();
       setSessionId(id);
       if (typeof window !== "undefined") localStorage.setItem("asr-arena-session", id);
     }
@@ -130,7 +129,7 @@ export default function ArenaPage() {
 
   const handleCloseSummary = useCallback(() => {
     setShowSummary(false);
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     setSessionId(id);
     localStorage.setItem("asr-arena-session", id);
     setVoteCount(0);

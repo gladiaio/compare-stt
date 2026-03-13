@@ -28,9 +28,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Not enough providers" }, { status: 500 });
     }
 
-    const shuffled = providers.sort(() => Math.random() - 0.5);
-    const providerA = shuffled[0];
-    const providerB = shuffled[1];
+    const idxA = Math.floor(Math.random() * providers.length);
+    let idxB = Math.floor(Math.random() * (providers.length - 1));
+    if (idxB >= idxA) idxB++;
+    const providerA = providers[idxA];
+    const providerB = providers[idxB];
 
     const audioBuffer = Buffer.from(await audioFile.arrayBuffer());
     const mimeType = audioFile.type || "audio/webm";
