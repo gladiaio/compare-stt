@@ -6,11 +6,17 @@ export interface DiffSegment {
 /**
  * Word-level diff between two strings.
  * Returns two arrays of segments, one per side, marking which words differ.
+ * Also returns per-word diff index sets for alignment with word timestamp arrays.
  */
 export function computeWordDiff(
   a: string,
   b: string
-): { segmentsA: DiffSegment[]; segmentsB: DiffSegment[] } {
+): {
+  segmentsA: DiffSegment[];
+  segmentsB: DiffSegment[];
+  diffIndicesA: Set<number>;
+  diffIndicesB: Set<number>;
+} {
   const wordsA = tokenize(a);
   const wordsB = tokenize(b);
 
@@ -19,6 +25,8 @@ export function computeWordDiff(
   return {
     segmentsA: buildSegments(wordsA, lcs, "a"),
     segmentsB: buildSegments(wordsB, lcs, "b"),
+    diffIndicesA: buildDiffWordIndices(wordsA, lcs, "a"),
+    diffIndicesB: buildDiffWordIndices(wordsB, lcs, "b"),
   };
 }
 
@@ -71,6 +79,22 @@ function longestCommonSubsequence(a: string[], b: string[]): LCSEntry[] {
   }
 
   return result;
+}
+
+function buildDiffWordIndices(
+  tokens: string[],
+  lcs: LCSEntry[],
+  side: "a" | "b"
+): Set<number> {
+  const matchedTokenIndices = new Set(lcs.map((e) => (side === "a" ? e.indexA : e.indexB)));
+  const diffWordIndices = new Set<number>();
+  let wordIdx = 0;
+  for (let i = 0; i < tokens.length; i++) {
+    if (!tokens[i].trim()) continue;
+    if (!matchedTokenIndices.has(i)) diffWordIndices.add(wordIdx);
+    wordIdx++;
+  }
+  return diffWordIndices;
 }
 
 function buildSegments(

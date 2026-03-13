@@ -276,6 +276,7 @@ export default function ArenaPage() {
               words={result.wordsA}
               currentTime={audioTime}
               diffSegments={diff?.segmentsA}
+              diffWordIndices={diff?.diffIndicesA}
               error={result.errorA}
               revealed={false}
             />
@@ -301,6 +302,7 @@ export default function ArenaPage() {
               words={result.wordsB}
               currentTime={audioTime}
               diffSegments={diff?.segmentsB}
+              diffWordIndices={diff?.diffIndicesB}
               error={result.errorB}
               revealed={false}
             />

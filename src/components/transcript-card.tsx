@@ -16,6 +16,7 @@ interface TranscriptCardProps {
   words?: WordTimestamp[];
   currentTime?: number;
   diffSegments?: DiffSegment[];
+  diffWordIndices?: Set<number>;
   error?: string | null;
   providerName?: string;
   providerLogo?: string;
@@ -32,6 +33,7 @@ export function TranscriptCard({
   words,
   currentTime,
   diffSegments,
+  diffWordIndices,
   error,
   providerName,
   providerLogo,
@@ -62,20 +64,6 @@ export function TranscriptCard({
     : "none";
 
   const hasWordSync = words && words.length > 0 && currentTime != null;
-
-  const diffWordIndices = useMemo(() => {
-    if (!diffSegments) return null;
-    const indices = new Set<number>();
-    let wordIdx = 0;
-    for (const seg of diffSegments) {
-      const segWords = seg.text.split(/\s+/).filter(Boolean);
-      for (let i = 0; i < segWords.length; i++) {
-        if (seg.type === "diff") indices.add(wordIdx);
-        wordIdx++;
-      }
-    }
-    return indices;
-  }, [diffSegments]);
 
   if (hasError) {
     return (

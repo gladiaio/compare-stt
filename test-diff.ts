@@ -130,6 +130,33 @@ test("real-world: subtle comma and period at end", () => {
   assert(diffB.includes("exactly"), `B should diff 'exactly': ${JSON.stringify(diffB)}`);
 });
 
+test("diffIndices match expected word positions", () => {
+  const a = "hold on let me check something real quick i remember seeing an error message about this yesterday but i cannot recall what it said exactly";
+  const b = "Hold on, let me check something real quick. I remember seeing an error message about this yesterday, but I cannot recall what it said exactly";
+  const { diffIndicesA, diffIndicesB } = computeWordDiff(a, b);
+  const wordsA = a.split(/\s+/);
+  const wordsB = b.split(/\s+/);
+
+  const expectedDiffA = ["hold", "on", "quick", "i", "yesterday", "i"];
+  const actualDiffA = [...diffIndicesA].map((i) => wordsA[i]);
+  assert(
+    expectedDiffA.every((w) => actualDiffA.includes(w)),
+    `A diff words should be ${JSON.stringify(expectedDiffA)}, got ${JSON.stringify(actualDiffA)}`
+  );
+
+  const expectedDiffB = ["Hold", "on,", "quick.", "I", "yesterday,", "I"];
+  const actualDiffB = [...diffIndicesB].map((i) => wordsB[i]);
+  assert(
+    expectedDiffB.every((w) => actualDiffB.includes(w)),
+    `B diff words should be ${JSON.stringify(expectedDiffB)}, got ${JSON.stringify(actualDiffB)}`
+  );
+
+  assert(!diffIndicesA.has(2), `'let' (index 2) should NOT be diff in A`);
+  assert(!diffIndicesB.has(2), `'let' (index 2) should NOT be diff in B`);
+  assert(!diffIndicesA.has(wordsA.length - 1), `'exactly' should NOT be diff in A`);
+  assert(!diffIndicesB.has(wordsB.length - 1), `'exactly' should NOT be diff in B`);
+});
+
 console.log("=".repeat(60));
 console.log(`\n  ${passed} passed, ${failed} failed\n`);
 process.exit(failed > 0 ? 1 : 0);
