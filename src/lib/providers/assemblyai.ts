@@ -16,6 +16,7 @@ export async function transcribeWithAssemblyAI(
 
   const transcript = await client.transcripts.transcribe({
     audio: uploadUrl,
+    speech_model: "universal-3-pro" as never,
     language_detection: true,
   });
 
