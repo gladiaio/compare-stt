@@ -56,6 +56,35 @@ export async function transcribeForProvider(
       extra: { mimeType },
     });
 
-    return { transcript: "", durationMs: 0, error: "Transcription failed" };
+    return { transcript: "", durationMs: 0, error: sanitizeError(message, providerSlug) };
   }
+}
+
+function sanitizeError(message: string, slug: string): string {
+  let cleaned = message;
+
+  const providerNames: Record<string, string> = {
+    gladia: "Gladia",
+    deepgram: "Deepgram",
+    assemblyai: "AssemblyAI",
+    elevenlabs: "ElevenLabs",
+    speechmatics: "Speechmatics",
+    mistral: "Mistral",
+  };
+
+  const name = providerNames[slug] || slug;
+  const envVar = `${slug.toUpperCase()}_API_KEY`;
+
+  if (cleaned.includes("not set") || cleaned.includes("not configured")) {
+    return "Provider API key is not configured";
+  }
+
+  cleaned = cleaned
+    .replace(new RegExp(`\\[${slug}\\]\\s*`, "gi"), "")
+    .replace(new RegExp(`${name}\\s*(error|upload|transcribe|transcription|poll)\\s*(failed)?:?\\s*`, "gi"), "")
+    .replace(new RegExp(envVar, "g"), "API_KEY")
+    .replace(new RegExp(name, "gi"), "Provider")
+    .trim();
+
+  return cleaned || "Transcription failed";
 }
