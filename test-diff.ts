@@ -105,6 +105,18 @@ test("real-world: comma and period differences", () => {
   );
 });
 
+test("real-world: subtle comma and period at end", () => {
+  const a = "I remember seeing an error message about this yesterday but I cannot recall what it said exactly.";
+  const b = "I remember seeing an error message about this yesterday, but I cannot recall what it said exactly";
+  const { segmentsA, segmentsB } = computeWordDiff(a, b);
+  const diffA = segmentsA.filter((s) => s.type === "diff").map((s) => s.text.trim());
+  const diffB = segmentsB.filter((s) => s.type === "diff").map((s) => s.text.trim());
+  assert(diffA.includes("yesterday"), `A should diff 'yesterday': ${JSON.stringify(diffA)}`);
+  assert(diffA.includes("exactly."), `A should diff 'exactly.': ${JSON.stringify(diffA)}`);
+  assert(diffB.includes("yesterday,"), `B should diff 'yesterday,': ${JSON.stringify(diffB)}`);
+  assert(diffB.includes("exactly"), `B should diff 'exactly': ${JSON.stringify(diffB)}`);
+});
+
 console.log("=".repeat(60));
 console.log(`\n  ${passed} passed, ${failed} failed\n`);
 process.exit(failed > 0 ? 1 : 0);
