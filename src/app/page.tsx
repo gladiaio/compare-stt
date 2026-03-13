@@ -7,6 +7,7 @@ import { TranscriptCard, TranscriptCardSkeleton } from "@/components/transcript-
 import { VoteButtons } from "@/components/vote-buttons";
 import { SessionSummary } from "@/components/session-summary";
 import { computeWordDiff } from "@/lib/diff";
+import { blobToWav } from "@/lib/encode-wav";
 
 type Phase = "input" | "transcribing" | "compare" | "voting" | "reveal";
 
@@ -64,8 +65,10 @@ export default function ArenaPage() {
       setReveal(null);
 
       try {
+        const wav = await blobToWav(blob);
+
         const formData = new FormData();
-        formData.append("audio", blob);
+        formData.append("audio", wav, "audio.wav");
         formData.append("sessionId", sessionId);
 
         const res = await fetch("/api/transcribe", {
