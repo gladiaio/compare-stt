@@ -35,12 +35,16 @@ export async function transcribeForProvider(
   try {
     return await fn(audio, mimeType);
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error(`[${providerSlug}] transcription failed:`, err);
+    const originalMessage = err instanceof Error ? err.message : String(err);
+    const message = `[${providerSlug}] ${originalMessage}`;
+    console.error(message, err);
 
-    Sentry.captureException(err, {
+    const wrappedError = new Error(message);
+    wrappedError.stack = err instanceof Error ? err.stack : undefined;
+    Sentry.captureException(wrappedError, {
       tags: { provider: providerSlug },
       level: "error",
+      fingerprint: [providerSlug, originalMessage],
       extra: { mimeType },
     });
 
