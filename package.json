@@ -10,8 +10,8 @@
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "test": "tsx test-diff.ts && tsx test-providers.ts",
-    "test:providers": "tsx test-providers.ts"
+    "test": "NODE_NO_WARNINGS=1 tsx test-diff.ts && NODE_NO_WARNINGS=1 tsx test-providers.ts",
+    "test:providers": "NODE_NO_WARNINGS=1 tsx test-providers.ts"
   },
   "dependencies": {
     "@deepgram/sdk": "^5.0.0",
