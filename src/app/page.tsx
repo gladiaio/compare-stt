@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { AudioRecorder } from "@/components/audio-recorder";
 import { AudioUploader } from "@/components/audio-uploader";
 import { TranscriptCard, TranscriptCardSkeleton } from "@/components/transcript-card";
@@ -42,13 +42,13 @@ export default function ArenaPage() {
   const [sessionStats, setSessionStats] = useState<SessionStats | null>(null);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("asr-arena-session") : null;
+    const stored = typeof window !== "undefined" ? localStorage.getItem("stt-arena-session") : null;
     if (stored) {
       setSessionId(stored);
     } else {
       const id = crypto.randomUUID();
       setSessionId(id);
-      if (typeof window !== "undefined") localStorage.setItem("asr-arena-session", id);
+      if (typeof window !== "undefined") localStorage.setItem("stt-arena-session", id);
     }
   }, []);
 
@@ -131,7 +131,7 @@ export default function ArenaPage() {
     setShowSummary(false);
     const id = crypto.randomUUID();
     setSessionId(id);
-    localStorage.setItem("asr-arena-session", id);
+    localStorage.setItem("stt-arena-session", id);
     setVoteCount(0);
     setPhase("input");
     setResult(null);
@@ -158,7 +158,7 @@ export default function ArenaPage() {
               className="font-mono text-xs uppercase tracking-[0.16em]"
               style={{ color: "var(--color-text-brand)" }}
             >
-              Blind ASR Comparison
+              Blind STT Comparison
             </span>
             <h1
               className="text-4xl font-semibold tracking-tight md:text-5xl"
@@ -170,11 +170,14 @@ export default function ArenaPage() {
             >
               Which transcription
               <br />
-              <span style={{ color: "var(--color-accent-purple)" }}>is best?</span>{" "}
-              You decide.
+              <span style={{ color: "var(--color-accent-purple)" }}>
+                is <RotatingWord />
+              </span>
+              <br />
+              <span className="text-5xl md:text-7xl">You decide.</span>
             </h1>
             <p
-              className="max-w-md text-base"
+              className="mt-4 max-w-md text-base"
               style={{
                 color: "var(--color-text-secondary)",
                 lineHeight: 1.5,
@@ -366,6 +369,56 @@ export default function ArenaPage() {
         <SessionSummary stats={sessionStats} onClose={handleCloseSummary} />
       )}
     </div>
+  );
+}
+
+const ROTATING_WORDS = [
+  { text: "best?", emoji: "🏆" },
+  { text: "worst?", emoji: "💀" },
+  { text: "fastest?", emoji: "⚡" },
+  { text: "funniest?", emoji: "😂" },
+  { text: "weirdest?", emoji: "🤯" },
+];
+
+function RotatingWord() {
+  const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<"visible" | "out" | "swap">("visible");
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const cycle = () => {
+      setPhase("out");
+      timeoutRef.current = setTimeout(() => {
+        setIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
+        setPhase("swap");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => setPhase("visible"));
+        });
+      }, 250);
+    };
+
+    const interval = setInterval(cycle, 2200);
+    return () => {
+      clearInterval(interval);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const isHidden = phase === "out" || phase === "swap";
+
+  return (
+    <span
+      className="inline-block transition-all duration-250 ease-in-out"
+      style={{
+        transform: isHidden ? "translateY(40%)" : "translateY(0)",
+        opacity: isHidden ? 0 : 1,
+      }}
+    >
+      {ROTATING_WORDS[index].text}{" "}
+      <span className="inline-block" role="img" aria-hidden="true">
+        {ROTATING_WORDS[index].emoji}
+      </span>
+    </span>
   );
 }
 

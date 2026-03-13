@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
@@ -9,7 +10,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ASR Arena | Blind Speech-to-Text Comparison",
+  title: "STT Arena | Blind Speech-to-Text Comparison",
   description:
     "Compare speech-to-text providers in blind tests. Record or upload audio, vote for the best transcription, and see how providers stack up on the leaderboard.",
 };
@@ -23,7 +24,17 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${geistMono.variable} antialiased`}>
         <Navbar />
-        <main className="pt-[88px]">{children}</main>
+        <main className="pt-[88px] pb-16">{children}</main>
+        <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "var(--color-border-tertiary)", color: "var(--color-text-tertiary)" }}>
+          <Link href="/terms" className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-tertiary)" }}>
+            Terms &amp; Privacy
+          </Link>
+          <span className="mx-2">·</span>
+          Built by{" "}
+          <a href="https://gladia.io" target="_blank" rel="noopener noreferrer" className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-brand)" }}>
+            Gladia
+          </a>
+        </footer>
       </body>
     </html>
   );

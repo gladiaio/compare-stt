@@ -23,7 +23,7 @@ export function Navbar() {
         >
           <MicIcon />
           <span className="text-base font-semibold tracking-tight">
-            ASR Arena
+            STT Arena
           </span>
         </Link>
 
