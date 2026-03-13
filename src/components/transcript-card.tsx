@@ -205,7 +205,7 @@ export function TranscriptCard({
             style={{ color: "var(--color-text-primary)" }}
           >
             {hasWordSync ? (
-              <SyncedWords words={words} currentTime={currentTime} diffIndices={diffWordIndices} />
+              <SyncedWords transcript={transcript} words={words} currentTime={currentTime} diffIndices={diffWordIndices} />
             ) : (
               transcript
             )}
@@ -266,7 +266,7 @@ export function TranscriptCard({
         style={{ color: "var(--color-text-primary)" }}
       >
         {hasWordSync ? (
-          <SyncedWords words={words} currentTime={currentTime} diffIndices={diffWordIndices} />
+          <SyncedWords transcript={transcript} words={words} currentTime={currentTime} diffIndices={diffWordIndices} />
         ) : diffSegments ? (
           <HighlightedText segments={diffSegments} />
         ) : (
@@ -278,14 +278,22 @@ export function TranscriptCard({
 }
 
 function SyncedWords({
+  transcript,
   words,
   currentTime,
   diffIndices,
 }: {
+  transcript: string;
   words: WordTimestamp[];
   currentTime: number;
   diffIndices?: Set<number> | null;
 }) {
+  const displayWords = useMemo(() => {
+    const split = transcript.split(/\s+/).filter(Boolean);
+    if (split.length === words.length) return split;
+    return words.map((w) => w.word.trim());
+  }, [transcript, words]);
+
   const isPlaying = currentTime > 0;
 
   const activeIndex = useMemo(() => {
@@ -298,7 +306,7 @@ function SyncedWords({
 
   return (
     <>
-      {words.map((w, i) => {
+      {displayWords.map((word, i) => {
         const isActive = isPlaying && i === activeIndex;
         const isPast = isPlaying && i < activeIndex;
         const isFuture = isPlaying && !isActive && !isPast;
@@ -318,7 +326,7 @@ function SyncedWords({
               padding: isDiff ? "0 2px" : undefined,
             }}
           >
-            {w.word}{" "}
+            {word}{" "}
           </span>
         );
       })}
