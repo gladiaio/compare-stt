@@ -63,6 +63,20 @@ export function TranscriptCard({
 
   const hasWordSync = words && words.length > 0 && currentTime != null;
 
+  const diffWordIndices = useMemo(() => {
+    if (!diffSegments) return null;
+    const indices = new Set<number>();
+    let wordIdx = 0;
+    for (const seg of diffSegments) {
+      const segWords = seg.text.split(/\s+/).filter(Boolean);
+      for (let i = 0; i < segWords.length; i++) {
+        if (seg.type === "diff") indices.add(wordIdx);
+        wordIdx++;
+      }
+    }
+    return indices;
+  }, [diffSegments]);
+
   if (hasError) {
     return (
       <div
@@ -203,7 +217,7 @@ export function TranscriptCard({
             style={{ color: "var(--color-text-primary)" }}
           >
             {hasWordSync ? (
-              <SyncedWords words={words} currentTime={currentTime} />
+              <SyncedWords words={words} currentTime={currentTime} diffIndices={diffWordIndices} />
             ) : (
               transcript
             )}
@@ -264,7 +278,7 @@ export function TranscriptCard({
         style={{ color: "var(--color-text-primary)" }}
       >
         {hasWordSync ? (
-          <SyncedWords words={words} currentTime={currentTime} />
+          <SyncedWords words={words} currentTime={currentTime} diffIndices={diffWordIndices} />
         ) : diffSegments ? (
           <HighlightedText segments={diffSegments} />
         ) : (
@@ -278,33 +292,42 @@ export function TranscriptCard({
 function SyncedWords({
   words,
   currentTime,
+  diffIndices,
 }: {
   words: WordTimestamp[];
   currentTime: number;
+  diffIndices?: Set<number> | null;
 }) {
+  const isPlaying = currentTime > 0;
+
   const activeIndex = useMemo(() => {
+    if (!isPlaying) return -1;
     for (let i = words.length - 1; i >= 0; i--) {
       if (currentTime >= words[i].start) return i;
     }
     return -1;
-  }, [words, currentTime]);
+  }, [words, currentTime, isPlaying]);
 
   return (
     <>
       {words.map((w, i) => {
-        const isActive = i === activeIndex;
-        const isPast = i < activeIndex;
+        const isActive = isPlaying && i === activeIndex;
+        const isPast = isPlaying && i < activeIndex;
+        const isFuture = isPlaying && !isActive && !isPast;
+        const isDiff = diffIndices?.has(i) ?? false;
         return (
           <span
             key={i}
-            className="transition-colors duration-100"
+            className="transition-colors duration-100 rounded-sm"
             style={{
               color: isActive
                 ? "var(--color-accent-purple)"
-                : isPast
-                ? "var(--color-text-primary)"
-                : "var(--color-text-tertiary)",
+                : isFuture
+                ? "var(--color-text-tertiary)"
+                : "var(--color-text-primary)",
               fontWeight: isActive ? 600 : 400,
+              background: isDiff ? "rgba(148, 122, 252, 0.2)" : undefined,
+              padding: isDiff ? "0 2px" : undefined,
             }}
           >
             {w.word}{" "}
