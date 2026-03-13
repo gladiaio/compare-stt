@@ -10,7 +10,7 @@
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "test": "tsx test-providers.ts",
+    "test": "tsx test-diff.ts && tsx test-providers.ts",
     "test:providers": "tsx test-providers.ts"
   },
   "dependencies": {
