@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -21,7 +22,7 @@ export function Navbar() {
           href="/"
           className="mr-4 flex items-center gap-2 px-2 font-medium text-white"
         >
-          <MicIcon />
+          <Image src="/logo.svg" alt="" width={22} height={22} />
           <span className="text-base font-semibold tracking-tight">
             STT Arena
           </span>
@@ -61,21 +62,3 @@ function NavLink({
   );
 }
 
-function MicIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="var(--color-accent-purple)"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" x2="12" y1="19" y2="22" />
-    </svg>
-  );
-}
