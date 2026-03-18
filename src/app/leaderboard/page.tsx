@@ -8,6 +8,7 @@ interface LeaderboardEntry {
   name: string;
   logoUrl: string;
   model: string;
+  rating: number;
   eloRange: string;
   wins: number;
   losses: number;
@@ -20,6 +21,7 @@ export default function LeaderboardPage() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [totalVotes, setTotalVotes] = useState(0);
   const [isSignificant, setIsSignificant] = useState(false);
+  const [useEloRange, setUseEloRange] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,6 +32,7 @@ export default function LeaderboardPage() {
         setEntries(data.leaderboard);
         setTotalVotes(data.totalVotes);
         setIsSignificant(data.isSignificant);
+        setUseEloRange(data.useEloRange);
       } catch (err) {
         console.error("Failed to fetch leaderboard:", err);
       } finally {
@@ -80,6 +83,7 @@ export default function LeaderboardPage() {
           entries={entries}
           totalVotes={totalVotes}
           isSignificant={isSignificant}
+          useEloRange={useEloRange}
         />
       )}
     </div>

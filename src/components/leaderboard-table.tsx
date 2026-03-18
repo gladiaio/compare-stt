@@ -7,6 +7,7 @@ interface LeaderboardEntry {
   name: string;
   logoUrl: string;
   model: string;
+  rating: number;
   eloRange: string;
   wins: number;
   losses: number;
@@ -19,12 +20,14 @@ interface LeaderboardTableProps {
   entries: LeaderboardEntry[];
   totalVotes: number;
   isSignificant: boolean;
+  useEloRange: boolean;
 }
 
 export function LeaderboardTable({
   entries,
   totalVotes,
   isSignificant,
+  useEloRange,
 }: LeaderboardTableProps) {
   if (totalVotes === 0) {
     return (
@@ -66,7 +69,7 @@ export function LeaderboardTable({
               }}
             >
               <th className="pb-3 pr-4">Provider</th>
-              <th className="pb-3 pr-4 text-right">ELO Range</th>
+              <th className="pb-3 pr-4 text-right">{useEloRange ? "ELO Range" : "ELO"}</th>
               <th className="hidden pb-3 pr-4 text-right sm:table-cell">Win Rate</th>
               <th className="hidden pb-3 pr-4 text-right md:table-cell">W</th>
               <th className="hidden pb-3 pr-4 text-right md:table-cell">L</th>
@@ -113,7 +116,7 @@ export function LeaderboardTable({
                       className="font-mono text-sm font-semibold tabular-nums"
                       style={{ color: "var(--color-text-primary)" }}
                     >
-                      {entry.eloRange}
+                      {useEloRange ? entry.eloRange : entry.rating}
                     </span>
                   </BlurredValue>
                 </td>
