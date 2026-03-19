@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
             Gladia
           </a>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
