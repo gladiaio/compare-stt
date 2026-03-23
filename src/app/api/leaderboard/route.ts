@@ -7,6 +7,15 @@ import { showLeaderboard, leaderboardEloRange } from "@/flags";
 const ELO_BUCKET_SIZE = 50;
 const GLADIA_SLUG = "gladia";
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 function getEloBucket(rating: number): number {
   return Math.floor(rating / ELO_BUCKET_SIZE) * ELO_BUCKET_SIZE;
 }
@@ -36,26 +45,30 @@ export async function GET() {
       leaderboardEloRange(),
     ]);
 
-    const leaderboard = providers
-      .map((p) => {
-        const r = ratings.get(p.id)!;
-        const def = getProviderBySlug(p.slug);
-        return {
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          logoUrl: p.logoUrl,
-          model: def?.model ?? "",
-          rating: r.rating,
-          eloRange: getEloRangeLabel(r.rating),
-          wins: r.wins,
-          losses: r.losses,
-          ties: r.ties,
-          totalMatches: r.totalMatches,
-          winRate: r.winRate,
-        };
-      })
-      .sort((a, b) => {
+    const isSignificant = revealResults && votes.length >= MIN_VOTES_FOR_SIGNIFICANCE;
+
+    const entries = providers.map((p) => {
+      const r = ratings.get(p.id)!;
+      const def = getProviderBySlug(p.slug);
+      return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        logoUrl: p.logoUrl,
+        model: def?.model ?? "",
+        rating: r.rating,
+        eloRange: getEloRangeLabel(r.rating),
+        wins: r.wins,
+        losses: r.losses,
+        ties: r.ties,
+        totalMatches: r.totalMatches,
+        winRate: r.winRate,
+      };
+    });
+
+    let sorted: typeof entries;
+    if (isSignificant) {
+      sorted = entries.sort((a, b) => {
         if (useEloRange) {
           const bucketA = getEloBucket(a.rating);
           const bucketB = getEloBucket(b.rating);
@@ -65,13 +78,19 @@ export async function GET() {
           return a.name.localeCompare(b.name);
         }
         return b.rating - a.rating;
-      })
-      .map(({ slug: _slug, ...rest }) => rest);
+      });
+    } else {
+      const gladia = entries.filter((e) => e.slug === GLADIA_SLUG);
+      const rest = entries.filter((e) => e.slug !== GLADIA_SLUG);
+      sorted = [...gladia, ...shuffleArray(rest)];
+    }
+
+    const leaderboard = sorted.map(({ slug: _slug, ...rest }) => rest);
 
     return NextResponse.json({
       leaderboard,
       totalVotes: votes.length,
-      isSignificant: revealResults && votes.length >= MIN_VOTES_FOR_SIGNIFICANCE,
+      isSignificant,
       useEloRange,
     });
   } catch (error) {
