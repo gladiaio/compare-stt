@@ -4,6 +4,20 @@ import { useState, useRef, useCallback, useEffect } from "react";
 
 const MAX_DURATION = 120;
 
+const PREFERRED_MIMES = [
+  "audio/ogg;codecs=opus",
+  "audio/mp4",
+  "audio/webm;codecs=opus",
+  "audio/webm",
+];
+
+function pickRecordingMime(): string {
+  for (const mime of PREFERRED_MIMES) {
+    if (MediaRecorder.isTypeSupported(mime)) return mime;
+  }
+  return "";
+}
+
 interface AudioRecorderProps {
   onRecordingComplete: (blob: Blob) => void;
   disabled?: boolean;
@@ -52,11 +66,8 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
       source.connect(analyser);
       analyserRef.current = analyser;
 
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-          ? "audio/webm;codecs=opus"
-          : "audio/webm",
-      });
+      const mimeType = pickRecordingMime();
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
 
@@ -65,7 +76,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const blob = new Blob(chunksRef.current, { type: mimeType });
         onRecordingComplete(blob);
         cleanup();
       };

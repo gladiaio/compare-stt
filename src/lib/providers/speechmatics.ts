@@ -22,6 +22,7 @@ export async function transcribeWithSpeechmatics(
   const ext = mimeType.includes("wav") ? "audio.wav"
     : mimeType.includes("mp3") || mimeType.includes("mpeg") ? "audio.mp3"
     : mimeType.includes("mp4") || mimeType.includes("m4a") ? "audio.m4a"
+    : mimeType.includes("ogg") ? "audio.ogg"
     : "audio.webm";
 
   const blob = new Blob([new Uint8Array(audio)], { type: mimeType });
@@ -46,11 +47,17 @@ export async function transcribeWithSpeechmatics(
   } else if (response.results) {
     const results = response.results as SmResult[];
 
-    transcript = results
-      .map((r) => r.alternatives?.[0]?.content ?? "")
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
+    const parts: string[] = [];
+    for (const r of results) {
+      const content = r.alternatives?.[0]?.content ?? "";
+      if (!content) continue;
+      if (r.type === "punctuation" || parts.length === 0) {
+        parts.push(content);
+      } else {
+        parts.push(" " + content);
+      }
+    }
+    transcript = parts.join("").trim();
 
     for (const r of results) {
       if (r.type === "word" && r.start_time != null && r.end_time != null) {

@@ -11,6 +11,7 @@ function fileNameForMime(mimeType: string): string {
   if (mimeType.includes("wav")) return "audio.wav";
   if (mimeType.includes("mp3") || mimeType.includes("mpeg")) return "audio.mp3";
   if (mimeType.includes("mp4") || mimeType.includes("m4a")) return "audio.m4a";
+  if (mimeType.includes("ogg")) return "audio.ogg";
   return "audio.webm";
 }
 

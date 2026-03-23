@@ -22,6 +22,7 @@ export async function transcribeWithElevenLabs(
   const ext = mimeType.includes("wav") ? "audio.wav"
     : mimeType.includes("mp3") || mimeType.includes("mpeg") ? "audio.mp3"
     : mimeType.includes("mp4") || mimeType.includes("m4a") ? "audio.m4a"
+    : mimeType.includes("ogg") ? "audio.ogg"
     : "audio.webm";
 
   const blob = new Blob([new Uint8Array(audio)], { type: mimeType });

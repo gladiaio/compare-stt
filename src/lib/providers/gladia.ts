@@ -25,6 +25,7 @@ export async function transcribeWithGladia(
   const ext = mimeType.includes("wav") ? "audio.wav"
     : mimeType.includes("mp3") || mimeType.includes("mpeg") ? "audio.mp3"
     : mimeType.includes("mp4") || mimeType.includes("m4a") ? "audio.m4a"
+    : mimeType.includes("ogg") ? "audio.ogg"
     : "audio.webm";
 
   const uploadForm = new FormData();
