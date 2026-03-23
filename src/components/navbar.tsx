@@ -40,6 +40,9 @@ export function Navbar() {
         <NavLink href="/leaderboard" active={pathname === "/leaderboard"}>
           Leaderboard
         </NavLink>
+        <NavLink href="/methodology" active={pathname === "/methodology"}>
+          Methodology
+        </NavLink>
         <NavLink href="/about" active={pathname === "/about"}>
           About
         </NavLink>
