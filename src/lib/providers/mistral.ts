@@ -7,9 +7,16 @@ interface MistralSegment {
   end: number;
 }
 
+function fileNameForMime(mimeType: string): string {
+  if (mimeType.includes("wav")) return "audio.wav";
+  if (mimeType.includes("mp3") || mimeType.includes("mpeg")) return "audio.mp3";
+  if (mimeType.includes("mp4") || mimeType.includes("m4a")) return "audio.m4a";
+  return "audio.webm";
+}
+
 export async function transcribeWithMistral(
   audio: Buffer,
-  _mimeType: string
+  mimeType: string
 ): Promise<TranscribeResult> {
   const apiKey = process.env.MISTRAL_API_KEY;
   if (!apiKey) throw new Error("MISTRAL_API_KEY not set");
@@ -18,12 +25,12 @@ export async function transcribeWithMistral(
 
   const client = new Mistral({ apiKey });
 
-  const blob = new Blob([new Uint8Array(audio)], { type: "audio/wav" });
-  const file = new File([blob], "audio.wav", { type: "audio/wav" });
-
   const response = await client.audio.transcriptions.complete({
     model: "voxtral-mini-latest",
-    file,
+    file: {
+      fileName: fileNameForMime(mimeType),
+      content: new Uint8Array(audio),
+    },
     timestampGranularities: ["word"],
   });
 
