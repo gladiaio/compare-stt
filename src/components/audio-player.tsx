@@ -65,6 +65,7 @@ export function AudioPlayer({ src, onTimeUpdate }: AudioPlayerProps) {
   );
 
   const fmt = (s: number) => {
+    if (!Number.isFinite(s)) return "-:--";
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
     return `${m}:${sec.toString().padStart(2, "0")}`;
@@ -85,7 +86,21 @@ export function AudioPlayer({ src, onTimeUpdate }: AudioPlayerProps) {
         src={src}
         preload="metadata"
         onLoadedMetadata={() => {
-          if (audioRef.current) setDuration(audioRef.current.duration);
+          const audio = audioRef.current;
+          if (!audio) return;
+          if (Number.isFinite(audio.duration)) {
+            setDuration(audio.duration);
+          } else {
+            audio.currentTime = 1e101;
+          }
+        }}
+        onDurationChange={() => {
+          const audio = audioRef.current;
+          if (!audio || !Number.isFinite(audio.duration)) return;
+          setDuration(audio.duration);
+          if (audio.currentTime > audio.duration) {
+            audio.currentTime = 0;
+          }
         }}
         onEnded={() => {
           setPlaying(false);
