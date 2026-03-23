@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { PROVIDERS } from "@/lib/providers";
 
 export const metadata: Metadata = {
   title: "About | Compare STT",
@@ -32,24 +30,35 @@ export default function AboutPage() {
           Every speech-to-text provider claims to be the best. They publish
           benchmarks on cherry-picked datasets, compare against last year&apos;s
           models, and sprinkle asterisks everywhere. We&apos;ve all read those
-          blog posts. We&apos;ve all squinted at those WER tables. And we&apos;ve
-          all wondered: <em>but how do they actually compare on my audio?</em>
+          posts. We&apos;ve all stared at WER tables. And we&apos;ve all
+          wondered: <em>how do they actually perform on my audio?</em>
         </p>
 
         <p>
-          Compare STT was born from that frustration. Instead of trusting
-          self-reported numbers, we let <strong>you</strong> be the judge. Record
-          your voice, upload a meeting snippet, throw in a podcast clip, whatever
-          you want. Two providers transcribe it blindly, side by side, and you pick
-          the one that got it right. No names attached. No bias. Just text.
+          Compare STT was built from that frustration.
         </p>
 
         <p>
-          Every vote feeds into an{" "}
-          <strong>ELO rating system</strong>, the same kind used to rank chess
-          players. Over time, the leaderboard converges toward something no
-          corporate benchmark can replicate: a ranking shaped by real people,
-          real accents, real noise, and real conversations.
+          Instead of trusting self-reported numbers, you test it yourself. Record
+          your voice, upload a meeting snippet, drop in a podcast
+          clip&mdash;whatever reflects your real use case. Two providers
+          transcribe it blindly, side by side, and you decide which one got it
+          right. No names. No bias. Just output.
+        </p>
+
+        <p>
+          Built for exploration&mdash;not a substitute for proper evaluation. For
+          rigorous analysis, see the{" "}
+          <a
+            href="https://github.com/gladiaio/normalization/tree/main?tab=readme-ov-file#quick-start"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+            style={{ color: "var(--color-text-brand)" }}
+          >
+            benchmark methodology
+          </a>
+          .
         </p>
 
         <div
@@ -63,9 +72,9 @@ export default function AboutPage() {
             className="text-sm italic leading-relaxed"
             style={{ color: "var(--color-text-tertiary)" }}
           >
-            &ldquo;The best benchmark is the one you can&apos;t game, because
-            you don&apos;t know what&apos;s coming next, and you don&apos;t know
-            who you&apos;re up against.&rdquo;
+            &ldquo;The best benchmark is the one you can&apos;t game&mdash;because
+            you don&apos;t know what&apos;s coming next, or who you&apos;re up
+            against.&rdquo;
           </p>
         </div>
 
@@ -81,65 +90,19 @@ export default function AboutPage() {
           style={{ listStyleType: "decimal" }}
         >
           <li>
-            <strong>You submit audio</strong>, record live or upload a file
-            (up to 2 minutes).
+            You submit audio (record live or upload a file, up to 2 minutes).
           </li>
           <li>
-            <strong>Two random providers transcribe it</strong>, their
-            identities are hidden. You see &ldquo;Model A&rdquo; vs
+            Two providers transcribe it anonymously: &ldquo;Model A&rdquo; vs
             &ldquo;Model B&rdquo;.
           </li>
           <li>
-            <strong>You vote</strong>, pick the better transcription, or call
-            it a tie. The providers are revealed after your vote.
+            You pick the better transcription&mdash;or call it a tie.
           </li>
           <li>
-            <strong>ELO ratings update</strong>, every vote shifts the
-            leaderboard. The more votes, the more accurate the ranking.
+            Identities are revealed after your vote.
           </li>
         </ol>
-
-        <h2
-          className="mt-4 text-xl font-semibold tracking-tight"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Current providers
-        </h2>
-
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {PROVIDERS.map((p) => (
-            <div
-              key={p.slug}
-              className="flex items-center gap-3 rounded-[var(--radius-lg)] border px-4 py-3"
-              style={{
-                background: "var(--color-bg-tertiary)",
-                borderColor: "var(--color-border-primary)",
-              }}
-            >
-              <Image
-                src={p.logoUrl}
-                alt={p.name}
-                width={20}
-                height={20}
-                className="flex-shrink-0"
-              />
-              <div className="min-w-0">
-                <p
-                  className="text-sm font-medium truncate"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
-                  {p.name}
-                </p>
-                <p
-                  className="text-xs truncate"
-                  style={{ color: "var(--color-text-tertiary)" }}
-                >
-                  {p.model}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
 
         <h2
           className="mt-4 text-xl font-semibold tracking-tight"
@@ -153,14 +116,19 @@ export default function AboutPage() {
           style={{ listStyleType: "disc" }}
         >
           <li>We don&apos;t store your audio or transcriptions.</li>
-          <li>We don&apos;t track you, no cookies, no accounts, no IP logging.</li>
-          <li>We don&apos;t sell data. There is no data to sell.</li>
-          <li>We don&apos;t take money from providers to rig the leaderboard.</li>
+          <li>
+            We don&apos;t track you&mdash;no cookies, no accounts, no IP
+            logging.
+          </li>
+          <li>We don&apos;t sell data (there&apos;s nothing to sell).</li>
+          <li>
+            We don&apos;t take money from providers to influence results.
+          </li>
         </ul>
 
         <p>
-          The only thing we keep is the vote outcome: who won, who lost, or
-          whether it was a tie. That&apos;s it.
+          The only thing we keep is the vote outcome: who won, who lost, or if
+          it was a tie. That&apos;s it.
         </p>
 
         <h2
@@ -181,11 +149,9 @@ export default function AboutPage() {
           >
             Gladia
           </a>
-          . Yes, Gladia is also one of the providers in the arena. No, they
-          don&apos;t get special treatment. The matchmaking is random, the voting
-          is blind, and the leaderboard is driven purely by community votes. If
-          Gladia&apos;s model is good, it&apos;ll climb. If it&apos;s not, it
-          won&apos;t. That&apos;s the whole point.
+          . Yes, Gladia is also one of the providers. No, they don&apos;t get
+          special treatment. Pairings are random, comparisons are blind, and
+          results are driven entirely by user input.
         </p>
 
         <p>

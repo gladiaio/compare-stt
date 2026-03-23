@@ -276,6 +276,20 @@ export default function ArenaPage() {
             <TranscriptCardSkeleton label="Model A" />
             <TranscriptCardSkeleton label="Model B" />
           </div>
+          <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            *&thinsp;Built for exploration, not a substitute for proper evaluation.
+            For proper evaluation, refer to the{" "}
+            <a
+              href="https://github.com/gladiaio/normalization/tree/main?tab=readme-ov-file#quick-start"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+              style={{ color: "var(--color-text-tertiary)" }}
+            >
+              benchmark methodology
+            </a>
+            .
+          </p>
         </div>
       )}
 
@@ -332,6 +346,21 @@ export default function ArenaPage() {
               revealed={false}
             />
           </div>
+
+          <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            *&thinsp;Built for exploration, not a substitute for proper evaluation.
+            For proper evaluation, refer to the{" "}
+            <a
+              href="https://github.com/gladiaio/normalization/tree/main?tab=readme-ov-file#quick-start"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+              style={{ color: "var(--color-text-tertiary)" }}
+            >
+              benchmark methodology
+            </a>
+            .
+          </p>
 
           {audioUrl && (
             <div className="w-full max-w-lg">
@@ -403,6 +432,21 @@ export default function ArenaPage() {
               isWinner={reveal.winnerId === reveal.providerB.id}
             />
           </div>
+
+          <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            *&thinsp;Built for exploration, not a substitute for proper evaluation.
+            For proper evaluation, refer to the{" "}
+            <a
+              href="https://github.com/gladiaio/normalization/tree/main?tab=readme-ov-file#quick-start"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+              style={{ color: "var(--color-text-tertiary)" }}
+            >
+              benchmark methodology
+            </a>
+            .
+          </p>
 
           <div className="flex flex-col items-center gap-3">
             <button
