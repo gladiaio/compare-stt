@@ -105,7 +105,7 @@ export default function MethodologyPage() {
               {[
                 ["Gladia", "Solaria", "Default, language detection on"],
                 ["Deepgram", "Nova 3", "Smart format, detect language"],
-                ["AssemblyAI", "Universal-3 Pro + Universal-2", "Language detection, dual model fallback"],
+                ["AssemblyAI", "Universal-3 Pro", "Language detection"],
                 ["ElevenLabs", "Scribe v2", "Default"],
                 ["Speechmatics", "Enhanced", "Language: auto, enhanced operating point"],
                 ["Mistral", "Voxtral Mini", "Word-level timestamps"],
