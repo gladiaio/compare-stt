@@ -124,8 +124,6 @@ export function LeaderboardTable({
 
   return (
     <div className="flex flex-col gap-6">
-      {!isSignificant && <EarlyStageDisclaimer totalVotes={totalVotes} />}
-
       <div className="w-full overflow-x-auto">
         <table
           className="w-full"
@@ -277,32 +275,3 @@ function BlurredValue({
   );
 }
 
-function EarlyStageDisclaimer({ totalVotes }: { totalVotes: number }) {
-  return (
-    <div
-      className="flex items-start gap-3 rounded-[var(--radius-md)] border p-4"
-      style={{
-        background: "var(--color-bg-tertiary)",
-        borderColor: "var(--color-border-brand)",
-      }}
-    >
-      <div className="mt-0.5 shrink-0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-purple)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-      </div>
-      <div>
-        <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
-          Not enough data yet
-        </p>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
-          Rankings are hidden until enough votes are collected for statistically significant
-          results. Currently: {totalVotes} vote{totalVotes !== 1 ? "s" : ""}. Keep
-          comparing in the Arena to help reach that threshold!
-        </p>
-      </div>
-    </div>
-  );
-}
