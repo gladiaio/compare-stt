@@ -63,7 +63,7 @@ export default function MethodologyPage() {
           Everything below describes exactly how Compare STT works under the
           hood. The full source code is{" "}
           <a
-            href="https://github.com/gladiaio/asr-arena"
+            href="https://github.com/gladiaio/compare-stt"
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
@@ -473,7 +473,7 @@ for (const vote of votes) {
           <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
             Questions about the methodology?{" "}
             <a
-              href="https://github.com/gladiaio/asr-arena/issues"
+              href="https://github.com/gladiaio/compare-stt/issues"
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
