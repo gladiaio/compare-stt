@@ -6,3 +6,10 @@ export const showLeaderboard = flag({
   adapter: vercelAdapter(),
   description: "Reveal leaderboard rankings instead of showing blurred teaser",
 });
+
+export const leaderboardGamification = flag({
+  key: "leaderboard-gamification",
+  adapter: vercelAdapter(),
+  description:
+    "Require users to complete 3 Arena comparisons before accessing the leaderboard",
+});
