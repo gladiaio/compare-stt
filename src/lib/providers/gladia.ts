@@ -52,7 +52,7 @@ export async function transcribeWithGladia(
     body: JSON.stringify({
       audio_url,
       punctuation_enhanced: true,
-      language_config: { code_switching: true },
+      language_config: { code_switching: false },
     }),
   });
 
