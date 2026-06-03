@@ -25,7 +25,7 @@ export async function transcribeWithSmallest(
   const start = Date.now();
 
   const url = new URL(SMALLEST_BASE);
-  url.searchParams.set("model", "pulse");
+  url.searchParams.set("model", "pulse-pro");
   url.searchParams.set("word_timestamps", "true");
 
   const response = await fetch(url.toString(), {
