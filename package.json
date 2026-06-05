@@ -28,11 +28,15 @@
     "assemblyai": "^4.26.1",
     "dotenv": "^17.3.1",
     "flags": "^4.0.5",
-    "next": "16.2.0",
+    "next": "16.2.7",
     "pg": "^8.20.0",
     "prisma": "^7.5.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
+  },
+  "overrides": {
+    "postcss": "^8.5.10",
+    "@hono/node-server": "^1.19.13"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
