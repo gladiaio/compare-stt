@@ -1,8 +1,23 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
+const BASE_PATH = "/compare-stt-apis";
+
 const nextConfig: NextConfig = {
-  assetPrefix: process.env.NEXT_PUBLIC_ORIGIN || "",
+  basePath: BASE_PATH,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: BASE_PATH,
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "https://gladia.io/compare-stt-apis",
+        basePath: false,
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {
