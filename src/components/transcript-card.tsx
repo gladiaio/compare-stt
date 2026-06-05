@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import type { DiffSegment } from "@/lib/diff";
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export interface WordTimestamp {
   word: string;
   start: number;
@@ -85,7 +87,7 @@ export function TranscriptCard({
           {providerName && providerLogo && (
             <div className="relative h-4 w-20">
               <Image
-                src={providerLogo}
+                src={`${BASE_PATH}${providerLogo}`}
                 alt={providerName}
                 fill
                 className="object-contain object-right"
@@ -156,7 +158,7 @@ export function TranscriptCard({
 
           <div className="relative h-10 w-44">
             <Image
-              src={providerLogo}
+              src={`${BASE_PATH}${providerLogo}`}
               alt={providerName || ""}
               fill
               className="object-contain"
@@ -193,7 +195,7 @@ export function TranscriptCard({
             </span>
             <div className="relative h-4 w-20">
               <Image
-                src={providerLogo}
+                src={`${BASE_PATH}${providerLogo}`}
                 alt={providerName || ""}
                 fill
                 className="object-contain object-right"

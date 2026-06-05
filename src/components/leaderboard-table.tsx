@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 interface LeaderboardEntry {
   id: string;
   name: string;
@@ -177,7 +179,7 @@ export function LeaderboardTable({
                   <div className="flex items-center gap-3">
                     <div className="relative h-6 w-32 shrink-0">
                       <Image
-                        src={entry.logoUrl}
+                        src={`${BASE_PATH}${entry.logoUrl}`}
                         alt={entry.name}
                         fill
                         className="object-contain object-left"
