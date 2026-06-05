@@ -92,10 +92,10 @@ export default function ArenaPage() {
 
         const { url: blobUrl } = await upload(`arena/${sessionId}.${ext}`, blob, {
           access: "private",
-          handleUploadUrl: `${process.env.NEXT_PUBLIC_ORIGIN || ""}/api/upload`,
+          handleUploadUrl: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/upload`,
         });
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_ORIGIN || ""}/api/transcribe`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/transcribe`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -136,7 +136,7 @@ export default function ArenaPage() {
       setVoteCount((c) => c + 1);
 
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_ORIGIN || ""}/api/vote`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/vote`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -176,7 +176,7 @@ export default function ArenaPage() {
 
   const handleEndSession = useCallback(async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_ORIGIN || ""}/api/session/${sessionId}/stats`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/session/${sessionId}/stats`);
       const stats: SessionStats = await res.json();
       setSessionStats(stats);
       setShowSummary(true);
