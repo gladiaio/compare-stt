@@ -38,7 +38,8 @@ export async function transcribeWithSmallest(
   });
 
   if (!response.ok) {
-    throw new Error(`Smallest AI request failed: ${response.status} ${await response.text()}`);
+    const body = await response.text();
+    throw new Error(`HTTP ${response.status}: Smallest AI request failed: ${body}`);
   }
 
   const data: SmallestResponse = await response.json();
