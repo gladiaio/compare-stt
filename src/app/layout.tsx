@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Compare STT | Blind Speech-to-Text Comparison",
   description:
     "Compare speech-to-text providers in blind tests. Record or upload audio, vote for the best transcription, and see how providers stack up on the leaderboard.",
-  icons: { icon: "/logo.svg" },
+  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logo.svg` },
   openGraph: {
     title: "Compare STT | Blind Speech-to-Text Comparison",
     description:
