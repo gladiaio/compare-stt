@@ -40,7 +40,7 @@ export function LeaderboardClient({
   useEffect(() => {
     async function fetchLeaderboard() {
       try {
-        const res = await fetch("/api/leaderboard");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_ORIGIN || ""}/api/leaderboard`);
         const data = await res.json();
         setEntries(data.leaderboard);
         setTotalVotes(data.totalVotes);

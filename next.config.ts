@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  assetPrefix: process.env.NEXT_PUBLIC_ORIGIN || "",
+};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
