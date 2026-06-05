@@ -59,7 +59,7 @@ export function LeaderboardClient({
 
   const handleAudioFromGate = (blob: Blob) => {
     setPendingAudio(blob);
-    router.push("/");
+    router.push(`${process.env.NEXT_PUBLIC_ORIGIN || ""}/`);
   };
 
   return (

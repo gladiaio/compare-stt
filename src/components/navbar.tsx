@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const ORIGIN = process.env.NEXT_PUBLIC_ORIGIN || "";
+
 export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean }) {
   const pathname = usePathname();
 
@@ -19,7 +21,7 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
         }}
       >
         <Link
-          href="/"
+          href={`${ORIGIN}/`}
           onClick={(e) => {
             if (pathname === "/") {
               e.preventDefault();
@@ -28,17 +30,17 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
           }}
           className="mr-4 flex items-center gap-2 px-2 font-medium text-white"
         >
-          <Image src="/logo.svg" alt="" width={22} height={22} />
+          <Image src={`${ORIGIN}/logo.svg`} alt="" width={22} height={22} />
           <span className="text-base font-semibold tracking-tight">
             Compare STT
           </span>
         </Link>
 
-        <NavLink href="/" active={pathname === "/"}>
+        <NavLink href={`${ORIGIN}/`} active={pathname === "/"}>
           Compare
         </NavLink>
         {showLeaderboard ? (
-          <NavLink href="/leaderboard" active={pathname === "/leaderboard"}>
+          <NavLink href={`${ORIGIN}/leaderboard`} active={pathname === "/leaderboard"}>
             Leaderboard
           </NavLink>
         ) : (
@@ -46,10 +48,10 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
             Leaderboard
           </DisabledNavLink>
         )}
-        <NavLink href="/methodology" active={pathname === "/methodology"}>
+        <NavLink href={`${ORIGIN}/methodology`} active={pathname === "/methodology"}>
           Methodology
         </NavLink>
-        <NavLink href="/about" active={pathname === "/about"}>
+        <NavLink href={`${ORIGIN}/about`} active={pathname === "/about"}>
           About
         </NavLink>
       </nav>

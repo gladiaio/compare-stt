@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Compare STT | Blind Speech-to-Text Comparison",
   description:
     "Compare speech-to-text providers in blind tests. Record or upload audio, vote for the best transcription, and see how providers stack up on the leaderboard.",
-  icons: { icon: "/logo.svg" },
+  icons: { icon: `${process.env.NEXT_PUBLIC_ORIGIN || ""}/logo.svg` },
   openGraph: {
     title: "Compare STT | Blind Speech-to-Text Comparison",
     description:
@@ -57,7 +57,7 @@ export default async function RootLayout({
         <Navbar showLeaderboard={leaderboardEnabled} />
         <main className="pt-[88px] pb-16">{children}</main>
         <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "var(--color-border-tertiary)", color: "var(--color-text-tertiary)" }}>
-          <Link href="/terms" className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-tertiary)" }}>
+          <Link href={`${process.env.NEXT_PUBLIC_ORIGIN || ""}/terms`} className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-tertiary)" }}>
             Terms &amp; Privacy
           </Link>
           <span className="mx-2">·</span>

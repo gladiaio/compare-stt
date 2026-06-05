@@ -9,7 +9,7 @@ export default function TermsPage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
       <Link
-        href="/"
+        href={`${process.env.NEXT_PUBLIC_ORIGIN || ""}/`}
         className="mb-8 inline-flex items-center gap-1.5 text-sm transition-colors duration-160"
         style={{ color: "var(--color-text-tertiary)" }}
       >
