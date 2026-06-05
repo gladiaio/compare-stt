@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
   },
   async redirects() {
+    if (process.env.NODE_ENV !== "production") return [];
     return [
       {
         source: "/",
