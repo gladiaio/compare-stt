@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
         basePath: false,
         permanent: true,
       },
+      {
+        source: "/:path*",
+        destination: "https://gladia.io/compare-stt-apis/:path*",
+        basePath: false,
+        permanent: true,
+      },
     ];
   },
 };
