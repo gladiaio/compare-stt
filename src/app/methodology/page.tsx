@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Methodology | Compare STT",
@@ -60,8 +61,11 @@ export default function MethodologyPage() {
         style={{ color: "var(--color-text-secondary)" }}
       >
         <p>
-          Everything below describes exactly how Compare STT works under the
-          hood. The full source code is{" "}
+          Everything below describes exactly how{" "}
+          <Link href="/" className="underline" style={{ color: "var(--color-text-brand)" }}>
+            Compare STT
+          </Link>{" "}
+          works under the hood. The full source code is{" "}
           <a
             href="https://github.com/gladiaio/compare-stt"
             target="_blank"
@@ -296,8 +300,11 @@ return \`\${payload}.\${signature}\`;
 
         <p>
           Ratings are computed from a single chronological pass over all votes.
-          The leaderboard displays exact ELO scores, sorted by descending
-          rating.
+          The{" "}
+          <Link href="/leaderboard" className="underline" style={{ color: "var(--color-text-brand)" }}>
+            leaderboard
+          </Link>{" "}
+          displays exact ELO scores, sorted by descending rating.
         </p>
 
         <CodeBlock title="src/lib/elo.ts — rating computation (simplified)">

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { AboutFaq } from "@/components/seo/about-faq";
 
 export const metadata: Metadata = {
   title: "About | Compare STT",
-  description: "Why we built Compare STT, the blind speech-to-text benchmark.",
+  description:
+    "Why we built Compare STT, the blind speech-to-text benchmark — plus FAQ on ELO rankings, providers compared, and how blind testing works.",
 };
 
 export default function AboutPage() {
@@ -35,7 +38,10 @@ export default function AboutPage() {
         </p>
 
         <p>
-          Compare STT was built from that frustration.
+          <Link href="/" className="underline" style={{ color: "var(--color-text-brand)" }}>
+            Compare STT
+          </Link>{" "}
+          was built from that frustration.
         </p>
 
         <p>
@@ -165,6 +171,8 @@ export default function AboutPage() {
           </a>
           .
         </p>
+
+        <AboutFaq />
       </div>
     </div>
   );
