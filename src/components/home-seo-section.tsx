@@ -14,7 +14,7 @@ export function HomeSeoSection() {
         }}
       >
         <h2
-          className="text-xl font-semibold tracking-tight"
+          className="type-section-title text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           About Compare STT
@@ -31,7 +31,7 @@ export function HomeSeoSection() {
         </p>
 
         <h2
-          className="text-xl font-semibold tracking-tight"
+          className="type-section-title text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           How it works
@@ -57,7 +57,7 @@ export function HomeSeoSection() {
         </p>
 
         <h2
-          className="text-xl font-semibold tracking-tight"
+          className="type-section-title text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           Providers compared
@@ -71,7 +71,7 @@ export function HomeSeoSection() {
         </p>
 
         <h2
-          className="text-xl font-semibold tracking-tight"
+          className="type-section-title text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           What the leaderboard shows

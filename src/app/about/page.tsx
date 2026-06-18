@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AboutFaq } from "@/components/seo/about-faq";
 
 export const metadata: Metadata = {
   title: "About | Compare STT",
   description:
-    "Why we built Compare STT, the blind speech-to-text benchmark — plus FAQ on ELO rankings, providers compared, and how blind testing works.",
+    "Why we built Compare STT, the blind speech-to-text benchmark — how blind testing works, what we track, and who sponsors the project.",
 };
 
 export default function AboutPage() {
@@ -19,8 +18,8 @@ export default function AboutPage() {
       </span>
 
       <h1
-        className="mb-6 text-3xl font-semibold tracking-tight md:text-4xl"
-        style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}
+        className="type-page-h1 mb-6 text-3xl md:text-4xl"
+        style={{ color: "var(--color-text-primary)" }}
       >
         Why Compare STT exists
       </h1>
@@ -69,14 +68,11 @@ export default function AboutPage() {
 
         <div
           className="my-2 rounded-[var(--radius-xl)] border p-6"
-          style={{
-            background: "var(--color-bg-tertiary)",
-            borderColor: "var(--color-border-primary)",
-          }}
+          style={{ borderColor: "var(--color-border-primary)" }}
         >
           <p
-            className="text-sm italic leading-relaxed"
-            style={{ color: "var(--color-text-tertiary)" }}
+            className="text-sm leading-relaxed"
+            style={{ color: "var(--color-text-secondary)" }}
           >
             &ldquo;The best benchmark is the one you can&apos;t game&mdash;because
             you don&apos;t know what&apos;s coming next, or who you&apos;re up
@@ -85,7 +81,7 @@ export default function AboutPage() {
         </div>
 
         <h2
-          className="mt-4 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-4 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           How it works
@@ -111,7 +107,7 @@ export default function AboutPage() {
         </ol>
 
         <h2
-          className="mt-4 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-4 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           What we don&apos;t do
@@ -138,7 +134,7 @@ export default function AboutPage() {
         </p>
 
         <h2
-          className="mt-4 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-4 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           Sponsored by Gladia
@@ -172,7 +168,6 @@ export default function AboutPage() {
           .
         </p>
 
-        <AboutFaq />
       </div>
     </div>
   );

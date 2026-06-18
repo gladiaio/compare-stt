@@ -64,21 +64,11 @@ export function LeaderboardClient({
           Community Rankings
         </span>
         <h1
-          className="text-3xl font-semibold tracking-tight md:text-4xl"
-          style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}
+          className="type-page-h1 text-3xl md:text-4xl"
+          style={{ color: "var(--color-text-primary)" }}
         >
           Leaderboard
         </h1>
-        {summary ?? (
-          <p className="text-base" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
-            Rankings based on ELO scores from blind comparisons by the community.
-            {totalVotes > 0 && (
-              <span className="ml-1 font-mono tabular-nums" style={{ color: "var(--color-text-tertiary)" }}>
-                ({totalVotes} total vote{totalVotes !== 1 ? "s" : ""})
-              </span>
-            )}
-          </p>
-        )}
       </div>
 
       <div className="relative">
@@ -110,6 +100,17 @@ export function LeaderboardClient({
               isSignificant={isSignificant}
             />
           </div>
+
+        {summary ?? (
+          <p className="mt-8 text-base" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+            Rankings based on ELO scores from blind comparisons by the community.
+            {totalVotes > 0 && (
+              <span className="ml-1 font-mono tabular-nums" style={{ color: "var(--color-text-tertiary)" }}>
+                ({totalVotes} total vote{totalVotes !== 1 ? "s" : ""})
+              </span>
+            )}
+          </p>
+        )}
 
         <p className="mt-8 text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
           <Link
@@ -152,7 +153,7 @@ function LeaderboardGate({
           </svg>
         </div>
         <h2
-          className="text-xl font-semibold tracking-tight md:text-2xl"
+          className="type-section-title text-xl md:text-2xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           Unlock the Leaderboard
@@ -170,7 +171,7 @@ function LeaderboardGate({
         {Array.from({ length: REQUIRED_UPLOADS }).map((_, i) => (
           <div
             key={i}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-normal transition-all duration-300"
             style={
               i < uploadCount
                 ? {

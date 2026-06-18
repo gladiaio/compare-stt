@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ArenaPage } from "@/components/arena-page";
-import { HomeSeoSection } from "@/components/home-seo-section";
+import { AboutFaq } from "@/components/seo/about-faq";
 import { publicUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -49,7 +49,9 @@ export default function HomePage() {
     <>
       <WebApplicationSchema />
       <ArenaPage />
-      <HomeSeoSection />
+      <div className="mx-auto max-w-2xl px-6 pb-16">
+        <AboutFaq />
+      </div>
     </>
   );
 }

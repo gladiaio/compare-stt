@@ -220,36 +220,18 @@ export function ArenaPage() {
             >
               Blind STT Comparison
             </span>
-            <h1
-              className="text-4xl font-semibold tracking-tight md:text-5xl"
-              style={{
-                color: "var(--color-text-primary)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.2,
-              }}
-            >
-              Which Speech-to-Text API Is the most accurate?
+            <h1 className="type-hero-h1" style={{ color: "var(--color-text-primary)" }}>
+              Which speech model
+              <br />
+              is the most accurate?
             </h1>
             <h2
-              className="max-w-xl text-lg font-medium md:text-xl"
-              style={{
-                color: "var(--color-accent-purple)",
-                lineHeight: 1.4,
-              }}
+              className="type-hero-subtitle max-w-xl text-lg md:text-xl"
+              style={{ color: "var(--color-text-primary)" }}
             >
-              Blind-test Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral
-              and Gladia
+              Compare Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral and
+              Gladia.
             </h2>
-            <p
-              className="max-w-md text-base"
-              style={{
-                color: "var(--color-text-secondary)",
-                lineHeight: 1.5,
-              }}
-            >
-              Record your voice or upload an audio file. We&apos;ll transcribe it with
-              two providers. You pick the winner.
-            </p>
           </div>
 
           <div className="flex flex-col items-center gap-6">
@@ -273,12 +255,6 @@ export function ArenaPage() {
               Check the leaderboard →
             </Link>
           </div>
-
-          {voteCount > 0 && (
-            <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
-              {voteCount} comparison{voteCount > 1 ? "s" : ""} this session
-            </p>
-          )}
         </div>
       )}
 
@@ -326,7 +302,7 @@ export function ArenaPage() {
         <div className="flex flex-1 flex-col items-center justify-center gap-8 w-full animate-fade-in">
           <div className="flex flex-col items-center gap-2 text-center">
             <h2
-              className="text-2xl font-semibold tracking-tight"
+              className="type-section-title text-2xl"
               style={{ color: "var(--color-text-primary)" }}
             >
               Compare the transcriptions
@@ -403,7 +379,7 @@ export function ArenaPage() {
               </p>
               <button
                 onClick={handlePlayAgain}
-                className="flex items-center gap-2 rounded-[var(--radius-full)] border px-8 py-4 text-base font-semibold transition-all duration-160 hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center gap-2 rounded-[var(--radius-full)] border px-8 py-4 text-base font-normal transition-all duration-160 hover:scale-[1.02] active:scale-[0.98]"
                 style={{
                   background: "var(--color-bg-inverse)",
                   color: "var(--color-text-inverse)",
@@ -431,7 +407,7 @@ export function ArenaPage() {
         <div className="flex flex-1 flex-col items-center justify-center gap-8 w-full animate-fade-in">
           <div className="flex flex-col items-center gap-2 text-center">
             <h2
-              className="text-2xl font-semibold tracking-tight"
+              className="type-section-title text-2xl"
               style={{ color: "var(--color-text-primary)" }}
             >
               {reveal.winnerId === null ? "It's a tie!" : "And the winner is..."}
@@ -479,7 +455,7 @@ export function ArenaPage() {
           <div className="flex flex-col items-center gap-3">
             <button
               onClick={handlePlayAgain}
-              className="flex items-center gap-2 rounded-[var(--radius-full)] border px-8 py-4 text-base font-semibold transition-all duration-160 hover:scale-[1.02] active:scale-[0.98]"
+              className="flex items-center gap-2 rounded-[var(--radius-full)] border px-8 py-4 text-base font-normal transition-all duration-160 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "var(--color-bg-inverse)",
                 color: "var(--color-text-inverse)",

@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { CollapsibleText } from "@/components/collapsible-text";
 
 const FAQ_ITEMS = [
   {
@@ -10,11 +14,6 @@ const FAQ_ITEMS = [
     question: "How does Compare STT work?",
     answer:
       "You upload or record audio. Two speech-to-text providers transcribe it anonymously. You read both transcripts and vote for the more accurate one. Votes feed an ELO ranking system that updates the public leaderboard.",
-  },
-  {
-    question: "How does AssemblyAI compare to Deepgram?",
-    answer:
-      "Both appear in blind head-to-head matches on Compare STT. AssemblyAI uses Universal-3 Pro; Deepgram uses Nova 3. Their relative rank depends on community votes across real audio samples, not vendor-published benchmarks.",
   },
   {
     question: "What is ELO scoring?",
@@ -44,6 +43,8 @@ const FAQ_ITEMS = [
 ] as const;
 
 export function AboutFaq() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -59,7 +60,7 @@ export function AboutFaq() {
 
   return (
     <section
-      className="mt-10 border-t pt-10"
+      className="border-t pt-10"
       style={{ borderColor: "var(--color-border-tertiary)" }}
       aria-labelledby="about-faq-heading"
     >
@@ -70,31 +71,28 @@ export function AboutFaq() {
 
       <h2
         id="about-faq-heading"
-        className="mb-6 text-xl font-semibold tracking-tight"
+        className="mb-6 type-section-title text-xl"
         style={{ color: "var(--color-text-primary)" }}
       >
         Frequently asked questions
       </h2>
 
-      <dl className="flex flex-col gap-4">
-        {FAQ_ITEMS.map((item) => (
-          <div
-            key={item.question}
-            className="rounded-[var(--radius-lg)] border p-5"
-            style={{
-              background: "var(--color-bg-tertiary)",
-              borderColor: "var(--color-border-primary)",
-            }}
-          >
-            <dt className="text-base font-medium" style={{ color: "var(--color-text-primary)" }}>
-              {item.question}
-            </dt>
-            <dd className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
-              {item.answer}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <div>
+        {FAQ_ITEMS.map((item, index) => {
+          const isOpen = openIndex === index;
+
+          return (
+            <CollapsibleText
+              key={item.question}
+              title={item.question}
+              open={isOpen}
+              onOpenChange={(open) => setOpenIndex(open ? index : null)}
+            >
+              <p>{item.answer}</p>
+            </CollapsibleText>
+          );
+        })}
+      </div>
 
       <p className="mt-6 text-sm" style={{ color: "var(--color-text-tertiary)" }}>
         See the{" "}

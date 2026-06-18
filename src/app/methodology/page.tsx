@@ -50,8 +50,8 @@ export default function MethodologyPage() {
       </span>
 
       <h1
-        className="mb-6 text-3xl font-semibold tracking-tight md:text-4xl"
-        style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}
+        className="type-page-h1 mb-6 text-3xl md:text-4xl"
+        style={{ color: "var(--color-text-primary)" }}
       >
         Methodology
       </h1>
@@ -80,7 +80,7 @@ export default function MethodologyPage() {
 
         {/* ── 1. Providers ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           1. Providers
@@ -144,7 +144,7 @@ export default function MethodologyPage() {
 
         {/* ── 2. Matchmaking ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           2. Matchmaking
@@ -213,7 +213,7 @@ const swap = Math.random() < 0.5;`}
 
         {/* ── 3. Blind voting ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           3. Blind voting
@@ -254,7 +254,7 @@ return \`\${payload}.\${signature}\`;
 
         {/* ── 4. ELO rating ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           4. ELO rating system
@@ -327,7 +327,7 @@ for (const vote of votes) {
 
         {/* ── 5. Leaderboard ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           5. Leaderboard visibility
@@ -345,7 +345,7 @@ for (const vote of votes) {
 
         {/* ── 6. Anti-gaming ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           6. Anti-gaming measures
@@ -383,7 +383,7 @@ for (const vote of votes) {
 
         {/* ── 7. Limitations ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           7. Known limitations
@@ -418,7 +418,7 @@ for (const vote of votes) {
 
         {/* ── 8. Data ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           8. Data storage
@@ -447,7 +447,7 @@ for (const vote of votes) {
 
         {/* ── 9. Sponsorship ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           9. Sponsorship &amp; API costs

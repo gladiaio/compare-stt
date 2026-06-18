@@ -47,7 +47,7 @@ export function SessionSummary({ stats, onClose }: SessionSummaryProps) {
       >
         <div className="mb-6 flex items-center justify-between">
           <h2
-            className="text-2xl font-semibold tracking-tight"
+            className="type-section-title text-2xl"
             style={{ color: "var(--color-text-primary)" }}
           >
             Session Summary
@@ -71,7 +71,7 @@ export function SessionSummary({ stats, onClose }: SessionSummaryProps) {
           <p className="font-mono text-xs uppercase tracking-[0.16em]" style={{ color: "var(--color-text-brand)" }}>
             Total comparisons
           </p>
-          <p className="mt-1 text-3xl font-semibold tabular-nums" style={{ color: "var(--color-text-primary)" }}>
+          <p className="type-metric mt-1 text-3xl tabular-nums" style={{ color: "var(--color-text-primary)" }}>
             {stats.totalVotes}
           </p>
         </div>

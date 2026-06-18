@@ -17,7 +17,7 @@ export default function TermsPage() {
       </Link>
 
       <h1
-        className="mb-2 text-3xl font-semibold tracking-tight"
+        className="type-page-h1 mb-2 text-3xl"
         style={{ color: "var(--color-text-primary)" }}
       >
         Terms &amp; Privacy
@@ -148,7 +148,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <section>
       <h2
-        className="mb-3 text-lg font-semibold"
+        className="type-section-title mb-3 text-lg"
         style={{ color: "var(--color-text-primary)" }}
       >
         {title}

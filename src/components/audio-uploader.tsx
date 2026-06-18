@@ -117,33 +117,61 @@ export function AudioUploader({ onFileSelected, disabled }: AudioUploaderProps) 
   );
 
   return (
-    <div className="w-full max-w-md">
-      <div
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={() => !disabled && !validating && inputRef.current?.click()}
-        className="flex cursor-pointer flex-col items-center gap-3 rounded-[var(--radius-xl)] border-2 border-dashed p-8 transition-all duration-160"
-        style={{
-          borderColor: isDragging
-            ? "var(--color-accent-purple)"
-            : "var(--color-border-primary)",
-          background: isDragging
-            ? "var(--color-bg-glass-light)"
-            : "transparent",
-          opacity: disabled || validating ? 0.4 : 1,
-          pointerEvents: disabled || validating ? "none" : "auto",
-        }}
-      >
-        <UploadIcon />
-        <div className="text-center">
-          <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
-            {validating ? "Checking audio…" : fileName || "Drop an audio file here"}
-          </p>
-          <p className="mt-1 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-            or click to browse (mp3, wav, m4a, aac, mp4, flac… — max 2 min)
-          </p>
+    <div className="w-full max-w-md overflow-visible px-2 py-3">
+      <div className="relative overflow-visible">
+        {isDragging && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-4 rounded-[calc(var(--radius-xl)+16px)] transition-all duration-200"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, var(--card-glow-burst) 0%, var(--card-glow-burst-secondary) 35%, transparent 70%)",
+              filter: "blur(24px)",
+              opacity: 0.9,
+            }}
+          />
+        )}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-2 rounded-[calc(var(--radius-xl)+8px)] transition-all duration-300"
+          style={{
+            background: isDragging
+              ? "radial-gradient(ellipse at center, var(--card-glow-active) 0%, var(--card-glow-active-secondary) 45%, transparent 75%)"
+              : "radial-gradient(ellipse at center, var(--card-glow) 0%, var(--card-glow-secondary) 50%, transparent 75%)",
+            filter: "blur(14px)",
+            opacity: isDragging ? 1 : 0.7,
+          }}
+        />
+        <div
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={() => !disabled && !validating && inputRef.current?.click()}
+          className="relative isolate flex cursor-pointer flex-col items-center gap-3 rounded-[var(--radius-xl)] border border-dashed p-8 transition-all duration-160"
+          style={{
+            borderColor: isDragging
+              ? "rgba(148, 122, 252, 0.45)"
+              : "rgba(255, 255, 255, 0.1)",
+            background: isDragging ? "var(--liquid-glass-bg-active)" : "var(--liquid-glass-bg)",
+            backdropFilter: "blur(8px) saturate(180%)",
+            WebkitBackdropFilter: "blur(8px) saturate(180%)",
+            boxShadow: isDragging ? "var(--liquid-glass-shadow-active)" : "var(--liquid-glass-shadow)",
+            opacity: disabled || validating ? 0.4 : 1,
+            pointerEvents: disabled || validating ? "none" : "auto",
+          }}
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[var(--radius-xl)]"
+            style={{ background: "var(--liquid-glass-highlight)" }}
+          />
+          <UploadIcon active={isDragging} />
+          <div className="relative z-10 text-center">
+            <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
+              {validating ? "Checking audio…" : fileName || "Drop an audio file here"}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -167,17 +195,18 @@ export function AudioUploader({ onFileSelected, disabled }: AudioUploaderProps) 
   );
 }
 
-function UploadIcon() {
+function UploadIcon({ active }: { active?: boolean }) {
   return (
     <svg
       width="24"
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="var(--color-text-tertiary)"
+      stroke={active ? "var(--color-accent-purple)" : "var(--color-text-tertiary)"}
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className="relative z-10 transition-colors duration-160"
     >
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="17 8 12 3 7 8" />

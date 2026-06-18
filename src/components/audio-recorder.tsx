@@ -25,6 +25,7 @@ interface AudioRecorderProps {
 
 export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [levels, setLevels] = useState<number[]>(new Array(32).fill(0));
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -121,31 +122,70 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
 
+  const glowActive = isPressed || isRecording;
+
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="relative">
-        {isRecording && (
-          <div
-            className="absolute inset-0 rounded-full animate-pulse-ring"
-            style={{ background: "var(--color-accent-purple)", opacity: 0.3 }}
-          />
-        )}
-        <button
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={disabled}
-          className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full border-2 transition-all duration-160 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{
-            background: isRecording ? "var(--primitives-color-red-600)" : "var(--color-bg-brand)",
-            borderColor: isRecording ? "var(--primitives-color-red-500)" : "var(--color-accent-purple)",
-          }}
-          aria-label={isRecording ? "Stop recording" : "Start recording"}
-        >
-          {isRecording ? (
-            <StopIcon />
-          ) : (
-            <MicLargeIcon />
+      <div className="relative overflow-visible p-10">
+        <div className="relative h-20 w-20">
+          {glowActive && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full transition-all duration-200"
+              style={{
+                background:
+                  "radial-gradient(circle, var(--card-glow-burst) 0%, var(--card-glow-burst-secondary) 30%, transparent 68%)",
+                filter: "blur(22px)",
+                transform: "scale(2.6)",
+                opacity: isRecording ? 1 : 0.75,
+              }}
+            />
           )}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-full transition-all duration-300"
+            style={{
+              background: glowActive
+                ? "radial-gradient(circle, var(--card-glow-active) 0%, var(--card-glow-active-secondary) 40%, transparent 72%)"
+                : "radial-gradient(circle, var(--card-glow) 0%, var(--card-glow-secondary) 45%, transparent 70%)",
+              filter: "blur(12px)",
+              opacity: glowActive ? 1 : 0.85,
+              transform: `scale(${glowActive ? (isRecording ? 1.4 : 1.2) : 1})`,
+            }}
+          />
+          {isRecording && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full animate-pulse-ring"
+              style={{ background: "rgba(148, 122, 252, 0.28)" }}
+            />
+          )}
+          <button
+            onClick={isRecording ? stopRecording : startRecording}
+            onPointerDown={() => !disabled && setIsPressed(true)}
+            onPointerUp={() => setIsPressed(false)}
+            onPointerLeave={() => setIsPressed(false)}
+            onPointerCancel={() => setIsPressed(false)}
+            disabled={disabled}
+            className="relative z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-transparent transition-all duration-160 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+            style={{
+              background: glowActive ? "var(--liquid-glass-bg-active)" : "var(--liquid-glass-bg)",
+              backdropFilter: "blur(8px) saturate(180%)",
+              WebkitBackdropFilter: "blur(8px) saturate(180%)",
+              boxShadow: glowActive ? "var(--liquid-glass-shadow-active)" : "var(--liquid-glass-shadow)",
+            }}
+            aria-label={isRecording ? "Stop recording" : "Start recording"}
+          >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-full"
+            style={{ background: "var(--liquid-glass-highlight)" }}
+          />
+          <span className="relative z-10">
+            {isRecording ? <StopIcon /> : <MicLargeIcon />}
+          </span>
         </button>
+        </div>
       </div>
 
       {isRecording && (
@@ -166,7 +206,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
           <div className="flex items-center gap-2">
             <div
               className="h-2 w-2 rounded-full animate-pulse"
-              style={{ background: "var(--primitives-color-red-500)" }}
+              style={{ background: "var(--color-accent-purple)" }}
             />
             <span
               className="font-mono text-sm tabular-nums"
@@ -192,7 +232,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
 
 function MicLargeIcon() {
   return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
       <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
       <line x1="12" x2="12" y1="19" y2="22" />

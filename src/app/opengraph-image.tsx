@@ -43,7 +43,7 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", marginBottom: 32 }}>
-          <span style={{ color: "#ffffff", fontSize: 44, fontWeight: 600, letterSpacing: "-0.02em" }}>
+          <span style={{ color: "#ffffff", fontSize: 44, fontWeight: 400, letterSpacing: "-3.2px" }}>
             STT Leaderboard
           </span>
           <span style={{ color: "#a1a1aa", fontSize: 18, marginTop: 8 }}>

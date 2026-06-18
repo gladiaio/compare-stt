@@ -26,10 +26,10 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
               window.dispatchEvent(new CustomEvent("arena:reset"));
             }
           }}
-          className="mr-4 flex items-center gap-2 px-2 font-medium text-white"
+          className="mr-4 flex items-center gap-2 px-2 font-normal text-white"
         >
           <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logo.svg`} alt="" width={22} height={22} />
-          <span className="text-base font-semibold tracking-tight">
+          <span className="text-base font-normal tracking-normal">
             Compare STT
           </span>
         </Link>

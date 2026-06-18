@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import { showLeaderboard } from "@/flags";
 import "./globals.css";
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://comparestt.com"),
@@ -48,7 +42,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="dark">
-      <body className={`${geistMono.variable} antialiased`}>
+      <body className="font-sans antialiased">
         <Navbar showLeaderboard={leaderboardEnabled} />
         <main className="pt-[88px] pb-16">{children}</main>
         <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "var(--color-border-tertiary)", color: "var(--color-text-tertiary)" }}>

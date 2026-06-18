@@ -201,7 +201,7 @@ export function LeaderboardTable({
                 <td className="py-4 pr-4 text-right" style={cellBorder}>
                   <BlurredValue isBlurred={!isSignificant}>
                     <span
-                      className="font-mono text-sm font-semibold tabular-nums"
+                      className="font-mono text-sm font-normal tabular-nums"
                       style={{ color: "var(--color-text-primary)" }}
                     >
                       {entry.rating}
