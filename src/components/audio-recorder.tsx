@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { GlassIconButton } from "@/components/glass-icon-button";
 
 const MAX_DURATION = 120;
 
@@ -21,11 +22,15 @@ function pickRecordingMime(): string {
 interface AudioRecorderProps {
   onRecordingComplete: (blob: Blob) => void;
   disabled?: boolean;
+  compact?: boolean;
+  onRecordingIntent?: (active: boolean) => void;
+  onRecordingChange?: (isRecording: boolean) => void;
 }
 
-export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderProps) {
+export function AudioRecorder({ onRecordingComplete, disabled, compact = false, onRecordingIntent, onRecordingChange }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+  const [isEngaged, setIsEngaged] = useState(false);
+  const pendingEngageRef = useRef(false);
   const [elapsed, setElapsed] = useState(0);
   const [levels, setLevels] = useState<number[]>(new Array(32).fill(0));
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -54,7 +59,29 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
     return cleanup;
   }, [cleanup]);
 
+  const disengage = useCallback(() => {
+    pendingEngageRef.current = false;
+    setIsEngaged(false);
+    onRecordingIntent?.(false);
+  }, [onRecordingIntent]);
+
+  const engage = useCallback(() => {
+    if (disabled || isRecording) return;
+    pendingEngageRef.current = true;
+    setIsEngaged(true);
+    onRecordingIntent?.(true);
+  }, [disabled, isRecording, onRecordingIntent]);
+
+  const cancelEngage = useCallback(() => {
+    if (pendingEngageRef.current && !isRecording) {
+      disengage();
+    }
+  }, [disengage, isRecording]);
+
   const startRecording = useCallback(async () => {
+    pendingEngageRef.current = false;
+    setIsEngaged(true);
+    onRecordingIntent?.(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -84,6 +111,7 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
 
       mediaRecorder.start(100);
       setIsRecording(true);
+      onRecordingChange?.(true);
       setElapsed(0);
 
       timerRef.current = setInterval(() => {
@@ -91,6 +119,8 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
           if (prev >= MAX_DURATION - 1) {
             mediaRecorderRef.current?.stop();
             setIsRecording(false);
+            onRecordingChange?.(false);
+            disengage();
             return MAX_DURATION;
           }
           return prev + 1;
@@ -108,13 +138,16 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
       updateLevels();
     } catch {
       console.error("Microphone access denied");
+      disengage();
     }
-  }, [onRecordingComplete, cleanup]);
+  }, [onRecordingComplete, cleanup, onRecordingChange, onRecordingIntent, disengage]);
 
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
-  }, []);
+    onRecordingChange?.(false);
+    disengage();
+  }, [onRecordingChange, disengage]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -122,107 +155,75 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
 
-  const glowActive = isPressed || isRecording;
+  const recordingStatus = isRecording && (
+    <div className="flex flex-col items-center gap-3 animate-fade-in">
+      <div className="flex h-12 items-end gap-[2px]">
+        {levels.slice(0, 24).map((level, i) => (
+          <div
+            key={i}
+            className="w-1 rounded-full transition-all duration-75"
+            style={{
+              height: `${Math.max(4, level * 48)}px`,
+              background: "var(--color-accent-purple)",
+              opacity: 0.4 + level * 0.6,
+            }}
+          />
+        ))}
+      </div>
+      <div className="flex items-center gap-2">
+        <div
+          className="h-2 w-2 rounded-full animate-pulse"
+          style={{ background: "var(--color-accent-purple)" }}
+        />
+        <span
+          className="font-mono text-sm tabular-nums"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          {formatTime(elapsed)} / {formatTime(MAX_DURATION)}
+        </span>
+      </div>
+    </div>
+  );
+
+  if (compact) {
+    return (
+      <div className="flex flex-col items-center">
+        <GlassIconButton
+          compact
+          accent
+          noHoverScale
+          active={isEngaged}
+          pulse={isRecording}
+          disabled={disabled}
+          ariaLabel={isRecording ? "Stop recording" : "Start recording"}
+          onPressStart={engage}
+          onPressCancel={cancelEngage}
+          onClick={isRecording ? stopRecording : startRecording}
+        >
+          {isRecording ? <StopIcon /> : <MicLargeIcon />}
+        </GlassIconButton>
+        {recordingStatus}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="relative overflow-visible p-10">
-        <div className="relative h-20 w-20">
-          {glowActive && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 rounded-full transition-all duration-200"
-              style={{
-                background:
-                  "radial-gradient(circle, var(--card-glow-burst) 0%, var(--card-glow-burst-secondary) 30%, transparent 68%)",
-                filter: "blur(22px)",
-                transform: "scale(2.6)",
-                opacity: isRecording ? 1 : 0.75,
-              }}
-            />
-          )}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-full transition-all duration-300"
-            style={{
-              background: glowActive
-                ? "radial-gradient(circle, var(--card-glow-active) 0%, var(--card-glow-active-secondary) 40%, transparent 72%)"
-                : "radial-gradient(circle, var(--card-glow) 0%, var(--card-glow-secondary) 45%, transparent 70%)",
-              filter: "blur(12px)",
-              opacity: glowActive ? 1 : 0.85,
-              transform: `scale(${glowActive ? (isRecording ? 1.4 : 1.2) : 1})`,
-            }}
-          />
-          {isRecording && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 rounded-full animate-pulse-ring"
-              style={{ background: "rgba(148, 122, 252, 0.28)" }}
-            />
-          )}
-          <button
-            onClick={isRecording ? stopRecording : startRecording}
-            onPointerDown={() => !disabled && setIsPressed(true)}
-            onPointerUp={() => setIsPressed(false)}
-            onPointerLeave={() => setIsPressed(false)}
-            onPointerCancel={() => setIsPressed(false)}
-            disabled={disabled}
-            className="relative z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-transparent transition-all duration-160 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
-            style={{
-              background: glowActive ? "var(--liquid-glass-bg-active)" : "var(--liquid-glass-bg)",
-              backdropFilter: "blur(8px) saturate(180%)",
-              WebkitBackdropFilter: "blur(8px) saturate(180%)",
-              boxShadow: glowActive ? "var(--liquid-glass-shadow-active)" : "var(--liquid-glass-shadow)",
-            }}
-            aria-label={isRecording ? "Stop recording" : "Start recording"}
-          >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-full"
-            style={{ background: "var(--liquid-glass-highlight)" }}
-          />
-          <span className="relative z-10">
-            {isRecording ? <StopIcon /> : <MicLargeIcon />}
-          </span>
-        </button>
-        </div>
-      </div>
+      <GlassIconButton
+        accent
+        active={isRecording}
+        pulse={isRecording}
+        disabled={disabled}
+        ariaLabel={isRecording ? "Stop recording" : "Start recording"}
+        onClick={isRecording ? stopRecording : startRecording}
+      >
+        {isRecording ? <StopIcon /> : <MicLargeIcon />}
+      </GlassIconButton>
 
-      {isRecording && (
-        <div className="flex flex-col items-center gap-3 animate-fade-in">
-          <div className="flex h-12 items-end gap-[2px]">
-            {levels.slice(0, 24).map((level, i) => (
-              <div
-                key={i}
-                className="w-1 rounded-full transition-all duration-75"
-                style={{
-                  height: `${Math.max(4, level * 48)}px`,
-                  background: "var(--color-accent-purple)",
-                  opacity: 0.4 + level * 0.6,
-                }}
-              />
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="h-2 w-2 rounded-full animate-pulse"
-              style={{ background: "var(--color-accent-purple)" }}
-            />
-            <span
-              className="font-mono text-sm tabular-nums"
-              style={{ color: "var(--color-text-secondary)" }}
-            >
-              {formatTime(elapsed)} / {formatTime(MAX_DURATION)}
-            </span>
-          </div>
-        </div>
-      )}
+      {recordingStatus}
 
       {!isRecording && (
-        <p
-          className="text-sm"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
+        <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
           Click to record (max 2 min)
         </p>
       )}

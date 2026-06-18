@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
-import { AudioRecorder } from "@/components/audio-recorder";
-import { AudioUploader } from "@/components/audio-uploader";
+import { SecondaryButton } from "@/components/secondary-button";
+import { HeroFloatingBadges } from "@/components/hero-floating-badges";
+import { AudioInputPicker } from "@/components/audio-input-picker";
 import { AudioPlayer } from "@/components/audio-player";
 import { TranscriptCard, TranscriptCardSkeleton } from "@/components/transcript-card";
 import type { WordTimestamp } from "@/components/transcript-card";
@@ -212,49 +212,37 @@ export function ArenaPage() {
     <div className="mx-auto flex min-h-[calc(100vh-88px)] max-w-5xl flex-col items-center px-6 py-12">
       {/* Hero */}
       {phase === "input" && (
-        <div className="flex flex-1 flex-col items-center justify-center gap-10 animate-fade-in">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <span
-              className="font-mono text-xs uppercase tracking-[0.16em]"
-              style={{ color: "var(--color-text-brand)" }}
-            >
-              Blind STT Comparison
-            </span>
-            <h1 className="type-hero-h1" style={{ color: "var(--color-text-primary)" }}>
-              Which speech model
-              <br />
-              is the most accurate?
-            </h1>
-            <h2
-              className="type-hero-subtitle max-w-xl text-lg md:text-xl"
-              style={{ color: "var(--color-text-primary)" }}
-            >
-              Compare Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral and
-              Gladia.
-            </h2>
+        <div className="flex w-full flex-1 flex-col items-center gap-10 animate-fade-in">
+          <div className="flex flex-1 flex-col items-center justify-center gap-10">
+            <HeroFloatingBadges>
+              <div className="flex flex-col items-center gap-4 text-center">
+                <span
+                  className="font-mono text-xs uppercase tracking-[0.16em]"
+                  style={{ color: "var(--color-text-brand)" }}
+                >
+                  Blind STT Comparison
+                </span>
+                <h1 className="type-hero-h1" style={{ color: "var(--color-text-primary)" }}>
+                  Which speech model
+                  <br />
+                  is the most accurate?
+                </h1>
+                <h2
+                  className="type-hero-subtitle max-w-xl text-lg md:text-xl"
+                  style={{ color: "var(--color-text-primary)" }}
+                >
+                  Compare Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral and
+                  Gladia.
+                </h2>
+              </div>
+            </HeroFloatingBadges>
+
+            <AudioInputPicker onAudioSubmit={handleAudioSubmit} />
           </div>
 
-          <div className="flex flex-col items-center gap-6">
-            <AudioRecorder onRecordingComplete={handleAudioSubmit} />
-
-            <div className="flex items-center gap-4">
-              <div className="h-px w-16" style={{ background: "var(--color-border-primary)" }} />
-              <span className="text-xs uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-                or
-              </span>
-              <div className="h-px w-16" style={{ background: "var(--color-border-primary)" }} />
-            </div>
-
-            <AudioUploader onFileSelected={handleAudioSubmit} />
-
-            <Link
-              href="/leaderboard"
-              className="text-sm font-medium transition-colors duration-160 hover:underline"
-              style={{ color: "var(--color-text-brand)" }}
-            >
-              Check the leaderboard →
-            </Link>
-          </div>
+          <SecondaryButton href="/leaderboard">
+            Check the leaderboard →
+          </SecondaryButton>
         </div>
       )}
 

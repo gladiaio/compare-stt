@@ -206,6 +206,49 @@ body {
   animation: fade-in 0.4s ease-out forwards;
 }
 
+.hero-badge-enter {
+  animation: hero-badge-enter 1.35s cubic-bezier(0.33, 0, 0.2, 1) both;
+  animation-delay: var(--badge-enter-delay, 0s);
+}
+
+.hero-badge-float {
+  animation: hero-badge-float var(--badge-float-duration, 5.5s) ease-in-out infinite;
+  animation-delay: var(--badge-float-start, 1.35s);
+}
+
+@keyframes hero-badge-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(96px) scale(0.88);
+  }
+  52% {
+    opacity: 1;
+    transform: translateY(-14px) scale(1.03);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(7px) scale(0.98);
+  }
+  86% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hero-badge-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--badge-float-x, 0px), var(--badge-float-y, -12px));
+  }
+}
+
 .animate-slide-up {
   animation: slide-up 0.5s ease-out forwards;
 }
@@ -216,4 +259,28 @@ body {
 
 .animate-pulse-ring {
   animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-record-nudge {
+  animation: record-bounce 2s ease-in-out infinite;
+}
+
+@keyframes record-bounce {
+  0%,
+  88%,
+  100% {
+    transform: scale(1);
+  }
+  92% {
+    transform: scale(1.08);
+  }
+  96% {
+    transform: scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-record-nudge {
+    animation: none;
+  }
 }
