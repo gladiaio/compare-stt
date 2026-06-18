@@ -101,16 +101,18 @@ export function LeaderboardClient({
             />
           </div>
 
-        {summary ?? (
-          <p className="mt-8 text-base" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+          {summary ? (
+            <div className="mt-16">{summary}</div>
+          ) : (
+            <p className="mt-16 text-base" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
             Rankings based on ELO scores from blind comparisons by the community.
             {totalVotes > 0 && (
               <span className="ml-1 font-mono tabular-nums" style={{ color: "var(--color-text-tertiary)" }}>
                 ({totalVotes} total vote{totalVotes !== 1 ? "s" : ""})
               </span>
             )}
-          </p>
-        )}
+            </p>
+          )}
 
         <p className="mt-8 text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
           <Link
