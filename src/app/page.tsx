@@ -12,6 +12,8 @@ import { computeWordDiff } from "@/lib/diff";
 import { upload } from "@vercel/blob/client";
 import { incrementUploadCount } from "@/lib/upload-count";
 import { consumePendingAudio } from "@/lib/pending-audio";
+import { PROVIDERS } from "@/lib/providers";
+import Image from "next/image";
 
 type Phase = "input" | "transcribing" | "compare" | "voting" | "reveal";
 
@@ -227,22 +229,21 @@ export default function ArenaPage() {
                 lineHeight: 1.2,
               }}
             >
-              Which transcription
-              <br />
+              Which STT provider{" "}
               <span style={{ color: "var(--color-accent-purple)" }}>
-                is the <RotatingWord />
+                transcribes best?
               </span>
             </h1>
-            <p
-              className="max-w-md text-base"
+            <h2
+              className="max-w-lg text-lg font-medium md:text-xl"
               style={{
                 color: "var(--color-text-secondary)",
                 lineHeight: 1.5,
               }}
             >
-              Record your voice or upload an audio file. We&apos;ll transcribe it with
-              two providers. You pick the winner.
-            </p>
+              Record or upload audio, compare two blind transcriptions, and vote
+              for the most accurate one.
+            </h2>
           </div>
 
           <div className="flex flex-col items-center gap-6">
@@ -264,6 +265,32 @@ export default function ArenaPage() {
               {voteCount} comparison{voteCount > 1 ? "s" : ""} this session
             </p>
           )}
+
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-xs uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
+              Featured providers
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-5">
+              {PROVIDERS.map((provider) => (
+                <Image
+                  key={provider.slug}
+                  src={provider.logoUrl}
+                  alt={provider.name}
+                  width={28}
+                  height={28}
+                  className="opacity-60 transition-opacity duration-160 hover:opacity-100"
+                  style={{ filter: "grayscale(100%)" }}
+                />
+              ))}
+            </div>
+            <a
+              href="mailto:compare@gladia.io?subject=Apply to be featured on Compare STT"
+              className="mt-1 text-xs font-medium transition-colors duration-160 hover:underline"
+              style={{ color: "var(--color-text-brand)" }}
+            >
+              Apply to be featured
+            </a>
+          </div>
         </div>
       )}
 
@@ -548,56 +575,6 @@ function WaitingMessage({ active }: { active: boolean }) {
     >
       {shuffled[messageIndex]}
     </p>
-  );
-}
-
-const ROTATING_WORDS = [
-  { text: "best?", emoji: "🏆" },
-  { text: "worst?", emoji: "💀" },
-  { text: "fastest?", emoji: "⚡" },
-  { text: "funniest?", emoji: "😂" },
-  { text: "weirdest?", emoji: "🤯" },
-];
-
-function RotatingWord() {
-  const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<"visible" | "out" | "swap">("visible");
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const cycle = () => {
-      setPhase("out");
-      timeoutRef.current = setTimeout(() => {
-        setIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
-        setPhase("swap");
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => setPhase("visible"));
-        });
-      }, 250);
-    };
-
-    const interval = setInterval(cycle, 2200);
-    return () => {
-      clearInterval(interval);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  const isHidden = phase === "out" || phase === "swap";
-
-  return (
-    <span
-      className="inline-block transition-all duration-250 ease-in-out"
-      style={{
-        transform: isHidden ? "translateY(40%)" : "translateY(0)",
-        opacity: isHidden ? 0 : 1,
-      }}
-    >
-      {ROTATING_WORDS[index].text}{" "}
-      <span className="inline-block" role="img" aria-hidden="true">
-        {ROTATING_WORDS[index].emoji}
-      </span>
-    </span>
   );
 }
 

@@ -124,12 +124,6 @@ export function AudioRecorder({ onRecordingComplete, disabled }: AudioRecorderPr
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="relative">
-        {isRecording && (
-          <div
-            className="absolute inset-0 rounded-full animate-pulse-ring"
-            style={{ background: "var(--color-accent-purple)", opacity: 0.3 }}
-          />
-        )}
         <button
           onClick={isRecording ? stopRecording : startRecording}
           disabled={disabled}
