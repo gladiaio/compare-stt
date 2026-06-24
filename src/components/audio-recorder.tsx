@@ -30,7 +30,6 @@ interface AudioRecorderProps {
 export function AudioRecorder({ onRecordingComplete, disabled, compact = false, onRecordingIntent, onRecordingChange }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isEngaged, setIsEngaged] = useState(false);
-  const pendingEngageRef = useRef(false);
   const [elapsed, setElapsed] = useState(0);
   const [levels, setLevels] = useState<number[]>(new Array(32).fill(0));
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -60,26 +59,11 @@ export function AudioRecorder({ onRecordingComplete, disabled, compact = false, 
   }, [cleanup]);
 
   const disengage = useCallback(() => {
-    pendingEngageRef.current = false;
     setIsEngaged(false);
     onRecordingIntent?.(false);
   }, [onRecordingIntent]);
 
-  const engage = useCallback(() => {
-    if (disabled || isRecording) return;
-    pendingEngageRef.current = true;
-    setIsEngaged(true);
-    onRecordingIntent?.(true);
-  }, [disabled, isRecording, onRecordingIntent]);
-
-  const cancelEngage = useCallback(() => {
-    if (pendingEngageRef.current && !isRecording) {
-      disengage();
-    }
-  }, [disengage, isRecording]);
-
   const startRecording = useCallback(async () => {
-    pendingEngageRef.current = false;
     setIsEngaged(true);
     onRecordingIntent?.(true);
     try {
@@ -190,14 +174,13 @@ export function AudioRecorder({ onRecordingComplete, disabled, compact = false, 
       <div className="flex flex-col items-center">
         <GlassIconButton
           compact
+          flat
           accent
           noHoverScale
-          active={isEngaged}
+          active={isEngaged || isRecording}
           pulse={isRecording}
           disabled={disabled}
           ariaLabel={isRecording ? "Stop recording" : "Start recording"}
-          onPressStart={engage}
-          onPressCancel={cancelEngage}
           onClick={isRecording ? stopRecording : startRecording}
         >
           {isRecording ? <StopIcon /> : <MicLargeIcon />}

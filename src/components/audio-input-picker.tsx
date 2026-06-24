@@ -162,7 +162,7 @@ function InputOption({
 }: InputOptionProps) {
   return (
     <div
-      className="flex flex-col items-center gap-2"
+      className="input-option flex flex-col items-center gap-2"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
@@ -203,8 +203,6 @@ function HintBubble({
   visible: boolean;
 }) {
   const slideOffset = side === "left" ? 8 : -8;
-  const bubbleBg = "rgba(17, 17, 19, 0.94)";
-  const bubbleBorder = "rgba(148, 122, 252, 0.2)";
 
   return (
     <div
@@ -222,33 +220,13 @@ function HintBubble({
       }}
     >
       <div
-        aria-hidden
-        className="absolute inset-0 rounded-[var(--radius-md)] transition-opacity duration-200"
+        className="rounded-[var(--radius-md)] border px-4 py-3"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(148, 122, 252, 0.28) 0%, transparent 72%)",
-          filter: "blur(16px)",
-          opacity: visible ? 1 : 0,
-          transform: "scale(1.15)",
-        }}
-      />
-
-      <div
-        className="relative overflow-hidden rounded-[var(--radius-md)] border px-4 py-3"
-        style={{
-          background: bubbleBg,
-          backdropFilter: "blur(16px) saturate(140%)",
-          WebkitBackdropFilter: "blur(16px) saturate(140%)",
-          borderColor: bubbleBorder,
-          boxShadow:
-            "inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 36px -10px rgba(0, 0, 0, 0.7), 0 0 24px -8px rgba(148, 122, 252, 0.15)",
+          background: "var(--color-bg-elevated)",
+          borderColor: "var(--color-border-primary)",
         }}
       >
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{ background: "var(--liquid-glass-highlight)" }}
-        />
-        <div className="relative z-10 flex flex-col gap-0.5">
+        <div className="flex flex-col gap-0.5">
           <span
             className="text-[13px] font-medium leading-tight"
             style={{ color: "var(--color-text-primary)" }}

@@ -1,4 +1,3 @@
-@import "./fonts.css";
 @import "tailwindcss";
 
 :root {
@@ -142,10 +141,38 @@ body {
 
 @layer components {
   .type-hero-h1 {
+    font-family: var(--font-manrope), sans-serif;
     font-size: 78px;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -3.2px;
     line-height: 1.2;
+  }
+
+  .type-hero-gradient-word {
+    display: inline-block;
+    background-image: linear-gradient(
+      100deg,
+      var(--primitives-color-purple-600) 0%,
+      var(--primitives-color-purple-400) 20%,
+      var(--primitives-color-purple-200) 38%,
+      #c4b5fd 50%,
+      #f0abfc 60%,
+      var(--primitives-color-purple-200) 74%,
+      var(--primitives-color-purple-400) 88%,
+      var(--primitives-color-purple-600) 100%
+    );
+    background-size: 220% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: hero-gradient-sweep 4.5s ease-in-out infinite;
+  }
+
+  .input-option:hover .glass-icon-btn-flat-accent:not(:disabled):not([data-active]),
+  .glass-icon-btn-flat-accent:not(:disabled):not([data-active]):hover {
+    background: var(--color-bg-brand) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
   }
 
   .type-page-h1 {
@@ -161,7 +188,8 @@ body {
   }
 
   .type-hero-subtitle {
-    font-weight: 300;
+    font-family: var(--font-manrope), sans-serif;
+    font-weight: 400;
     letter-spacing: 0;
     line-height: 1.5;
   }
@@ -206,49 +234,6 @@ body {
   animation: fade-in 0.4s ease-out forwards;
 }
 
-.hero-badge-enter {
-  animation: hero-badge-enter 1.35s cubic-bezier(0.33, 0, 0.2, 1) both;
-  animation-delay: var(--badge-enter-delay, 0s);
-}
-
-.hero-badge-float {
-  animation: hero-badge-float var(--badge-float-duration, 5.5s) ease-in-out infinite;
-  animation-delay: var(--badge-float-start, 1.35s);
-}
-
-@keyframes hero-badge-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(96px) scale(0.88);
-  }
-  52% {
-    opacity: 1;
-    transform: translateY(-14px) scale(1.03);
-  }
-  72% {
-    opacity: 1;
-    transform: translateY(7px) scale(0.98);
-  }
-  86% {
-    opacity: 1;
-    transform: translateY(-3px) scale(1.01);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes hero-badge-float {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(var(--badge-float-x, 0px), var(--badge-float-y, -12px));
-  }
-}
-
 .animate-slide-up {
   animation: slide-up 0.5s ease-out forwards;
 }
@@ -279,8 +264,23 @@ body {
   }
 }
 
+@keyframes hero-gradient-sweep {
+  0%,
+  100% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-record-nudge {
     animation: none;
+  }
+
+  .type-hero-gradient-word {
+    animation: none;
+    background-position: 50% 50%;
   }
 }

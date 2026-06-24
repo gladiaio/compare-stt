@@ -45,18 +45,6 @@ export function AudioUploader({ onFileSelected, disabled, compact = false, onUpl
     onUploadIntent?.(false);
   }, [onUploadIntent]);
 
-  const engage = useCallback(() => {
-    if (disabled || validating) return;
-    setIsEngaged(true);
-    onUploadIntent?.(true);
-  }, [disabled, validating, onUploadIntent]);
-
-  const cancelEngage = useCallback(() => {
-    if (!pickerPendingRef.current && !validating && !isDragging) {
-      disengage();
-    }
-  }, [disengage, validating, isDragging]);
-
   useEffect(() => {
     const handleWindowFocus = () => {
       if (!pickerPendingRef.current) return;
@@ -197,13 +185,12 @@ export function AudioUploader({ onFileSelected, disabled, compact = false, onUpl
       <div className="flex flex-col items-center">
         <GlassIconButton
           compact
+          flat
           noHoverScale
           active={isActive}
           pulse={validating}
           disabled={disabled || validating}
           ariaLabel={validating ? "Checking audio file" : "Upload audio file"}
-          onPressStart={engage}
-          onPressCancel={cancelEngage}
           onClick={handleClick}
           onDragEnter={handleDragEnter}
           onDragOver={handleDragOver}

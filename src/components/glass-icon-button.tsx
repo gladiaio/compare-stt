@@ -9,6 +9,7 @@ interface GlassIconButtonProps {
   disabled?: boolean;
   ariaLabel: string;
   compact?: boolean;
+  flat?: boolean;
   pulse?: boolean;
   noHoverScale?: boolean;
   onPressStart?: () => void;
@@ -27,6 +28,7 @@ export function GlassIconButton({
   disabled = false,
   ariaLabel,
   compact = false,
+  flat = false,
   pulse = false,
   noHoverScale = false,
   onPressStart,
@@ -39,23 +41,39 @@ export function GlassIconButton({
 }: GlassIconButtonProps) {
   const [isPressed, setIsPressed] = useState(false);
   const glowActive = active || isPressed;
-  const showAccentGlow = accent || glowActive;
+  const showAccentGlow = !flat && (accent || glowActive);
 
-  const buttonBackground = accent
-    ? glowActive
-      ? "var(--liquid-glass-bg-active)"
-      : "linear-gradient(180deg, rgba(148, 122, 252, 0.32) 0%, rgba(148, 122, 252, 0.12) 55%, rgba(148, 122, 252, 0.2) 100%)"
-    : glowActive
-      ? "var(--liquid-glass-bg-active)"
-      : "var(--liquid-glass-bg)";
+  const buttonBackground = flat
+    ? accent
+      ? glowActive
+        ? "var(--color-bg-brand)"
+        : "var(--color-bg-elevated)"
+      : glowActive
+        ? "var(--color-bg-elevated)"
+        : "var(--color-bg-tertiary)"
+    : accent
+      ? glowActive
+        ? "var(--liquid-glass-bg-active)"
+        : "linear-gradient(180deg, rgba(148, 122, 252, 0.32) 0%, rgba(148, 122, 252, 0.12) 55%, rgba(148, 122, 252, 0.2) 100%)"
+      : glowActive
+        ? "var(--liquid-glass-bg-active)"
+        : "var(--liquid-glass-bg)";
 
-  const buttonShadow = accent
-    ? glowActive
-      ? "var(--liquid-glass-shadow-active)"
-      : "inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(148, 122, 252, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.22), 0 0 28px -8px rgba(148, 122, 252, 0.45), 0 8px 24px -12px rgba(0, 0, 0, 0.45)"
-    : glowActive
-      ? "var(--liquid-glass-shadow-active)"
-      : "var(--liquid-glass-shadow)";
+  const buttonShadow = flat
+    ? accent && glowActive
+      ? "inset 0 0 0 1px rgba(255, 255, 255, 0.12)"
+      : accent
+        ? "inset 0 0 0 1px rgba(148, 122, 252, 0.35)"
+        : glowActive
+          ? "inset 0 0 0 1px var(--color-border-secondary)"
+          : "inset 0 0 0 1px var(--color-border-primary)"
+    : accent
+      ? glowActive
+        ? "var(--liquid-glass-shadow-active)"
+        : "inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(148, 122, 252, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.22), 0 0 28px -8px rgba(148, 122, 252, 0.45), 0 8px 24px -12px rgba(0, 0, 0, 0.45)"
+      : glowActive
+        ? "var(--liquid-glass-shadow-active)"
+        : "var(--liquid-glass-shadow)";
 
   const showNudge = accent && !glowActive && !disabled && !pulse;
 
@@ -68,7 +86,7 @@ export function GlassIconButton({
       onDrop={onDrop}
     >
       <div className={`relative h-20 w-20 ${showNudge ? "animate-record-nudge" : ""}`}>
-        {glowActive && (
+        {!flat && glowActive && (
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 rounded-full transition-all duration-500"
@@ -81,18 +99,20 @@ export function GlassIconButton({
             }}
           />
         )}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full transition-all duration-500"
-          style={{
-            background: showAccentGlow
-              ? "radial-gradient(circle, var(--card-glow-active) 0%, var(--card-glow-active-secondary) 40%, transparent 72%)"
-              : "radial-gradient(circle, var(--card-glow) 0%, var(--card-glow-secondary) 45%, transparent 70%)",
-            filter: "blur(12px)",
-            opacity: showAccentGlow ? 1 : accent ? 0.7 : 0.85,
-            transform: `scale(${showAccentGlow ? (active ? 1.4 : 1.2) : accent ? 1.08 : 1})`,
-          }}
-        />
+        {!flat && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-full transition-all duration-500"
+            style={{
+              background: showAccentGlow
+                ? "radial-gradient(circle, var(--card-glow-active) 0%, var(--card-glow-active-secondary) 40%, transparent 72%)"
+                : "radial-gradient(circle, var(--card-glow) 0%, var(--card-glow-secondary) 45%, transparent 70%)",
+              filter: "blur(12px)",
+              opacity: showAccentGlow ? 1 : accent ? 0.7 : 0.85,
+              transform: `scale(${showAccentGlow ? (active ? 1.4 : 1.2) : accent ? 1.08 : 1})`,
+            }}
+          />
+        )}
         {pulse && (
           <div
             aria-hidden
@@ -120,20 +140,27 @@ export function GlassIconButton({
             onPressCancel?.();
           }}
           disabled={disabled}
-          className={`relative z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-transparent transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-40 ${noHoverScale ? "active:scale-95" : "hover:scale-105 active:scale-95"}`}
+          data-active={active || undefined}
+          className={`relative z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-transparent transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-40 ${flat && accent ? "glass-icon-btn-flat-accent" : ""} ${noHoverScale ? "active:scale-95" : "hover:scale-105 active:scale-95"}`}
           style={{
             background: buttonBackground,
-            backdropFilter: "blur(8px) saturate(180%)",
-            WebkitBackdropFilter: "blur(8px) saturate(180%)",
+            ...(flat
+              ? {}
+              : {
+                  backdropFilter: "blur(8px) saturate(180%)",
+                  WebkitBackdropFilter: "blur(8px) saturate(180%)",
+                }),
             boxShadow: buttonShadow,
           }}
           aria-label={ariaLabel}
         >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-full"
-            style={{ background: "var(--liquid-glass-highlight)" }}
-          />
+          {!flat && (
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full"
+              style={{ background: "var(--liquid-glass-highlight)" }}
+            />
+          )}
           <span className="relative z-10">{children}</span>
         </button>
       </div>
