@@ -79,7 +79,10 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
       const el = itemRefs.current.get(activeKey);
       if (!el) return;
 
-      const navRect = nav.getBoundingClientRect();
+      const navEl = navRef.current;
+      if (!navEl) return;
+
+      const navRect = navEl.getBoundingClientRect();
       const itemRect = el.getBoundingClientRect();
 
       indicator.style.left = `${itemRect.left - navRect.left}px`;

@@ -7,26 +7,35 @@ import { LeaderboardTable } from "@/components/leaderboard-table";
 import { AudioInputPicker } from "@/components/audio-input-picker";
 import { getUploadCount, REQUIRED_UPLOADS } from "@/lib/upload-count";
 import { setPendingAudio } from "@/lib/pending-audio";
-import type { LeaderboardData } from "@/lib/leaderboard-data";
 
-type LeaderboardEntry = Omit<LeaderboardData["leaderboard"][number], "slug" | "confidenceInterval">;
+interface LeaderboardEntry {
+  id: string;
+  name: string;
+  logoUrl: string;
+  model: string;
+  rating: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  totalMatches: number;
+  winRate: number;
+}
 
 export function LeaderboardClient({
   gamificationEnabled,
-  initialData,
 }: {
   gamificationEnabled: boolean;
-  initialData: LeaderboardData;
 }) {
   const router = useRouter();
-  const [entries, setEntries] = useState<LeaderboardEntry[]>(
-    initialData.leaderboard.map(({ slug: _slug, confidenceInterval: _ci, ...rest }) => rest)
-  );
-  const [totalVotes, setTotalVotes] = useState(initialData.totalVotes);
-  const [isSignificant, setIsSignificant] = useState(initialData.isSignificant);
-  const [uploadCount] = useState(() =>
-    typeof window !== "undefined" ? getUploadCount() : 0
-  );
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [isSignificant, setIsSignificant] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [uploadCount, setUploadCount] = useState(0);
+
+  useEffect(() => {
+    setUploadCount(getUploadCount());
+  }, []);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -40,6 +49,8 @@ export function LeaderboardClient({
         setIsSignificant(data.isSignificant);
       } catch (err) {
         console.error("Failed to fetch leaderboard:", err);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -68,9 +79,28 @@ export function LeaderboardClient({
         >
           Leaderboard
         </h1>
+        <p className="text-base" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+          Rankings based on ELO scores from blind comparisons by the community.
+          {totalVotes > 0 && (
+            <span className="ml-1 font-mono tabular-nums" style={{ color: "var(--color-text-tertiary)" }}>
+              ({totalVotes} total vote{totalVotes !== 1 ? "s" : ""})
+            </span>
+          )}
+        </p>
       </div>
 
-      <div className="relative">
+      {loading ? (
+        <div className="flex flex-col gap-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-16 w-full rounded-[var(--radius-md)] animate-skeleton"
+              style={{ background: "var(--color-bg-tertiary)", animationDelay: `${i * 100}ms` }}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="relative">
           {gateBlocked && (
             <LeaderboardGate
               uploadCount={uploadCount}
@@ -109,7 +139,8 @@ export function LeaderboardClient({
               See the full methodology
             </Link>
           </p>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -159,7 +190,7 @@ function LeaderboardGate({
         {Array.from({ length: REQUIRED_UPLOADS }).map((_, i) => (
           <div
             key={i}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-normal transition-all duration-300"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
             style={
               i < uploadCount
                 ? {

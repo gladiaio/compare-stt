@@ -106,7 +106,7 @@
   --color-success: var(--primitives-color-green-500);
   --color-error: var(--primitives-color-red-500);
   --font-sans: var(--font-manrope), sans-serif;
-  --font-mono: var(--font-manrope), sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", monospace;
   --font-weight-book: 450;
   --font-weight-light: 400;
   --font-weight-medium: 400;

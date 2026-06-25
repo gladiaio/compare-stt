@@ -30,10 +30,7 @@ export default async function LeaderboardPage() {
   return (
     <>
       <LeaderboardDatasetSchema data={data} />
-      <LeaderboardClient
-        gamificationEnabled={Boolean(gamificationEnabled)}
-        initialData={data}
-      />
+      <LeaderboardClient gamificationEnabled={Boolean(gamificationEnabled)} />
       <div className="mx-auto max-w-4xl px-6 pb-12">
         {/* Crawler-friendly snapshot: always in HTML source, hidden from sighted users */}
         <LeaderboardStaticTable data={data} visuallyHidden />

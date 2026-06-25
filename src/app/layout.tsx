@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Manrope } from "next/font/google";
+import { Geist_Mono, Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import { showLeaderboard } from "@/flags";
 import { SITE_ORIGIN } from "@/lib/site";
 import "./globals.css";
+
+const OG_IMAGE =
+  "https://cdn.prod.website-files.com/6458f30fed157c01444bd0b2/69c24023b37f422c8e4c22d4_068ec19e06baf93c62157a2baef8d940_Gladia_Website_Thumbnail_Compare-STT-providers.png";
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -30,6 +38,14 @@ export const metadata: Metadata = {
       "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
     url: SITE_ORIGIN,
     siteName: "Compare STT",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Compare STT — Blind Speech-to-Text Comparison",
+      },
+    ],
     type: "website",
   },
   twitter: {
@@ -38,6 +54,7 @@ export const metadata: Metadata = {
       "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
     description:
       "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+    images: [OG_IMAGE],
   },
 };
 
@@ -49,7 +66,7 @@ export default async function RootLayout({
   const leaderboardEnabled = Boolean(await showLeaderboard());
 
   return (
-    <html lang="en" className={`dark ${manrope.variable}`}>
+    <html lang="en" className={`dark ${manrope.variable} ${geistMono.variable}`}>
       <body className={`${manrope.className} antialiased`}>
         <Navbar showLeaderboard={leaderboardEnabled} />
         <main className="pt-[88px] pb-16">{children}</main>

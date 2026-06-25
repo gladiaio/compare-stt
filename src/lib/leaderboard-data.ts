@@ -59,7 +59,7 @@ export async function getLeaderboardData(): Promise<LeaderboardData> {
       slug: p.slug,
       logoUrl: p.logoUrl,
       model: def?.model ?? "",
-      rating: Math.round(r.rating),
+      rating: r.rating,
       wins: r.wins,
       losses: r.losses,
       ties: r.ties,
