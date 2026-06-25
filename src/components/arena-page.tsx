@@ -480,6 +480,7 @@ function WaitingMessage({ active }: { active: boolean }) {
   const [messageIndex, setMessageIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const shuffled = useMemo(
     () => [...WAITING_MESSAGES].sort(() => Math.random() - 0.5),
@@ -492,12 +493,14 @@ function WaitingMessage({ active }: { active: boolean }) {
       setMessageIndex(0);
       setVisible(true);
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       return;
     }
 
     intervalRef.current = setInterval(() => {
       setVisible(false);
-      setTimeout(() => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
         setMessageIndex((prev) => (prev + 1) % shuffled.length);
         setVisible(true);
       }, 300);
@@ -505,6 +508,7 @@ function WaitingMessage({ active }: { active: boolean }) {
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [active, shuffled]);
 

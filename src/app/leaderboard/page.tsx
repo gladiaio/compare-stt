@@ -3,7 +3,6 @@ import { leaderboardGamification } from "@/flags";
 import { LeaderboardClient } from "./leaderboard-client";
 import { LeaderboardDatasetSchema } from "@/components/seo/leaderboard-dataset-schema";
 import { LeaderboardStaticTable } from "@/components/seo/leaderboard-static-table";
-import { LeaderboardSummary } from "@/components/seo/leaderboard-summary";
 import { getLeaderboardData } from "@/lib/leaderboard-data";
 import { publicUrl } from "@/lib/site";
 
@@ -34,7 +33,6 @@ export default async function LeaderboardPage() {
       <LeaderboardClient
         gamificationEnabled={Boolean(gamificationEnabled)}
         initialData={data}
-        summary={<LeaderboardSummary data={data} className="max-w-3xl" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-12">
         {/* Crawler-friendly snapshot: always in HTML source, hidden from sighted users */}

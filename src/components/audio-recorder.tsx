@@ -78,7 +78,9 @@ export function AudioRecorder({ onRecordingComplete, disabled, onRecordingIntent
       analyserRef.current = analyser;
 
       const mimeType = pickRecordingMime();
-      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
 
@@ -87,7 +89,8 @@ export function AudioRecorder({ onRecordingComplete, disabled, onRecordingIntent
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: mimeType });
+        const blobType = mimeType || mediaRecorder.mimeType || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: blobType });
         onRecordingComplete(blob);
         cleanup();
       };

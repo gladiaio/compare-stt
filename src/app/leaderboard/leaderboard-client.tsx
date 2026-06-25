@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LeaderboardTable } from "@/components/leaderboard-table";
 import { AudioInputPicker } from "@/components/audio-input-picker";
@@ -14,11 +14,9 @@ type LeaderboardEntry = Omit<LeaderboardData["leaderboard"][number], "slug" | "c
 export function LeaderboardClient({
   gamificationEnabled,
   initialData,
-  summary,
 }: {
   gamificationEnabled: boolean;
   initialData: LeaderboardData;
-  summary?: ReactNode;
 }) {
   const router = useRouter();
   const [entries, setEntries] = useState<LeaderboardEntry[]>(
@@ -34,7 +32,9 @@ export function LeaderboardClient({
     async function fetchLeaderboard() {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/leaderboard`);
+        if (!res.ok) throw new Error(`Leaderboard fetch failed: ${res.status}`);
         const data = await res.json();
+        if (!Array.isArray(data.leaderboard)) return;
         setEntries(data.leaderboard);
         setTotalVotes(data.totalVotes);
         setIsSignificant(data.isSignificant);
@@ -100,28 +100,15 @@ export function LeaderboardClient({
             />
           </div>
 
-          {summary ? (
-            <div className="mt-16">{summary}</div>
-          ) : (
-            <p className="mt-16 text-base" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
-            Rankings based on ELO scores from blind comparisons by the community.
-            {totalVotes > 0 && (
-              <span className="ml-1 font-mono tabular-nums" style={{ color: "var(--color-text-tertiary)" }}>
-                ({totalVotes} total vote{totalVotes !== 1 ? "s" : ""})
-              </span>
-            )}
-            </p>
-          )}
-
-        <p className="mt-8 text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
-          <Link
-            href="/methodology"
-            className="font-medium underline transition-colors duration-160 hover:no-underline"
-            style={{ color: "var(--color-text-brand)" }}
-          >
-            See the full methodology
-          </Link>
-        </p>
+          <p className="mt-8 text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
+            <Link
+              href="/methodology"
+              className="font-medium underline transition-colors duration-160 hover:no-underline"
+              style={{ color: "var(--color-text-brand)" }}
+            >
+              See the full methodology
+            </Link>
+          </p>
       </div>
     </div>
   );

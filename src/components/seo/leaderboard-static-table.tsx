@@ -7,7 +7,9 @@ export function LeaderboardStaticTable({
   data: LeaderboardData;
   visuallyHidden?: boolean;
 }) {
-  const sorted = [...data.leaderboard].sort((a, b) => b.rating - a.rating);
+  if (!data.isSignificant) return null;
+
+  const sorted = data.leaderboard;
 
   return (
     <section

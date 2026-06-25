@@ -2,7 +2,9 @@ import type { LeaderboardData } from "@/lib/leaderboard-data";
 import { publicUrl } from "@/lib/site";
 
 export function LeaderboardDatasetSchema({ data }: { data: LeaderboardData }) {
-  const sorted = [...data.leaderboard].sort((a, b) => b.rating - a.rating);
+  if (!data.isSignificant) return null;
+
+  const sorted = data.leaderboard;
 
   const schema = {
     "@context": "https://schema.org",
