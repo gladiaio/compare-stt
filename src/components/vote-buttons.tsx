@@ -27,7 +27,7 @@ export function VoteButtons({ onVote, disabled, disableA, disableB, transcriptA,
         <button
           onClick={() => onVote("tie")}
           disabled={disabled}
-          className="flex items-center gap-2 rounded-[var(--radius-full)] border px-8 py-4 text-base font-semibold transition-all duration-160 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 rounded-[var(--radius-full)] border px-8 py-4 text-base font-normal transition-all duration-160 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
             background: "var(--color-bg-brand)",
             color: "white",

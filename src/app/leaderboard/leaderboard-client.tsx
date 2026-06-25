@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LeaderboardTable } from "@/components/leaderboard-table";
-import { AudioRecorder } from "@/components/audio-recorder";
-import { AudioUploader } from "@/components/audio-uploader";
+import { AudioInputPicker } from "@/components/audio-input-picker";
 import { getUploadCount, REQUIRED_UPLOADS } from "@/lib/upload-count";
 import { setPendingAudio } from "@/lib/pending-audio";
 
@@ -41,7 +41,9 @@ export function LeaderboardClient({
     async function fetchLeaderboard() {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/leaderboard`);
+        if (!res.ok) throw new Error(`Leaderboard fetch failed: ${res.status}`);
         const data = await res.json();
+        if (!Array.isArray(data.leaderboard)) return;
         setEntries(data.leaderboard);
         setTotalVotes(data.totalVotes);
         setIsSignificant(data.isSignificant);
@@ -72,8 +74,8 @@ export function LeaderboardClient({
           Community Rankings
         </span>
         <h1
-          className="text-3xl font-semibold tracking-tight md:text-4xl"
-          style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}
+          className="type-page-h1 text-3xl md:text-4xl"
+          style={{ color: "var(--color-text-primary)" }}
         >
           Leaderboard
         </h1>
@@ -127,6 +129,16 @@ export function LeaderboardClient({
               isSignificant={isSignificant}
             />
           </div>
+
+          <p className="mt-8 text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
+            <Link
+              href="/methodology"
+              className="font-medium underline transition-colors duration-160 hover:no-underline"
+              style={{ color: "var(--color-text-brand)" }}
+            >
+              See the full methodology
+            </Link>
+          </p>
         </div>
       )}
     </div>
@@ -160,7 +172,7 @@ function LeaderboardGate({
           </svg>
         </div>
         <h2
-          className="text-xl font-semibold tracking-tight md:text-2xl"
+          className="type-section-title text-xl md:text-2xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           Unlock the Leaderboard
@@ -209,19 +221,7 @@ function LeaderboardGate({
         </span>
       </div>
 
-      <div className="flex w-full flex-col items-center gap-5">
-        <AudioRecorder onRecordingComplete={onAudioSubmit} />
-
-        <div className="flex items-center gap-4">
-          <div className="h-px w-12" style={{ background: "var(--color-border-primary)" }} />
-          <span className="text-xs uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-            or
-          </span>
-          <div className="h-px w-12" style={{ background: "var(--color-border-primary)" }} />
-        </div>
-
-        <AudioUploader onFileSelected={onAudioSubmit} />
-      </div>
+      <AudioInputPicker onAudioSubmit={onAudioSubmit} />
     </div>
   );
 }

@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { publicUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Methodology | Compare STT",
+  title: "Methodology",
   description:
     "Full transparency on how Compare STT works: matchmaking, scoring, provider integration, and anti-gaming measures.",
+  alternates: {
+    canonical: publicUrl("/methodology"),
+  },
+  openGraph: {
+    title: "Compare STT Methodology",
+    description:
+      "Full transparency on how Compare STT works: matchmaking, scoring, provider integration, and anti-gaming measures.",
+    url: publicUrl("/methodology"),
+  },
 };
 
 function Code({ children }: { children: React.ReactNode }) {
@@ -49,8 +60,8 @@ export default function MethodologyPage() {
       </span>
 
       <h1
-        className="mb-6 text-3xl font-semibold tracking-tight md:text-4xl"
-        style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}
+        className="type-page-h1 mb-6 text-3xl md:text-4xl"
+        style={{ color: "var(--color-text-primary)" }}
       >
         Methodology
       </h1>
@@ -60,8 +71,11 @@ export default function MethodologyPage() {
         style={{ color: "var(--color-text-secondary)" }}
       >
         <p>
-          Everything below describes exactly how Compare STT works under the
-          hood. The full source code is{" "}
+          Everything below describes exactly how{" "}
+          <Link href="/" className="underline" style={{ color: "var(--color-text-brand)" }}>
+            Compare STT
+          </Link>{" "}
+          works under the hood. The full source code is{" "}
           <a
             href="https://github.com/gladiaio/compare-stt"
             target="_blank"
@@ -76,7 +90,7 @@ export default function MethodologyPage() {
 
         {/* ── 1. Providers ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           1. Providers
@@ -140,7 +154,7 @@ export default function MethodologyPage() {
 
         {/* ── 2. Matchmaking ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           2. Matchmaking
@@ -209,7 +223,7 @@ const swap = Math.random() < 0.5;`}
 
         {/* ── 3. Blind voting ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           3. Blind voting
@@ -250,7 +264,7 @@ return \`\${payload}.\${signature}\`;
 
         {/* ── 4. ELO rating ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           4. ELO rating system
@@ -296,8 +310,11 @@ return \`\${payload}.\${signature}\`;
 
         <p>
           Ratings are computed from a single chronological pass over all votes.
-          The leaderboard displays exact ELO scores, sorted by descending
-          rating.
+          The{" "}
+          <Link href="/leaderboard" className="underline" style={{ color: "var(--color-text-brand)" }}>
+            leaderboard
+          </Link>{" "}
+          displays exact ELO scores, sorted by descending rating.
         </p>
 
         <CodeBlock title="src/lib/elo.ts — rating computation (simplified)">
@@ -320,7 +337,7 @@ for (const vote of votes) {
 
         {/* ── 5. Leaderboard ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           5. Leaderboard visibility
@@ -338,7 +355,7 @@ for (const vote of votes) {
 
         {/* ── 6. Anti-gaming ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           6. Anti-gaming measures
@@ -376,7 +393,7 @@ for (const vote of votes) {
 
         {/* ── 7. Limitations ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           7. Known limitations
@@ -411,7 +428,7 @@ for (const vote of votes) {
 
         {/* ── 8. Data ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           8. Data storage
@@ -440,7 +457,7 @@ for (const vote of votes) {
 
         {/* ── 9. Sponsorship ── */}
         <h2
-          className="mt-6 text-xl font-semibold tracking-tight"
+          className="type-section-title mt-6 text-xl"
           style={{ color: "var(--color-text-primary)" }}
         >
           9. Sponsorship &amp; API costs

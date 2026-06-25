@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { publicUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Terms & Privacy | Compare STT",
+  title: "Terms & Privacy",
+  description:
+    "Terms of use and privacy policy for Compare STT — audio handling, anonymous voting, data retention, and third-party provider policies.",
+  alternates: {
+    canonical: publicUrl("/terms"),
+  },
+  openGraph: {
+    title: "Terms & Privacy | Compare STT",
+    description:
+      "Terms of use and privacy policy for Compare STT — audio handling, anonymous voting, data retention, and third-party provider policies.",
+    url: publicUrl("/terms"),
+  },
 };
 
 export default function TermsPage() {
@@ -17,7 +29,7 @@ export default function TermsPage() {
       </Link>
 
       <h1
-        className="mb-2 text-3xl font-semibold tracking-tight"
+        className="type-page-h1 mb-2 text-3xl"
         style={{ color: "var(--color-text-primary)" }}
       >
         Terms &amp; Privacy
@@ -148,7 +160,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <section>
       <h2
-        className="mb-3 text-lg font-semibold"
+        className="type-section-title mb-3 text-lg"
         style={{ color: "var(--color-text-primary)" }}
       >
         {title}

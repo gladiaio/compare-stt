@@ -1,31 +1,46 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist_Mono } from "next/font/google";
+import { Geist_Mono, Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import { showLeaderboard } from "@/flags";
+import { SITE_ORIGIN } from "@/lib/site";
 import "./globals.css";
+
+const OG_IMAGE =
+  "https://cdn.prod.website-files.com/6458f30fed157c01444bd0b2/69c24023b37f422c8e4c22d4_068ec19e06baf93c62157a2baef8d940_Gladia_Website_Thumbnail_Compare-STT-providers.png";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://comparestt.com"),
-  title: "Compare STT | Blind Speech-to-Text Comparison",
+  metadataBase: new URL(SITE_ORIGIN),
+  title: {
+    default:
+      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test | Compare STT",
+    template: "%s | Compare STT",
+  },
   description:
-    "Compare speech-to-text providers in blind tests. Record or upload audio, vote for the best transcription, and see how providers stack up on the leaderboard.",
+    "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
   icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logo.svg` },
   openGraph: {
-    title: "Compare STT | Blind Speech-to-Text Comparison",
+    title:
+      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
     description:
-      "Compare speech-to-text providers in blind tests. Record or upload audio, vote for the best transcription, and see how providers stack up on the leaderboard.",
-    url: "https://comparestt.com",
+      "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+    url: SITE_ORIGIN,
     siteName: "Compare STT",
     images: [
       {
-        url: "https://cdn.prod.website-files.com/6458f30fed157c01444bd0b2/69c24023b37f422c8e4c22d4_068ec19e06baf93c62157a2baef8d940_Gladia_Website_Thumbnail_Compare-STT-providers.png",
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "Compare STT — Blind Speech-to-Text Comparison",
@@ -35,12 +50,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Compare STT | Blind Speech-to-Text Comparison",
+    title:
+      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
     description:
-      "Compare speech-to-text providers in blind tests. Record or upload audio, vote for the best transcription, and see how providers stack up on the leaderboard.",
-    images: [
-      "https://cdn.prod.website-files.com/6458f30fed157c01444bd0b2/69c24023b37f422c8e4c22d4_068ec19e06baf93c62157a2baef8d940_Gladia_Website_Thumbnail_Compare-STT-providers.png",
-    ],
+      "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+    images: [OG_IMAGE],
   },
 };
 
@@ -52,8 +66,8 @@ export default async function RootLayout({
   const leaderboardEnabled = Boolean(await showLeaderboard());
 
   return (
-    <html lang="en" className="dark">
-      <body className={`${geistMono.variable} antialiased`}>
+    <html lang="en" className={`dark ${manrope.variable} ${geistMono.variable}`}>
+      <body className={`${manrope.className} antialiased`}>
         <Navbar showLeaderboard={leaderboardEnabled} />
         <main className="pt-[88px] pb-16">{children}</main>
         <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "var(--color-border-tertiary)", color: "var(--color-text-tertiary)" }}>
