@@ -216,7 +216,10 @@ export function ArenaPage() {
           <div className="flex w-full flex-1 flex-col items-center justify-center gap-10">
             <div className="flex flex-col items-center gap-4 text-center">
               <LeaderboardNewsBubble />
-              <h1 className="type-hero-h1" style={{ color: "var(--color-text-primary)" }}>
+              <h1
+                className="type-hero-h1 text-[60px] leading-[1.2] tracking-[-2.5px]"
+                style={{ color: "var(--color-text-primary)" }}
+              >
                 Which speech-to-text API
                 <br />
                 is the most{" "}

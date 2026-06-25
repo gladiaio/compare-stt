@@ -8,7 +8,7 @@ const APPLY_MAILTO =
 
 export function HeroProviderLogos() {
   return (
-    <div className="mt-10 flex flex-col items-center gap-5">
+    <div className="mt-4 flex flex-col items-center gap-5">
       <span
         className="font-mono text-xs uppercase tracking-[0.16em]"
         style={{ color: "var(--color-text-tertiary)" }}
