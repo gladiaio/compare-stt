@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist_Mono, Manrope } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import { showLeaderboard } from "@/flags";
+import { SITE_ORIGIN } from "@/lib/site";
 import "./globals.css";
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -18,7 +14,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://comparestt.com"),
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default:
       "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test | Compare STT",
@@ -32,7 +28,7 @@ export const metadata: Metadata = {
       "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
     description:
       "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
-    url: "https://comparestt.com",
+    url: SITE_ORIGIN,
     siteName: "Compare STT",
     type: "website",
   },
@@ -53,8 +49,8 @@ export default async function RootLayout({
   const leaderboardEnabled = Boolean(await showLeaderboard());
 
   return (
-    <html lang="en" className="dark">
-      <body className={`${geistMono.variable} ${manrope.variable} antialiased`}>
+    <html lang="en" className={`dark ${manrope.variable}`}>
+      <body className={`${manrope.className} antialiased`}>
         <Navbar showLeaderboard={leaderboardEnabled} />
         <main className="pt-[88px] pb-16">{children}</main>
         <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "var(--color-border-tertiary)", color: "var(--color-text-tertiary)" }}>

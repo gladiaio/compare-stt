@@ -105,8 +105,8 @@
   --color-border: var(--color-border-primary);
   --color-success: var(--primitives-color-green-500);
   --color-error: var(--primitives-color-red-500);
-  --font-sans: "Suisse Intl", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "Geist Mono", "JetBrains Mono", monospace;
+  --font-sans: var(--font-manrope), sans-serif;
+  --font-mono: var(--font-manrope), sans-serif;
   --font-weight-book: 450;
   --font-weight-light: 400;
   --font-weight-medium: 400;
@@ -122,17 +122,24 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-manrope), sans-serif;
 }
 
 body {
   background: var(--color-bg-primary);
   color: var(--color-text-primary);
-  font-family: var(--font-sans);
+  font-family: inherit;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 @layer base {
+  h1,
+  h2,
+  h3 {
+    font-weight: 500;
+  }
+
   *:focus-visible {
     outline: 2px solid var(--color-accent-purple);
     outline-offset: 2px;
@@ -141,7 +148,6 @@ body {
 
 @layer components {
   .type-hero-h1 {
-    font-family: var(--font-manrope), sans-serif;
     font-size: 78px;
     font-weight: 500;
     letter-spacing: -3.2px;
@@ -175,21 +181,31 @@ body {
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
   }
 
+  .link-text {
+    color: var(--color-text-primary);
+    text-decoration-line: none;
+    transition: opacity 160ms ease;
+  }
+
+  .link-text:hover {
+    opacity: 0.8;
+    text-decoration-line: none;
+  }
+
   .type-page-h1 {
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
 
   .type-section-title {
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.3;
   }
 
   .type-hero-subtitle {
-    font-family: var(--font-manrope), sans-serif;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0;
     line-height: 1.5;
   }

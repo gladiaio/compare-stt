@@ -96,11 +96,11 @@ export function AboutFaq() {
 
       <p className="mt-6 text-sm" style={{ color: "var(--color-text-tertiary)" }}>
         See the{" "}
-        <Link href="/leaderboard" className="underline hover:no-underline" style={{ color: "var(--color-text-brand)" }}>
+        <Link href="/leaderboard" className="link-text">
           live leaderboard
         </Link>{" "}
         or read the full{" "}
-        <Link href="/methodology" className="underline hover:no-underline" style={{ color: "var(--color-text-brand)" }}>
+        <Link href="/methodology" className="link-text">
           methodology
         </Link>
         .

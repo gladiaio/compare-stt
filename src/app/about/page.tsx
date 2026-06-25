@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { publicUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About | Compare STT",
+  title: "About",
   description:
     "Why we built Compare STT, the blind speech-to-text benchmark — how blind testing works, what we track, and who sponsors the project.",
+  alternates: {
+    canonical: publicUrl("/about"),
+  },
+  openGraph: {
+    title: "About Compare STT",
+    description:
+      "Why we built Compare STT, the blind speech-to-text benchmark — how blind testing works, what we track, and who sponsors the project.",
+    url: publicUrl("/about"),
+  },
 };
 
 export default function AboutPage() {

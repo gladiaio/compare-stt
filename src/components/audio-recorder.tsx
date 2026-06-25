@@ -22,12 +22,11 @@ function pickRecordingMime(): string {
 interface AudioRecorderProps {
   onRecordingComplete: (blob: Blob) => void;
   disabled?: boolean;
-  compact?: boolean;
   onRecordingIntent?: (active: boolean) => void;
   onRecordingChange?: (isRecording: boolean) => void;
 }
 
-export function AudioRecorder({ onRecordingComplete, disabled, compact = false, onRecordingIntent, onRecordingChange }: AudioRecorderProps) {
+export function AudioRecorder({ onRecordingComplete, disabled, onRecordingIntent, onRecordingChange }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isEngaged, setIsEngaged] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -169,32 +168,12 @@ export function AudioRecorder({ onRecordingComplete, disabled, compact = false, 
     </div>
   );
 
-  if (compact) {
-    return (
-      <div className="flex flex-col items-center">
-        <GlassIconButton
-          compact
-          flat
-          accent
-          noHoverScale
-          active={isEngaged || isRecording}
-          pulse={isRecording}
-          disabled={disabled}
-          ariaLabel={isRecording ? "Stop recording" : "Start recording"}
-          onClick={isRecording ? stopRecording : startRecording}
-        >
-          {isRecording ? <StopIcon /> : <MicLargeIcon />}
-        </GlassIconButton>
-        {recordingStatus}
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center">
       <GlassIconButton
         accent
-        active={isRecording}
+        noHoverScale
+        active={isEngaged || isRecording}
         pulse={isRecording}
         disabled={disabled}
         ariaLabel={isRecording ? "Stop recording" : "Start recording"}
@@ -202,14 +181,7 @@ export function AudioRecorder({ onRecordingComplete, disabled, compact = false, 
       >
         {isRecording ? <StopIcon /> : <MicLargeIcon />}
       </GlassIconButton>
-
       {recordingStatus}
-
-      {!isRecording && (
-        <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
-          Click to record (max 2 min)
-        </p>
-      )}
     </div>
   );
 }

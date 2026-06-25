@@ -38,17 +38,17 @@ export function HeroProviderLogos() {
             aria-label="Apply to be featured on Compare STT"
           >
             <div
-              className="absolute inset-0 flex items-center justify-center opacity-50 transition-opacity duration-160 group-hover:opacity-80"
+              className="absolute inset-0 flex items-center justify-center opacity-75 transition-opacity duration-160 group-hover:opacity-95"
               aria-hidden="true"
-              style={{ filter: "blur(3px)", WebkitFilter: "blur(3px)" }}
+              style={{ filter: "blur(2px)", WebkitFilter: "blur(2px)" }}
             >
               <div className="flex h-full w-full items-center gap-1.5 px-0.5">
                 <div
-                  className="h-3.5 w-3.5 shrink-0 rounded-md md:h-4 md:w-4"
+                  className="h-4 w-4 shrink-0 rounded-md md:h-[18px] md:w-[18px]"
                   style={{ background: "var(--color-text-secondary)" }}
                 />
                 <div
-                  className="h-2 flex-1 rounded-full md:h-2.5"
+                  className="h-2.5 flex-1 rounded-full md:h-3"
                   style={{ background: "var(--color-text-secondary)" }}
                 />
               </div>

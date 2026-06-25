@@ -67,12 +67,7 @@ export function LeaderboardNewsBubble() {
       </div>
 
       <p className="text-left text-sm leading-snug" style={{ color: "var(--color-text-secondary)" }}>
-        #1 right now
-        <span
-          className="ml-1 inline-block transition-transform duration-160 group-hover:translate-x-0.5"
-        >
-          →
-        </span>
+        is #1 right now!
       </p>
     </Link>
   );

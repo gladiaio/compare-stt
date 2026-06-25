@@ -8,11 +8,17 @@ import { getLeaderboardData } from "@/lib/leaderboard-data";
 import { publicUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Leaderboard | Compare STT",
+  title: "Leaderboard",
   description:
     "Community-driven ELO rankings of speech-to-text providers from blind side-by-side comparisons.",
   alternates: {
     canonical: publicUrl("/leaderboard"),
+  },
+  openGraph: {
+    title: "STT Leaderboard | Compare STT",
+    description:
+      "Community-driven ELO rankings of speech-to-text providers from blind side-by-side comparisons.",
+    url: publicUrl("/leaderboard"),
   },
 };
 

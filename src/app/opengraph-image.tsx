@@ -5,6 +5,10 @@ export const alt = "Compare STT — Live Speech-to-Text Leaderboard";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const manrope = fetch(
+  new URL("https://fonts.gstatic.com/s/manrope/v20/xn7_YHE41ni1AdIRqAuZuw1Bx9mbZk79FO_F.ttf", import.meta.url),
+).then((res) => res.arrayBuffer());
+
 const ROWS = [
   { name: "Gladia", model: "Solaria", rating: 1542, winRate: "58.2%", matches: 847 },
   { name: "Deepgram", model: "Nova 3", rating: 1528, winRate: "55.1%", matches: 831 },
@@ -14,7 +18,7 @@ const ROWS = [
   { name: "Mistral", model: "Voxtral Mini", rating: 1471, winRate: "43.7%", matches: 778 },
 ];
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   return new ImageResponse(
     (
       <div
@@ -25,7 +29,7 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           background: "#0a0a0b",
           padding: "48px 56px",
-          fontFamily: "ui-monospace, monospace",
+          fontFamily: "Manrope, sans-serif",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
@@ -124,6 +128,22 @@ export default function OpenGraphImage() {
         </div>
       </div>
     ),
-    { ...size }
+    {
+      ...size,
+      fonts: [
+        {
+          name: "Manrope",
+          data: await manrope,
+          weight: 400,
+          style: "normal",
+        },
+        {
+          name: "Manrope",
+          data: await manrope,
+          weight: 600,
+          style: "normal",
+        },
+      ],
+    },
   );
 }

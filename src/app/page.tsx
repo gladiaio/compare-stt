@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: publicUrl("/"),
   },
+  openGraph: {
+    url: publicUrl("/"),
+  },
 };
 
 function WebApplicationSchema() {

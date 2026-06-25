@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { LeaderboardTable } from "@/components/leaderboard-table";
-import { AudioRecorder } from "@/components/audio-recorder";
-import { AudioUploader } from "@/components/audio-uploader";
+import { AudioInputPicker } from "@/components/audio-input-picker";
 import { getUploadCount, REQUIRED_UPLOADS } from "@/lib/upload-count";
 import { setPendingAudio } from "@/lib/pending-audio";
 import type { LeaderboardData } from "@/lib/leaderboard-data";
@@ -204,19 +203,7 @@ function LeaderboardGate({
         </span>
       </div>
 
-      <div className="flex w-full flex-col items-center gap-5">
-        <AudioRecorder onRecordingComplete={onAudioSubmit} />
-
-        <div className="flex items-center gap-4">
-          <div className="h-px w-12" style={{ background: "var(--color-border-primary)" }} />
-          <span className="text-xs uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-            or
-          </span>
-          <div className="h-px w-12" style={{ background: "var(--color-border-primary)" }} />
-        </div>
-
-        <AudioUploader onFileSelected={onAudioSubmit} />
-      </div>
+      <AudioInputPicker onAudioSubmit={onAudioSubmit} />
     </div>
   );
 }

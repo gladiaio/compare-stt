@@ -217,7 +217,7 @@ export function ArenaPage() {
             <div className="flex flex-col items-center gap-4 text-center">
               <LeaderboardNewsBubble />
               <h1 className="type-hero-h1" style={{ color: "var(--color-text-primary)" }}>
-                Which speech model
+                Which speech-to-text API
                 <br />
                 is the most{" "}
                 <span className="type-hero-gradient-word">accurate</span>?

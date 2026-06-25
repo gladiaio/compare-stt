@@ -92,7 +92,6 @@ export function AudioInputPicker({ onAudioSubmit, disabled }: AudioInputPickerPr
           onLeave={() => !sessionActive && setHovered(null)}
         >
           <AudioRecorder
-            compact
             disabled={disabled}
             onRecordingComplete={onAudioSubmit}
             onRecordingIntent={handleRecordingIntent}
@@ -126,7 +125,6 @@ export function AudioInputPicker({ onAudioSubmit, disabled }: AudioInputPickerPr
           onLeave={() => !isUploadActive && setHovered(null)}
         >
           <AudioUploader
-            compact
             disabled={disabled || sessionActive}
             onFileSelected={onAudioSubmit}
             onUploadIntent={setIsUploadActive}

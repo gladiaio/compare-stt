@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { publicUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Methodology | Compare STT",
+  title: "Methodology",
   description:
     "Full transparency on how Compare STT works: matchmaking, scoring, provider integration, and anti-gaming measures.",
+  alternates: {
+    canonical: publicUrl("/methodology"),
+  },
+  openGraph: {
+    title: "Compare STT Methodology",
+    description:
+      "Full transparency on how Compare STT works: matchmaking, scoring, provider integration, and anti-gaming measures.",
+    url: publicUrl("/methodology"),
+  },
 };
 
 function Code({ children }: { children: React.ReactNode }) {
