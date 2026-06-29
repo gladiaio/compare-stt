@@ -57,12 +57,16 @@ export async function POST(request: Request) {
 
     const { sessionId, providerAId, providerBId, issuedAt } = match;
 
-    const elapsed = Date.now() - issuedAt;
-    if (elapsed < MIN_VOTE_DELAY_MS) {
-      return NextResponse.json(
-        { error: "Vote submitted too quickly. Please take time to review both transcriptions." },
-        { status: 429 }
-      );
+    // issuedAt === 0 means a legacy 4-part token issued before this deploy;
+    // skip the minimum-delay check for those.
+    if (issuedAt > 0) {
+      const elapsed = Date.now() - issuedAt;
+      if (elapsed < MIN_VOTE_DELAY_MS) {
+        return NextResponse.json(
+          { error: "Vote submitted too quickly. Please take time to review both transcriptions." },
+          { status: 429 }
+        );
+      }
     }
 
     const tokenHash = hashMatchToken(matchToken);
@@ -70,18 +74,16 @@ export async function POST(request: Request) {
       where: { tokenHash },
     });
 
-    if (!storedToken) {
-      return NextResponse.json(
-        { error: "Unknown match token. Please transcribe before voting." },
-        { status: 403 }
-      );
-    }
-
-    if (storedToken.consumedAt) {
-      return NextResponse.json(
-        { error: "This match token has already been used to vote." },
-        { status: 409 }
-      );
+    // Legacy tokens (issued before this deploy) won't be in the table.
+    // Let them through without single-use enforcement — they'll still be
+    // gated by the session cap and rate limit below.
+    if (storedToken) {
+      if (storedToken.consumedAt) {
+        return NextResponse.json(
+          { error: "This match token has already been used to vote." },
+          { status: 409 }
+        );
+      }
     }
 
     const sessionVoteCount = await prisma.vote.count({
@@ -106,20 +108,21 @@ export async function POST(request: Request) {
       session = await prisma.session.create({ data: { id: sessionId } });
     }
 
-    await prisma.$transaction([
-      prisma.matchToken.update({
-        where: { tokenHash },
-        data: { consumedAt: new Date() },
-      }),
-      prisma.vote.create({
-        data: {
-          sessionId,
-          providerAId,
-          providerBId,
-          winnerId,
-        },
-      }),
-    ]);
+    if (storedToken) {
+      await prisma.$transaction([
+        prisma.matchToken.update({
+          where: { tokenHash },
+          data: { consumedAt: new Date() },
+        }),
+        prisma.vote.create({
+          data: { sessionId, providerAId, providerBId, winnerId },
+        }),
+      ]);
+    } else {
+      await prisma.vote.create({
+        data: { sessionId, providerAId, providerBId, winnerId },
+      });
+    }
 
     const [providerA, providerB] = await Promise.all([
       prisma.provider.findUnique({ where: { id: providerAId } }),
