@@ -6,7 +6,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { intEnv } from "@/lib/env";
 
 const MIN_VOTE_DELAY_MS = intEnv("MIN_VOTE_DELAY_MS", 3_000);
-const MAX_SESSION_VOTES = intEnv("MAX_SESSION_VOTES", 5);
+const MAX_SESSION_VOTES = intEnv("MAX_SESSION_VOTES", 20);
 const RATE_LIMIT_VOTE = 10;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
