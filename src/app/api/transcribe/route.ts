@@ -2,9 +2,14 @@ import { NextResponse } from "next/server";
 import { del } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { transcribeForProvider } from "@/lib/transcribe";
-import { signMatchToken } from "@/lib/match-token";
+import { signMatchToken, hashMatchToken } from "@/lib/match-token";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 120;
+
+const MAX_SESSION_VOTES = parseInt(process.env.MAX_SESSION_VOTES || "5", 10);
+const RATE_LIMIT_TRANSCRIBE = 10; // per IP per window
+const RATE_LIMIT_WINDOW_MS = 60_000;
 
 interface ProviderRecord {
   id: string;
@@ -53,6 +58,25 @@ export async function POST(request: Request) {
   let blobUrl: string | undefined;
 
   try {
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const { allowed, retryAfterMs } = checkRateLimit(
+      `transcribe:${ip}`,
+      RATE_LIMIT_TRANSCRIBE,
+      RATE_LIMIT_WINDOW_MS
+    );
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     const body = await request.json();
     const { sessionId, blobUrl: url, mimeType: clientMimeType } = body as {
       sessionId?: string;
@@ -73,6 +97,18 @@ export async function POST(request: Request) {
     let session = await prisma.session.findUnique({ where: { id: sessionId } });
     if (!session) {
       session = await prisma.session.create({ data: { id: sessionId } });
+    }
+
+    const sessionVoteCount = await prisma.vote.count({
+      where: { sessionId },
+    });
+    if (sessionVoteCount >= MAX_SESSION_VOTES) {
+      return NextResponse.json(
+        {
+          error: `Session vote limit reached (${MAX_SESSION_VOTES}). Please start a new session.`,
+        },
+        { status: 429 }
+      );
     }
 
     const providers = await prisma.provider.findMany();
@@ -100,6 +136,15 @@ export async function POST(request: Request) {
     ]);
 
     const matchToken = signMatchToken(sessionId, providerA.id, providerB.id);
+
+    await prisma.matchToken.create({
+      data: {
+        tokenHash: hashMatchToken(matchToken),
+        sessionId,
+        providerAId: providerA.id,
+        providerBId: providerB.id,
+      },
+    });
 
     return NextResponse.json({
       matchToken,

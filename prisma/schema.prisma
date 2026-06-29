@@ -45,3 +45,14 @@ model Vote {
 
   @@map("votes")
 }
+
+model MatchToken {
+  tokenHash   String    @id @map("token_hash")
+  sessionId   String    @map("session_id")
+  providerAId String    @map("provider_a_id")
+  providerBId String    @map("provider_b_id")
+  issuedAt    DateTime  @default(now()) @map("issued_at")
+  consumedAt  DateTime? @map("consumed_at")
+
+  @@map("match_tokens")
+}

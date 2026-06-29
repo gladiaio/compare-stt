@@ -236,16 +236,17 @@ const swap = Math.random() < 0.5;`}
         </p>
 
         <p>
-          To prevent tampering, the match assignment (session ID + provider A ID
-          + provider B ID) is signed with an HMAC-SHA256 token before being sent
-          to the client. When the vote comes back, the server verifies this
-          token. This prevents a client from forging or replaying votes for
-          arbitrary provider pairs.
+          To prevent tampering and replay, the match assignment (session ID +
+          provider A ID + provider B ID + issuance timestamp) is signed with an
+          HMAC-SHA256 token before being sent to the client. When the vote comes
+          back, the server verifies the signature, checks that the token exists
+          in the database, and marks it as consumed in a single atomic
+          transaction. Each token can only be used once.
         </p>
 
-        <CodeBlock title="src/lib/match-token.ts — anti-tamper token">
+        <CodeBlock title="src/lib/match-token.ts — single-use anti-tamper token">
 {`// Sign: server → client (embedded in transcribe response)
-const payload = \`\${sessionId}.\${providerAId}.\${providerBId}\`;
+const payload = \`\${sessionId}.\${providerAId}.\${providerBId}.\${issuedAt}\`;
 const signature = crypto
   .createHmac("sha256", signingKey)
   .update(payload)
@@ -253,7 +254,10 @@ const signature = crypto
 return \`\${payload}.\${signature}\`;
 
 // Verify: client → server (submitted with vote)
-// Recompute HMAC and compare — reject if mismatch`}
+// 1. Recompute HMAC and compare — reject if mismatch
+// 2. Look up token hash in DB — reject if missing
+// 3. Reject if already consumed (consumed_at IS NOT NULL)
+// 4. Mark consumed + create vote in one transaction`}
         </CodeBlock>
 
         <p>
@@ -372,9 +376,25 @@ for (const vote of votes) {
             position bias.
           </li>
           <li>
-            <strong>HMAC-signed match tokens:</strong> votes are
-            cryptographically tied to the match they were issued for, preventing
-            forged or replayed votes.
+            <strong>Single-use HMAC-signed match tokens:</strong> votes are
+            cryptographically tied to the match they were issued for. Each token
+            is stored server-side at issuance and marked as consumed atomically
+            when the vote is recorded, preventing both forgery and replay.
+          </li>
+          <li>
+            <strong>Per-session vote cap:</strong> each session is limited to a
+            fixed number of votes, preventing automated vote farming from a
+            single session.
+          </li>
+          <li>
+            <strong>Minimum vote delay:</strong> votes submitted too quickly
+            after transcription are rejected — a human needs time to listen and
+            compare both results.
+          </li>
+          <li>
+            <strong>Rate limiting:</strong> both the transcribe and vote
+            endpoints enforce per-IP request limits to throttle automated
+            clients.
           </li>
           <li>
             <strong>Balanced matchmaking:</strong> least-played pair selection

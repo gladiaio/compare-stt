@@ -18,7 +18,8 @@ export function signMatchToken(
   providerAId: string,
   providerBId: string
 ): string {
-  const payload = `${sessionId}.${providerAId}.${providerBId}`;
+  const issuedAt = Date.now();
+  const payload = `${sessionId}.${providerAId}.${providerBId}.${issuedAt}`;
   const signature = crypto
     .createHmac("sha256", getSigningKey())
     .update(payload)
@@ -26,20 +27,34 @@ export function signMatchToken(
   return `${payload}.${signature}`;
 }
 
-export function verifyMatchToken(
-  token: string
-): { sessionId: string; providerAId: string; providerBId: string } | null {
-  const parts = token.split(".");
-  if (parts.length !== 4) return null;
+export interface MatchTokenPayload {
+  sessionId: string;
+  providerAId: string;
+  providerBId: string;
+  issuedAt: number;
+}
 
-  const [sessionId, providerAId, providerBId, signature] = parts;
-  const payload = `${sessionId}.${providerAId}.${providerBId}`;
+export function verifyMatchToken(token: string): MatchTokenPayload | null {
+  const parts = token.split(".");
+  if (parts.length !== 5) return null;
+
+  const [sessionId, providerAId, providerBId, issuedAtStr, signature] = parts;
+  const payload = `${sessionId}.${providerAId}.${providerBId}.${issuedAtStr}`;
   const expected = crypto
     .createHmac("sha256", getSigningKey())
     .update(payload)
     .digest("base64url");
 
-  if (signature !== expected) return null;
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    return null;
+  }
 
-  return { sessionId, providerAId, providerBId };
+  const issuedAt = parseInt(issuedAtStr, 10);
+  if (isNaN(issuedAt)) return null;
+
+  return { sessionId, providerAId, providerBId, issuedAt };
+}
+
+export function hashMatchToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
