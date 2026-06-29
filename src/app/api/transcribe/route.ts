@@ -4,10 +4,11 @@ import { prisma } from "@/lib/db";
 import { transcribeForProvider } from "@/lib/transcribe";
 import { signMatchToken, hashMatchToken } from "@/lib/match-token";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { intEnv } from "@/lib/env";
 
 export const maxDuration = 120;
 
-const MAX_SESSION_VOTES = parseInt(process.env.MAX_SESSION_VOTES || "5", 10);
+const MAX_SESSION_VOTES = intEnv("MAX_SESSION_VOTES", 5);
 const RATE_LIMIT_TRANSCRIBE = 10; // per IP per window
 const RATE_LIMIT_WINDOW_MS = 60_000;
 

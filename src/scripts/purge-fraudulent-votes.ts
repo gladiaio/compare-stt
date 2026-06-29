@@ -15,6 +15,9 @@
  *
  *   # Apply deletions
  *   npx tsx src/scripts/purge-fraudulent-votes.ts --apply
+ *
+ *   # Verbose with full IDs (for local debugging only)
+ *   npx tsx src/scripts/purge-fraudulent-votes.ts --verbose --show-ids
  */
 
 import dotenv from "dotenv";
@@ -30,6 +33,7 @@ const MIN_INTER_VOTE_GAP_MS = 8_000;
 const MAX_SESSION_VOTES = 20;
 const BURST_WINDOW_MS = 30_000;
 const BURST_MAX_VOTES = 6;
+const DELETE_BATCH_SIZE = 500;
 
 interface FlaggedVote {
   id: string;
@@ -39,6 +43,10 @@ interface FlaggedVote {
   winnerId: string | null;
   createdAt: Date;
   reasons: string[];
+}
+
+function maskId(id: string): string {
+  return id.length > 8 ? `${id.slice(0, 8)}...` : id;
 }
 
 async function detectFraudulentVotes(): Promise<FlaggedVote[]> {
@@ -51,7 +59,9 @@ async function detectFraudulentVotes(): Promise<FlaggedVote[]> {
   function flag(vote: typeof allVotes[number], reason: string) {
     const existing = flagged.get(vote.id);
     if (existing) {
-      existing.reasons.push(reason);
+      if (!existing.reasons.includes(reason)) {
+        existing.reasons.push(reason);
+      }
     } else {
       flagged.set(vote.id, {
         id: vote.id,
@@ -98,17 +108,21 @@ async function detectFraudulentVotes(): Promise<FlaggedVote[]> {
       }
     }
 
-    // Signal 4: 6+ votes in any 30s sliding window
-    for (let i = 0; i < votes.length; i++) {
-      const windowStart = votes[i].createdAt.getTime();
-      const windowEnd = windowStart + BURST_WINDOW_MS;
-      let count = 0;
-      for (let j = i; j < votes.length && votes[j].createdAt.getTime() <= windowEnd; j++) {
-        count++;
+    // Signal 4: 6+ votes in any 30s sliding window (linear two-pointer scan)
+    const burstFlagged = new Set<number>();
+    let windowEnd = 0;
+    for (let start = 0; start < votes.length; start++) {
+      const cutoff = votes[start].createdAt.getTime() + BURST_WINDOW_MS;
+      while (windowEnd < votes.length && votes[windowEnd].createdAt.getTime() <= cutoff) {
+        windowEnd++;
       }
+      const count = windowEnd - start;
       if (count >= BURST_MAX_VOTES) {
-        for (let j = i; j < votes.length && votes[j].createdAt.getTime() <= windowEnd; j++) {
-          flag(votes[j], `burst(${count} in 30s)`);
+        for (let j = start; j < windowEnd; j++) {
+          if (!burstFlagged.has(j)) {
+            burstFlagged.add(j);
+            flag(votes[j], `burst(${count} in 30s)`);
+          }
         }
       }
     }
@@ -140,7 +154,7 @@ function printSummary(flaggedVotes: FlaggedVote[]) {
   console.log();
 }
 
-function printDetails(flaggedVotes: FlaggedVote[]) {
+function printDetails(flaggedVotes: FlaggedVote[], showIds: boolean) {
   const bySession = new Map<string, FlaggedVote[]>();
   for (const vote of flaggedVotes) {
     const list = bySession.get(vote.sessionId) || [];
@@ -148,17 +162,19 @@ function printDetails(flaggedVotes: FlaggedVote[]) {
     bySession.set(vote.sessionId, list);
   }
 
+  const fmt = showIds ? (id: string) => id : maskId;
+
   console.log("  DETAILED FLAGGED VOTES BY SESSION");
   console.log("-".repeat(70));
 
   for (const [sessionId, votes] of [...bySession.entries()].sort(
     (a, b) => b[1].length - a[1].length
   )) {
-    console.log(`\n  Session: ${sessionId} (${votes.length} flagged)`);
+    console.log(`\n  Session: ${fmt(sessionId)} (${votes.length} flagged)`);
     for (const vote of votes) {
       const ts = vote.createdAt.toISOString().replace("T", " ").slice(0, 19);
       const reasons = vote.reasons.join(", ");
-      console.log(`    ${vote.id}  ${ts}  [${reasons}]`);
+      console.log(`    ${fmt(vote.id)}  ${ts}  [${reasons}]`);
     }
   }
   console.log();
@@ -167,6 +183,7 @@ function printDetails(flaggedVotes: FlaggedVote[]) {
 async function main() {
   const apply = process.argv.includes("--apply");
   const verbose = process.argv.includes("--verbose");
+  const showIds = process.argv.includes("--show-ids");
 
   const totalVotes = await prisma.vote.count();
   console.log(`\nTotal votes in database: ${totalVotes}`);
@@ -182,22 +199,28 @@ async function main() {
   printSummary(flaggedVotes);
 
   if (verbose) {
-    printDetails(flaggedVotes);
+    printDetails(flaggedVotes, showIds);
   }
 
   if (!apply) {
     console.log("  DRY RUN — no changes made.");
     console.log("  Run with --apply to delete flagged votes.");
-    console.log("  Run with --verbose to see per-vote details.\n");
+    console.log("  Run with --verbose to see per-vote details.");
+    console.log("  Run with --show-ids to reveal full identifiers.\n");
   } else {
     const voteIds = flaggedVotes.map((v) => v.id);
+    let deleted = 0;
 
-    console.log(`  Deleting ${voteIds.length} votes...`);
-    const result = await prisma.vote.deleteMany({
-      where: { id: { in: voteIds } },
-    });
-    console.log(`  Deleted ${result.count} votes.`);
+    for (let i = 0; i < voteIds.length; i += DELETE_BATCH_SIZE) {
+      const batch = voteIds.slice(i, i + DELETE_BATCH_SIZE);
+      const result = await prisma.vote.deleteMany({
+        where: { id: { in: batch } },
+      });
+      deleted += result.count;
+      console.log(`  Deleted batch ${Math.floor(i / DELETE_BATCH_SIZE) + 1}: ${result.count} votes`);
+    }
 
+    console.log(`  Total deleted: ${deleted} votes.`);
     const remaining = await prisma.vote.count();
     console.log(`  Remaining votes: ${remaining}\n`);
   }

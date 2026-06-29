@@ -54,5 +54,6 @@ model MatchToken {
   issuedAt    DateTime  @default(now()) @map("issued_at")
   consumedAt  DateTime? @map("consumed_at")
 
+  @@index([sessionId], map: "match_tokens_session_id_idx")
   @@map("match_tokens")
 }

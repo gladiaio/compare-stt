@@ -3,10 +3,11 @@ import { prisma } from "@/lib/db";
 import { verifyMatchToken, hashMatchToken } from "@/lib/match-token";
 import { getProviderBySlug } from "@/lib/providers";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { intEnv } from "@/lib/env";
 
-const MIN_VOTE_DELAY_MS = parseInt(process.env.MIN_VOTE_DELAY_MS || "15000", 10);
-const MAX_SESSION_VOTES = parseInt(process.env.MAX_SESSION_VOTES || "5", 10);
-const RATE_LIMIT_VOTE = 10; // per IP per window
+const MIN_VOTE_DELAY_MS = intEnv("MIN_VOTE_DELAY_MS", 15_000);
+const MAX_SESSION_VOTES = intEnv("MAX_SESSION_VOTES", 5);
+const RATE_LIMIT_VOTE = 10;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
 export async function POST(request: Request) {
@@ -70,58 +71,53 @@ export async function POST(request: Request) {
     }
 
     const tokenHash = hashMatchToken(matchToken);
-    const storedToken = await prisma.matchToken.findUnique({
-      where: { tokenHash },
-    });
-
-    // Legacy tokens (issued before this deploy) won't be in the table.
-    // Let them through without single-use enforcement — they'll still be
-    // gated by the session cap and rate limit below.
-    if (storedToken) {
-      if (storedToken.consumedAt) {
-        return NextResponse.json(
-          { error: "This match token has already been used to vote." },
-          { status: 409 }
-        );
-      }
-    }
-
-    const sessionVoteCount = await prisma.vote.count({
-      where: { sessionId },
-    });
-    if (sessionVoteCount >= MAX_SESSION_VOTES) {
-      return NextResponse.json(
-        {
-          error: `Session vote limit reached (${MAX_SESSION_VOTES}). Please start a new session to continue voting.`,
-        },
-        { status: 429 }
-      );
-    }
-
     const winnerId =
       choice === "a" ? providerAId :
       choice === "b" ? providerBId :
       null;
 
-    let session = await prisma.session.findUnique({ where: { id: sessionId } });
-    if (!session) {
-      session = await prisma.session.create({ data: { id: sessionId } });
-    }
+    // Use an interactive transaction for atomicity: the token claim
+    // (updateMany where consumedAt IS NULL) and vote creation happen
+    // in a single serializable step. This prevents both token replay
+    // and session-cap races from concurrent requests.
+    const result = await prisma.$transaction(async (tx) => {
+      const claimed = await tx.matchToken.updateMany({
+        where: { tokenHash, consumedAt: null },
+        data: { consumedAt: new Date() },
+      });
 
-    if (storedToken) {
-      await prisma.$transaction([
-        prisma.matchToken.update({
-          where: { tokenHash },
-          data: { consumedAt: new Date() },
-        }),
-        prisma.vote.create({
-          data: { sessionId, providerAId, providerBId, winnerId },
-        }),
-      ]);
-    } else {
-      await prisma.vote.create({
+      // Legacy tokens (pre-deploy) won't be in the table at all.
+      // If the token exists but was already consumed, reject.
+      if (claimed.count === 0) {
+        const exists = await tx.matchToken.findUnique({ where: { tokenHash } });
+        if (exists) {
+          return { error: "This match token has already been used to vote.", status: 409 } as const;
+        }
+        // Not in the table → legacy token; proceed with just the session cap.
+      }
+
+      const sessionVoteCount = await tx.vote.count({ where: { sessionId } });
+      if (sessionVoteCount >= MAX_SESSION_VOTES) {
+        return {
+          error: `Session vote limit reached (${MAX_SESSION_VOTES}). Please start a new session to continue voting.`,
+          status: 429,
+        } as const;
+      }
+
+      let session = await tx.session.findUnique({ where: { id: sessionId } });
+      if (!session) {
+        session = await tx.session.create({ data: { id: sessionId } });
+      }
+
+      await tx.vote.create({
         data: { sessionId, providerAId, providerBId, winnerId },
       });
+
+      return { error: null } as const;
+    });
+
+    if (result.error) {
+      return NextResponse.json({ error: result.error }, { status: result.status });
     }
 
     const [providerA, providerB] = await Promise.all([
