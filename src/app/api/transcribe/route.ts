@@ -8,7 +8,7 @@ import { intEnv } from "@/lib/env";
 
 export const maxDuration = 120;
 
-const MAX_SESSION_VOTES = intEnv("MAX_SESSION_VOTES", 5);
+const MAX_SESSION_VOTES = intEnv("MAX_SESSION_VOTES", 20);
 const RATE_LIMIT_TRANSCRIBE = 10; // per IP per window
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
