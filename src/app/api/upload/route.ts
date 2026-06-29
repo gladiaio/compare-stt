@@ -1,7 +1,30 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
+
+const RATE_LIMIT_UPLOAD = 20;
+const RATE_LIMIT_WINDOW_MS = 60_000;
 
 export async function POST(request: Request): Promise<NextResponse> {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  const { allowed, retryAfterMs } = checkRateLimit(
+    `upload:${ip}`,
+    RATE_LIMIT_UPLOAD,
+    RATE_LIMIT_WINDOW_MS
+  );
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
+      }
+    );
+  }
+
   const body = (await request.json()) as HandleUploadBody;
 
   try {
