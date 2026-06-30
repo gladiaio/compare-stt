@@ -21,7 +21,7 @@
     "@mistralai/mistralai": "^1.15.1",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
-    "@sentry/nextjs": "^10.43.0",
+    "@sentry/nextjs": "^10.62.0",
     "@speechmatics/batch-client": "^5.1.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.3.1",
