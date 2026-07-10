@@ -20,38 +20,39 @@ const FALLBACK_ARTICLES: LeaderboardArticle[] = [
       "A side-by-side look at the leading STT APIs across accuracy, latency, multilingual support, and pricing.",
   },
   {
-    title: "STT API benchmarks: accuracy, latency, and real-world performance",
-    url: "https://www.gladia.io/blog/stt-api-benchmarks",
+    title: "Best open-source speech-to-text models in 2026",
+    url: "https://www.gladia.io/blog/best-open-source-speech-to-text-models",
     source: "Gladia",
     imageUrl:
-      "https://cdn.prod.website-files.com/645a730e85c9b4dfd57de5a1/69c2a4a70226557e3635e120_Speaker%20diarization%20-%20Banner%20(1).png",
+      "https://cdn.prod.website-files.com/645a730e85c9b4dfd57de5a1/69dfb6620a7e746f9dfc8ffa_best-opensource-speechtotext-models-in-2026-752x500.png",
     description:
-      "How to evaluate speech-to-text providers beyond vendor WER claims using production-like audio.",
+      "Benchmarks and deployment guidance for Whisper, Canary-Qwen, Parakeet, Moonshine, and other open ASR models.",
   },
   {
-    title: "AssemblyAI vs Deepgram (vs Gladia): which STT API to choose in 2026",
-    url: "https://www.gladia.io/blog/assemblyai-vs-deepgram",
-    source: "Gladia",
+    title: "Speech-to-text leaderboard (non-streaming)",
+    url: "https://artificialanalysis.ai/speech-to-text/non-streaming",
+    source: "Artificial Analysis",
     imageUrl:
-      "https://cdn.prod.website-files.com/645a730e85c9b4dfd57de5a1/696f36b390411f213435efdf_Gladia-AssemblyAI-Deepgram-Thumbnail.png",
+      "https://artificialanalysis.ai/opengraph-image.png?732728ccc2829321",
     description:
-      "Compares two popular APIs on accuracy, streaming, multilingual coverage, and total cost.",
+      "Independent batch STT rankings comparing accuracy, speed, and price across commercial and open models.",
   },
   {
-    title: "Best STT providers in 2026: independent benchmarks and how to choose",
-    url: "https://www.coval.ai/blog/best-speech-to-text-providers-in-2026-independent-benchmarks-and-how-to-choose/",
-    source: "Coval",
-    imageUrl: "https://www.coval.ai/logo-black.png",
+    title: "Open ASR Leaderboard",
+    url: "https://huggingface.co/spaces/hf-audio/open_asr_leaderboard",
+    source: "Hugging Face",
+    imageUrl:
+      "https://cdn-thumbnails.huggingface.co/social-thumbnails/spaces/hf-audio/open_asr_leaderboard.png",
     description:
-      "Independent overview of 14 STT providers with guidance on metrics that predict production performance.",
+      "Community benchmark tracking word error rates for open-source automatic speech recognition models.",
   },
   {
-    title: "STT API benchmark 2026: latency and accuracy for voice agents",
-    url: "https://gradium.ai/content/stt-api-benchmark-2026-latency-accuracy",
-    source: "Gradium",
-    imageUrl: "https://gradium.ai/assets/dots_1200.png",
+    title: "Best speech-to-text models",
+    url: "https://nextlevel.ai/best-speech-to-text-models/",
+    source: "NextLevel.ai",
+    imageUrl: "https://nextlevel.ai/wp-content/uploads/2025/10/Frame-5.webp",
     description:
-      "Benchmark comparing TTFT and WER across Deepgram, AssemblyAI, ElevenLabs, and others for voice agents.",
+      "Overview of top STT models and APIs for developers evaluating accuracy, latency, and language coverage.",
   },
   {
     title: "Best speech-to-text APIs in 2026: a comprehensive comparison guide",
@@ -63,40 +64,74 @@ const FALLBACK_ARTICLES: LeaderboardArticle[] = [
       "Deepgram's ranking of the top commercial STT APIs by accuracy, speed, cost, and customization.",
   },
   {
-    title: "Speech-to-text API comparison (2026)",
-    url: "https://apiscout.dev/guides/speech-to-text-api-comparison-2026",
-    source: "APIScout",
-    imageUrl:
-      "https://apiscout.dev/images/guides/speech-to-text-api-comparison-2026.webp",
+    title: "Best STT providers in 2026: independent benchmarks and how to choose",
+    url: "https://www.coval.ai/blog/best-speech-to-text-providers-in-2026-independent-benchmarks-and-how-to-choose/",
+    source: "Coval",
+    imageUrl: "https://www.coval.ai/logo-black.png",
     description:
-      "Developer-focused comparison of batch WER, streaming latency, and pricing across major providers.",
+      "Independent overview of 14 STT providers with guidance on metrics that predict production performance.",
   },
   {
-    title: "Speech-to-text APIs in 2026: benchmarks, pricing, and developer's decision guide",
-    url: "https://futureagi.com/blog/speech-to-text-apis-in-2026-benchmarks-pricing-developer-s-decision-guide/",
+    title: "Best speech-to-text APIs",
+    url: "https://www.edenai.co/post/best-speech-to-text-apis",
+    source: "Eden AI",
+    imageUrl:
+      "https://cdn.prod.website-files.com/61e7d259b7746e3f63f0b6be/6a0dc5e6e203a821c91e7850_69b02edcc948d3de90aa93e9_Best%2520Speech-to-text%2520in%25202026.jpeg",
+    description:
+      "Unified comparison of major STT APIs on accuracy, features, pricing, and integration options.",
+  },
+  {
+    title: "Best speech-to-text API solutions",
+    url: "https://krisp.ai/blog/speech-to-text-api/",
+    source: "Krisp",
+    imageUrl:
+      "https://krisp.ai/blog/wp-content/uploads/2024/06/speech-to-text-copy-380x217.png",
+    description:
+      "Guide to choosing an STT API for real-time transcription, noise handling, and production voice apps.",
+  },
+  {
+    title: "Best speech-to-text APIs to build an AI notetaker in 2026",
+    url: "https://hackernoon.com/best-speech-to-text-apis-to-build-an-ai-notetaker-in-2026",
+    source: "HackerNoon",
+    imageUrl:
+      "https://hackernoon.imgix.net/images/yInti7CnmZMjybXOCRsTVUOcMel2-g883emq.jpeg",
+    description:
+      "Developer-focused roundup of STT APIs suited for AI notetaker and meeting-assistant products.",
+  },
+  {
+    title: "Speech-to-text APIs in 2026: benchmarks",
+    url: "https://futureagi.substack.com/p/speech-to-text-apis-in-2026-benchmarks",
     source: "Future AGI",
     imageUrl:
-      "https://futureagi.com/images/blog/blog-cover-speech-to-text-apis-in-2026-benchmarks-pricing-developer-s-decision-guide.webp",
+      "https://substackcdn.com/image/fetch/w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F30527d45-835e-4501-884e-7c9932a1d7e4_3138x1962.heic",
     description:
-      "Use-case matrix for picking between Deepgram, AssemblyAI, Whisper, and ElevenLabs in production.",
+      "Benchmark-driven analysis of leading STT APIs for accuracy, latency, and developer experience.",
   },
   {
-    title: "Multilingual meeting transcription: language coverage and code-switching",
-    url: "https://www.gladia.io/blog/multilingual-meeting-transcription-language-coverage-accuracy-and-code-switching-challenges",
-    source: "Gladia",
+    title: "The best dictation and speech-to-text software in 2026",
+    url: "https://www.zapier.com/blog/best-text-dictation-software/",
+    source: "Zapier",
     imageUrl:
-      "https://cdn.prod.website-files.com/645a730e85c9b4dfd57de5a1/69ddee1adb13d2a6a0d7709b_69ddee1378d7a63b208fc7cc_Multilingual%2520meeting%2520transcription%2520-%2520Thumbnail.png",
+      "https://images.ctfassets.net/lzny33ho1g45/29rBWbGgbQbINImpQkAaYq/851ba72b076849374411958567bcf01a/best-dictation-software.jpg",
     description:
-      "How leading STT APIs handle multilingual meetings, code-switching, and real-world WER degradation.",
+      "Hands-on review of the best dictation tools and speech-to-text apps for everyday productivity.",
   },
   {
-    title: "Open ASR Leaderboard: fighting test-set contamination with private data",
-    url: "https://huggingface.co/blog/open-asr-leaderboard-private-data",
-    source: "Hugging Face",
-    imageUrl:
-      "https://huggingface.co/blog/assets/open-asr-leaderboard-private-data/thumbnail.png",
+    title: "Soniox Compare",
+    url: "https://soniox.com/compare/",
+    source: "Soniox",
+    imageUrl: "https://soniox.com/images/logos/logo_soniox.png",
     description:
-      "Why Hugging Face added private English datasets to the open ASR leaderboard for fairer model evaluation.",
+      "Live side-by-side comparison of real-time STT providers including Soniox, OpenAI, Google, and Deepgram.",
+  },
+  {
+    title: "Best speech-to-text and transcription models",
+    url: "https://openrouter.ai/collections/speech-to-text-models",
+    source: "OpenRouter",
+    imageUrl:
+      "https://openrouter.ai/dynamic-og?title=Best+Speech-to-Text+and+Transcription+Models&description=Find+the+best+speech-to-text+and+transcription+models+on+OpenRouter.",
+    description:
+      "Curated collection of transcription models on OpenRouter, from Whisper to GPT-4o Transcribe and Chirp 3.",
   },
 ];
 
