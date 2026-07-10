@@ -47,6 +47,9 @@ function ExternalLinkIcon() {
 }
 
 function ArticleCard({ article }: { article: LeaderboardArticle }) {
+  const [imageError, setImageError] = useState(false);
+  const showImage = article.imageUrl && !imageError;
+
   return (
     <a
       href={article.url}
@@ -62,13 +65,14 @@ function ArticleCard({ article }: { article: LeaderboardArticle }) {
         className="relative aspect-[16/10] w-full overflow-hidden"
         style={{ background: "var(--color-bg-primary)" }}
       >
-        {article.imageUrl ? (
+        {showImage ? (
           <Image
-            src={article.imageUrl}
+            src={article.imageUrl!}
             alt=""
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            onError={() => setImageError(true)}
           />
         ) : (
           <div

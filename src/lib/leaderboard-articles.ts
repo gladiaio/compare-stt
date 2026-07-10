@@ -57,7 +57,8 @@ const FALLBACK_ARTICLES: LeaderboardArticle[] = [
     title: "Best speech-to-text APIs in 2026: a comprehensive comparison guide",
     url: "https://deepgram.com/learn/best-speech-to-text-apis-2026",
     source: "Deepgram",
-    imageUrl: "https://deepgram.com/images/OG-Fallback.png",
+    imageUrl:
+      "https://cdn.sanity.io/images/10fppwnn/production/10d76b37d6361f025d199817c9ee1814ba8818f9-1600x832.jpg",
     description:
       "Deepgram's ranking of the top commercial STT APIs by accuracy, speed, cost, and customization.",
   },
@@ -225,6 +226,60 @@ function extractOgImage(html: string): string | undefined {
   return undefined;
 }
 
+function extractContentImages(html: string): string[] {
+  const matches = [
+    ...html.matchAll(
+      /https:\/\/cdn\.sanity\.io\/images\/[^"'\\s<>]+?-\d+x\d+\.(?:jpg|jpeg|png|webp)/gi,
+    ),
+    ...html.matchAll(
+      /https:\/\/cdn\.prod\.website-files\.com\/[^"'\\s<>]+\.(?:png|jpg|jpeg|webp)/gi,
+    ),
+  ];
+
+  const seen = new Set<string>();
+  const images: string[] = [];
+
+  for (const match of matches) {
+    const url = match[0];
+    if (seen.has(url)) continue;
+    seen.add(url);
+    images.push(url);
+  }
+
+  return images.sort((a, b) => scoreBannerCandidate(b) - scoreBannerCandidate(a));
+}
+
+function scoreBannerCandidate(url: string): number {
+  const dimensionMatch = url.match(/-(\d+)x(\d+)\./);
+  if (!dimensionMatch) return 0;
+
+  const width = Number(dimensionMatch[1]);
+  const height = Number(dimensionMatch[2]);
+  return width * height;
+}
+
+async function isImageUrlValid(url: string): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(url, {
+      method: "HEAD",
+      signal: controller.signal,
+      headers: { "User-Agent": "CompareSTT/1.0" },
+      next: { revalidate: 86400 },
+    });
+
+    clearTimeout(timeout);
+    if (!res.ok) return false;
+
+    const contentType = res.headers.get("content-type") ?? "";
+    return contentType.startsWith("image/");
+  } catch {
+    return false;
+  }
+}
+
 async function resolveArticleImage(url: string): Promise<string | undefined> {
   try {
     const controller = new AbortController();
@@ -240,10 +295,38 @@ async function resolveArticleImage(url: string): Promise<string | undefined> {
     if (!res.ok) return undefined;
 
     const html = await res.text();
-    return extractOgImage(html);
+    const candidates = [
+      extractOgImage(html),
+      ...extractContentImages(html),
+    ].filter((value): value is string => Boolean(value));
+
+    for (const candidate of candidates) {
+      if (await isImageUrlValid(candidate)) return candidate;
+    }
+
+    return undefined;
   } catch {
     return undefined;
   }
+}
+
+async function ensureArticleImage(
+  article: LeaderboardArticle,
+  fallbackByUrl: Map<string, string | undefined>,
+): Promise<LeaderboardArticle> {
+  const candidates = [
+    article.imageUrl,
+    fallbackByUrl.get(article.url),
+  ].filter((value): value is string => Boolean(value));
+
+  for (const candidate of candidates) {
+    if (await isImageUrlValid(candidate)) {
+      return { ...article, imageUrl: candidate };
+    }
+  }
+
+  const resolved = await resolveArticleImage(article.url);
+  return resolved ? { ...article, imageUrl: resolved } : article;
 }
 
 async function enrichArticlesWithImages(
@@ -254,17 +337,7 @@ async function enrichArticlesWithImages(
   );
 
   return Promise.all(
-    articles.map(async (article) => {
-      if (article.imageUrl) return article;
-
-      const cachedImage = fallbackByUrl.get(article.url);
-      if (cachedImage) {
-        return { ...article, imageUrl: cachedImage };
-      }
-
-      const imageUrl = await resolveArticleImage(article.url);
-      return imageUrl ? { ...article, imageUrl } : article;
-    }),
+    articles.map((article) => ensureArticleImage(article, fallbackByUrl)),
   );
 }
 

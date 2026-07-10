@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "coval.ai" },
       { protocol: "https", hostname: "gradium.ai" },
       { protocol: "https", hostname: "deepgram.com" },
+      { protocol: "https", hostname: "cdn.sanity.io" },
       { protocol: "https", hostname: "apiscout.dev" },
       { protocol: "https", hostname: "futureagi.com" },
       { protocol: "https", hostname: "huggingface.co" },
