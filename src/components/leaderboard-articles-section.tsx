@@ -110,12 +110,6 @@ function ArticleCard({ article }: { article: LeaderboardArticle }) {
           </p>
         )}
 
-        <span
-          className="font-mono text-[11px] uppercase tracking-[0.14em]"
-          style={{ color: "var(--color-text-brand)" }}
-        >
-          By {article.source}
-        </span>
       </div>
     </a>
   );
@@ -144,7 +138,7 @@ export function LeaderboardArticlesSection({
           className="font-mono text-xs uppercase tracking-[0.16em]"
           style={{ color: "var(--color-text-brand)" }}
         >
-          Further reading
+          Explore further
         </span>
         <h2
           className="type-section-title text-2xl md:text-3xl"
@@ -156,8 +150,8 @@ export function LeaderboardArticlesSection({
           className="max-w-2xl text-sm leading-relaxed"
           style={{ color: "var(--color-text-secondary)" }}
         >
-          Authoritative articles on speech-to-text benchmarks, provider
-          comparisons, and evaluation methodology from across the ecosystem.
+          More comparisons and deep dives from across the industry to help you
+          choose the right STT API.
         </p>
       </div>
 
