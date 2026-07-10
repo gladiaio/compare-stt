@@ -8,6 +8,28 @@ export interface LeaderboardArticle {
 
 const SPREADSHEET_ID = "1pzd1Vj_ESMxiwj5YZY8bxA0ZxgcmywnF9huVT9Hkwmc";
 const SHEET_GID = "0";
+const MAX_ARTICLES = 20;
+const ENRICHMENT_BATCH_SIZE = 4;
+
+/** Keep in sync with `images.remotePatterns` in next.config.ts */
+const ALLOWED_IMAGE_HOSTS = new Set([
+  "cdn.prod.website-files.com",
+  "www.coval.ai",
+  "coval.ai",
+  "deepgram.com",
+  "cdn.sanity.io",
+  "huggingface.co",
+  "cdn-thumbnails.huggingface.co",
+  "artificialanalysis.ai",
+  "nextlevel.ai",
+  "krisp.ai",
+  "hackernoon.imgix.net",
+  "substackcdn.com",
+  "substack-post-media.s3.amazonaws.com",
+  "images.ctfassets.net",
+  "soniox.com",
+  "openrouter.ai",
+]);
 
 const FALLBACK_ARTICLES: LeaderboardArticle[] = [
   {
@@ -179,8 +201,60 @@ function findColumnIndex(headers: string[], candidates: string[]): number {
   return -1;
 }
 
+function isPrivateOrReservedHost(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+
+  if (
+    normalized === "localhost" ||
+    normalized.endsWith(".local") ||
+    normalized.endsWith(".internal")
+  ) {
+    return true;
+  }
+
+  const ipv4Match = normalized.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (!ipv4Match) return false;
+
+  const [, a, b, c, d] = ipv4Match.map(Number);
+  if ([a, b, c, d].some((octet) => octet > 255)) return true;
+
+  return (
+    a === 10 ||
+    a === 127 ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    a === 0
+  );
+}
+
+function isAllowedOutboundUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") return false;
+    if (parsed.username || parsed.password) return false;
+    return !isPrivateOrReservedHost(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+function isAllowedImageUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.protocol === "https:" &&
+      ALLOWED_IMAGE_HOSTS.has(parsed.hostname) &&
+      !isPrivateOrReservedHost(parsed.hostname)
+    );
+  } catch {
+    return false;
+  }
+}
+
 function parseArticlesCsv(text: string): LeaderboardArticle[] {
-  const lines = text
+  const cleanText = text.replace(/^\uFEFF/, "");
+  const lines = cleanText
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
@@ -230,8 +304,10 @@ function parseArticlesCsv(text: string): LeaderboardArticle[] {
       (sourceIndex >= 0 ? cells[sourceIndex]?.trim() : "") || "External";
     const description =
       descriptionIndex >= 0 ? cells[descriptionIndex]?.trim() : undefined;
-    const imageUrl =
+    const rawImageUrl =
       imageIndex >= 0 ? cells[imageIndex]?.trim() : undefined;
+    const imageUrl =
+      rawImageUrl && isAllowedImageUrl(rawImageUrl) ? rawImageUrl : undefined;
 
     articles.push({
       title,
@@ -264,10 +340,10 @@ function extractOgImage(html: string): string | undefined {
 function extractContentImages(html: string): string[] {
   const matches = [
     ...html.matchAll(
-      /https:\/\/cdn\.sanity\.io\/images\/[^"'\\s<>]+?-\d+x\d+\.(?:jpg|jpeg|png|webp)/gi,
+      /https:\/\/cdn\.sanity\.io\/images\/[^"'\s<>]+?-\d+x\d+\.(?:jpg|jpeg|png|webp)/gi,
     ),
     ...html.matchAll(
-      /https:\/\/cdn\.prod\.website-files\.com\/[^"'\\s<>]+\.(?:png|jpg|jpeg|webp)/gi,
+      /https:\/\/cdn\.prod\.website-files\.com\/[^"'\s<>]+\.(?:png|jpg|jpeg|webp)/gi,
     ),
   ];
 
@@ -294,6 +370,8 @@ function scoreBannerCandidate(url: string): number {
 }
 
 async function isImageUrlValid(url: string): Promise<boolean> {
+  if (!isAllowedImageUrl(url)) return false;
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 4000);
@@ -316,6 +394,8 @@ async function isImageUrlValid(url: string): Promise<boolean> {
 }
 
 async function resolveArticleImage(url: string): Promise<string | undefined> {
+  if (!isAllowedOutboundUrl(url)) return undefined;
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -333,7 +413,10 @@ async function resolveArticleImage(url: string): Promise<string | undefined> {
     const candidates = [
       extractOgImage(html),
       ...extractContentImages(html),
-    ].filter((value): value is string => Boolean(value));
+    ].filter(
+      (value): value is string =>
+        Boolean(value) && isAllowedImageUrl(value),
+    );
 
     for (const candidate of candidates) {
       if (await isImageUrlValid(candidate)) return candidate;
@@ -352,7 +435,9 @@ async function ensureArticleImage(
   const candidates = [
     article.imageUrl,
     fallbackByUrl.get(article.url),
-  ].filter((value): value is string => Boolean(value));
+  ].filter(
+    (value): value is string => Boolean(value) && isAllowedImageUrl(value),
+  );
 
   for (const candidate of candidates) {
     if (await isImageUrlValid(candidate)) {
@@ -371,9 +456,17 @@ async function enrichArticlesWithImages(
     FALLBACK_ARTICLES.map((article) => [article.url, article.imageUrl]),
   );
 
-  return Promise.all(
-    articles.map((article) => ensureArticleImage(article, fallbackByUrl)),
-  );
+  const results: LeaderboardArticle[] = [];
+
+  for (let i = 0; i < articles.length; i += ENRICHMENT_BATCH_SIZE) {
+    const batch = articles.slice(i, i + ENRICHMENT_BATCH_SIZE);
+    const enriched = await Promise.all(
+      batch.map((article) => ensureArticleImage(article, fallbackByUrl)),
+    );
+    results.push(...enriched);
+  }
+
+  return results;
 }
 
 export async function getLeaderboardArticles(): Promise<LeaderboardArticle[]> {
@@ -394,7 +487,9 @@ export async function getLeaderboardArticles(): Promise<LeaderboardArticle[]> {
 
     const articles = parseArticlesCsv(text);
     const baseArticles =
-      articles.length > 0 ? articles : FALLBACK_ARTICLES;
+      articles.length > 0
+        ? articles.slice(0, MAX_ARTICLES)
+        : FALLBACK_ARTICLES.slice(0, MAX_ARTICLES);
 
     return enrichArticlesWithImages(baseArticles);
   } catch {
