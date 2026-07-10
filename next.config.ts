@@ -8,6 +8,18 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
   },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.prod.website-files.com" },
+      { protocol: "https", hostname: "www.coval.ai" },
+      { protocol: "https", hostname: "coval.ai" },
+      { protocol: "https", hostname: "gradium.ai" },
+      { protocol: "https", hostname: "deepgram.com" },
+      { protocol: "https", hostname: "apiscout.dev" },
+      { protocol: "https", hostname: "futureagi.com" },
+      { protocol: "https", hostname: "huggingface.co" },
+    ],
+  },
   async redirects() {
     if (process.env.NODE_ENV !== "production") return [];
     return [
