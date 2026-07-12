@@ -415,7 +415,7 @@ async function resolveArticleImage(url: string): Promise<string | undefined> {
       ...extractContentImages(html),
     ].filter(
       (value): value is string =>
-        Boolean(value) && isAllowedImageUrl(value),
+        typeof value === "string" && isAllowedImageUrl(value),
     );
 
     for (const candidate of candidates) {
@@ -436,7 +436,8 @@ async function ensureArticleImage(
     article.imageUrl,
     fallbackByUrl.get(article.url),
   ].filter(
-    (value): value is string => Boolean(value) && isAllowedImageUrl(value),
+    (value): value is string =>
+      typeof value === "string" && isAllowedImageUrl(value),
   );
 
   for (const candidate of candidates) {
