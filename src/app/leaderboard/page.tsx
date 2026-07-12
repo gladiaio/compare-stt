@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { leaderboardGamification } from "@/flags";
 import { LeaderboardClient } from "./leaderboard-client";
+import { LeaderboardArticlesLoader } from "./leaderboard-articles-loader";
 import { LeaderboardDatasetSchema } from "@/components/seo/leaderboard-dataset-schema";
 import { LeaderboardStaticTable } from "@/components/seo/leaderboard-static-table";
 import { getLeaderboardData } from "@/lib/leaderboard-data";
@@ -30,7 +32,14 @@ export default async function LeaderboardPage() {
   return (
     <>
       <LeaderboardDatasetSchema data={data} />
-      <LeaderboardClient gamificationEnabled={Boolean(gamificationEnabled)} />
+      <LeaderboardClient
+        gamificationEnabled={Boolean(gamificationEnabled)}
+      />
+      <div className="mx-auto max-w-4xl px-6">
+        <Suspense>
+          <LeaderboardArticlesLoader />
+        </Suspense>
+      </div>
       <div className="mx-auto max-w-4xl px-6 pb-12">
         {/* Crawler-friendly snapshot: always in HTML source, hidden from sighted users */}
         <LeaderboardStaticTable data={data} visuallyHidden />

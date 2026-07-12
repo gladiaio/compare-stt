@@ -141,6 +141,7 @@ export function LeaderboardClient({
           </p>
         </div>
       )}
+
     </div>
   );
 }

@@ -8,6 +8,26 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
   },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.prod.website-files.com" },
+      { protocol: "https", hostname: "www.coval.ai" },
+      { protocol: "https", hostname: "coval.ai" },
+      { protocol: "https", hostname: "deepgram.com" },
+      { protocol: "https", hostname: "cdn.sanity.io" },
+      { protocol: "https", hostname: "huggingface.co" },
+      { protocol: "https", hostname: "cdn-thumbnails.huggingface.co" },
+      { protocol: "https", hostname: "artificialanalysis.ai" },
+      { protocol: "https", hostname: "nextlevel.ai" },
+      { protocol: "https", hostname: "krisp.ai" },
+      { protocol: "https", hostname: "hackernoon.imgix.net" },
+      { protocol: "https", hostname: "substackcdn.com" },
+      { protocol: "https", hostname: "substack-post-media.s3.amazonaws.com" },
+      { protocol: "https", hostname: "images.ctfassets.net" },
+      { protocol: "https", hostname: "soniox.com" },
+      { protocol: "https", hostname: "openrouter.ai" },
+    ],
+  },
   async redirects() {
     if (process.env.NODE_ENV !== "production") return [];
     return [
