@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LeaderboardArticlesSection } from "@/components/leaderboard-articles-section";
 import { LeaderboardTable } from "@/components/leaderboard-table";
-import type { LeaderboardArticle } from "@/lib/leaderboard-articles";
 import { AudioInputPicker } from "@/components/audio-input-picker";
 import { getUploadCount, REQUIRED_UPLOADS } from "@/lib/upload-count";
 import { setPendingAudio } from "@/lib/pending-audio";
@@ -25,10 +23,8 @@ interface LeaderboardEntry {
 
 export function LeaderboardClient({
   gamificationEnabled,
-  articles,
 }: {
   gamificationEnabled: boolean;
-  articles: LeaderboardArticle[];
 }) {
   const router = useRouter();
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
@@ -146,7 +142,6 @@ export function LeaderboardClient({
         </div>
       )}
 
-      <LeaderboardArticlesSection articles={articles} />
     </div>
   );
 }

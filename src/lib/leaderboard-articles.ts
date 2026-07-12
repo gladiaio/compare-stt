@@ -204,6 +204,8 @@ function findColumnIndex(headers: string[], candidates: string[]): number {
 function isPrivateOrReservedHost(hostname: string): boolean {
   const normalized = hostname.toLowerCase();
 
+  if (normalized.includes(":") || normalized.startsWith("[")) return true;
+
   if (
     normalized === "localhost" ||
     normalized.endsWith(".local") ||
@@ -408,6 +410,12 @@ async function resolveArticleImage(url: string): Promise<string | undefined> {
 
     clearTimeout(timeout);
     if (!res.ok) return undefined;
+
+    const ct = res.headers.get("content-type") ?? "";
+    if (!ct.includes("text/html")) return undefined;
+
+    const contentLength = parseInt(res.headers.get("content-length") ?? "0", 10);
+    if (contentLength > 2_000_000) return undefined;
 
     const html = await res.text();
     const candidates = [
