@@ -23,7 +23,7 @@ const FAQ_ITEMS = [
   {
     question: "How many speech-to-text providers are compared?",
     answer:
-      "Six providers are in the arena: Gladia (Solaria), ElevenLabs (Scribe v2), Deepgram (Nova 3), AssemblyAI (Universal-3 Pro), Speechmatics (Enhanced), and Mistral (Voxtral Mini).",
+      "Six providers are in the arena: Gladia (Solaria-3), ElevenLabs (Scribe v2), Deepgram (Nova 3), AssemblyAI (Universal-3 Pro), Speechmatics (Enhanced), and Mistral (Voxtral Mini).",
   },
   {
     question: "Is the comparison blind?",

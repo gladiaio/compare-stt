@@ -117,7 +117,7 @@ export default function MethodologyPage() {
             </thead>
             <tbody style={{ color: "var(--color-text-secondary)" }}>
               {[
-                ["Gladia", "Solaria", "Default, language detection on, code-switching off"],
+                ["Gladia", "Solaria-3", "Language detection on, code-switching off"],
                 ["Deepgram", "Nova 3", "Smart format, detect language"],
                 ["AssemblyAI", "Universal-3 Pro", "Language detection"],
                 ["ElevenLabs", "Scribe v2", "Default"],

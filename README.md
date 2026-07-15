@@ -4,7 +4,7 @@ Blind comparison of speech-to-text providers. Record or upload audio, compare tw
 
 ## Providers
 
-- [Gladia](https://gladia.io) — Solaria
+- [Gladia](https://gladia.io) — Solaria-3
 - [ElevenLabs](https://elevenlabs.io) — Scribe v2
 - [Deepgram](https://deepgram.com) — Nova 3
 - [AssemblyAI](https://assemblyai.com) — Best
