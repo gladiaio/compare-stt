@@ -64,7 +64,7 @@ export function HomeSeoSection() {
         </h2>
         <p>
           The current leaderboard includes six commercial speech-to-text APIs:
-          Gladia (Solaria model), ElevenLabs (Scribe v2), Speechmatics
+          Gladia (Solaria-3), ElevenLabs (Scribe v2), Speechmatics
           (Enhanced), AssemblyAI (Universal-3 Pro), Mistral AI (Voxtral Mini),
           and Deepgram (Nova 3). New providers and model versions are added as
           they reach general availability.

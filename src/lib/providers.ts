@@ -7,7 +7,7 @@ export interface ProviderDef {
 }
 
 export const PROVIDERS: ProviderDef[] = [
-  { name: "Gladia", slug: "gladia", logoUrl: "/providers/gladia.svg", color: "#947AFC", model: "Solaria" },
+  { name: "Gladia", slug: "gladia", logoUrl: "/providers/gladia.svg", color: "#947AFC", model: "Solaria-3" },
   { name: "ElevenLabs", slug: "elevenlabs", logoUrl: "/providers/elevenlabs.svg", color: "#FFFFFF", model: "Scribe v2" },
   { name: "Deepgram", slug: "deepgram", logoUrl: "/providers/deepgram.svg", color: "#13EF93", model: "Nova 3" },
   { name: "AssemblyAI", slug: "assemblyai", logoUrl: "/providers/assemblyai.svg", color: "#0055FF", model: "Universal-3 Pro" },
