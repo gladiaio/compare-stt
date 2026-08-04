@@ -99,10 +99,19 @@ export default function TermsPage() {
 
         <Section title="Cookies & local storage">
           <p>
-            Compare STT does not use cookies or third-party analytics. A single
-            local storage entry
+            A single local storage entry
             (<code className="text-xs" style={{ color: "var(--color-text-brand)" }}>compare-stt-session</code>)
-            holds your anonymous session ID. No tracking scripts are loaded.
+            holds your anonymous session ID for voting. We also use first-party
+            analytics (Google Tag Manager / GA4, PostHog, and Microsoft Clarity)
+            via the same stack as{" "}
+            <a href="https://www.gladia.io" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "var(--color-text-brand)" }}>
+              gladia.io
+            </a>
+            , to understand usage and improve the product. See Gladia&apos;s{" "}
+            <a href="https://www.gladia.io/privacy-notice" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "var(--color-text-brand)" }}>
+              privacy notice
+            </a>{" "}
+            for details.
           </p>
         </Section>
 
