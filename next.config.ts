@@ -5,6 +5,8 @@ const BASE_PATH = "/compare-stt-apis";
 
 const nextConfig: NextConfig = {
   basePath: BASE_PATH,
+  // Required for PostHog ingest proxy (API paths use trailing slashes).
+  skipTrailingSlashRedirect: true,
   env: {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
   },
@@ -33,15 +35,36 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/",
-        destination: "https://gladia.io/compare-stt-apis",
+        destination: "https://www.gladia.io/compare-stt-apis",
         basePath: false,
         permanent: true,
       },
       {
         source: "/:path((?!compare-stt-apis).*)",
-        destination: "https://gladia.io/compare-stt-apis/:path",
+        destination: "https://www.gladia.io/compare-stt-apis/:path",
         basePath: false,
         permanent: true,
+      },
+    ];
+  },
+  async rewrites() {
+    // PostHog reverse proxy — same hosts as gladia-marketing vercel.json.
+    // basePath: false so /ingest stays at domain root (not under /compare-stt-apis).
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://eu-assets.i.posthog.com/static/:path*",
+        basePath: false,
+      },
+      {
+        source: "/ingest/array/:path*",
+        destination: "https://eu-assets.i.posthog.com/array/:path*",
+        basePath: false,
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://eu.i.posthog.com/:path*",
+        basePath: false,
       },
     ];
   },

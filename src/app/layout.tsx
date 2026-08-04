@@ -3,8 +3,13 @@ import Link from "next/link";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
+import {
+  GladiaAnalytics,
+  GladiaAnalyticsNoscript,
+} from "@/components/tracking/gladia-analytics";
+import { PageViewTracker } from "@/components/tracking/page-view-tracker";
 import { showLeaderboard } from "@/flags";
-import { SITE_ORIGIN } from "@/lib/site";
+import { PUBLIC_SITE_URL, SITE_ORIGIN } from "@/lib/site";
 import "./globals.css";
 
 const OG_IMAGE =
@@ -36,7 +41,7 @@ export const metadata: Metadata = {
       "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
     description:
       "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
-    url: SITE_ORIGIN,
+    url: PUBLIC_SITE_URL,
     siteName: "Compare STT",
     images: [
       {
@@ -68,6 +73,9 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`dark ${manrope.variable} ${geistMono.variable}`}>
       <body className={`${manrope.className} antialiased`}>
+        <GladiaAnalyticsNoscript />
+        <GladiaAnalytics />
+        <PageViewTracker />
         <Navbar showLeaderboard={leaderboardEnabled} />
         <main className="pt-[88px] pb-16">{children}</main>
         <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "var(--color-border-tertiary)", color: "var(--color-text-tertiary)" }}>
@@ -76,7 +84,7 @@ export default async function RootLayout({
           </Link>
           <span className="mx-2">·</span>
           Sponsored by{" "}
-          <a href="https://gladia.io" target="_blank" rel="noopener noreferrer" className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-brand)" }}>
+          <a href="https://www.gladia.io" target="_blank" rel="noopener noreferrer" className="transition-colors duration-160 hover:underline" style={{ color: "var(--color-text-brand)" }}>
             Gladia
           </a>
         </footer>
