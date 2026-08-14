@@ -13,6 +13,7 @@ import { computeWordDiff } from "@/lib/diff";
 import { upload } from "@vercel/blob/client";
 import { incrementUploadCount } from "@/lib/upload-count";
 import { consumePendingAudio } from "@/lib/pending-audio";
+import { capturePostHogEvent } from "@/lib/posthog-client";
 
 type Phase = "input" | "transcribing" | "compare" | "voting" | "reveal";
 
@@ -151,12 +152,28 @@ export function ArenaPage() {
         const data: RevealData = await res.json();
         setReveal(data);
         setPhase("reveal");
+
+        const winnerSlug =
+          data.winnerId === data.providerA.id
+            ? data.providerA.slug
+            : data.winnerId === data.providerB.id
+              ? data.providerB.slug
+              : null;
+
+        capturePostHogEvent("vote", {
+          choice,
+          provider_a: data.providerA.slug,
+          provider_b: data.providerB.slug,
+          winner: winnerSlug,
+          is_tie: choice === "tie",
+          session_vote_number: voteCount + 1,
+        });
       } catch (err) {
         console.error("Vote failed:", err);
         setPhase("compare");
       }
     },
-    [result]
+    [result, voteCount]
   );
 
   const handlePlayAgain = useCallback(() => {

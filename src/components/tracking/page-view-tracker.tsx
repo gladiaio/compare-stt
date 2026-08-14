@@ -2,14 +2,11 @@
 
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { capturePostHogEvent } from "@/lib/posthog-client";
 
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
-    posthog?: {
-      capture: (event: string, properties?: Record<string, unknown>) => void;
-      __loaded?: boolean;
-    };
   }
 }
 
@@ -34,26 +31,7 @@ function PageViewTrackerInner() {
       page_location: url,
     });
 
-    const capture = () => {
-      if (window.posthog?.capture) {
-        window.posthog.capture("$pageview", { $current_url: url });
-        return true;
-      }
-      return false;
-    };
-
-    if (capture()) return;
-
-    // Snippet may still be loading on first paint
-    const id = window.setInterval(() => {
-      if (capture()) window.clearInterval(id);
-    }, 100);
-    const timeout = window.setTimeout(() => window.clearInterval(id), 5000);
-
-    return () => {
-      window.clearInterval(id);
-      window.clearTimeout(timeout);
-    };
+    return capturePostHogEvent("$pageview", { $current_url: url });
   }, [pathname, searchParams]);
 
   return null;
