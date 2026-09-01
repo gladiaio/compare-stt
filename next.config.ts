@@ -5,6 +5,11 @@ const BASE_PATH = "/compare-stt-apis";
 
 const nextConfig: NextConfig = {
   basePath: BASE_PATH,
+  // Keep URLs without a trailing slash. With basePath, Next still requests the
+  // index as "/compare-stt-apis/" for RSC; see BasePathFetchFix. On
+  // www.gladia.io that slash path is not rewritten to this app (Webflow
+  // catch-all), so we also avoid emitting trailing-slash HTML links.
+  trailingSlash: false,
   // Required for PostHog ingest proxy (API paths use trailing slashes).
   skipTrailingSlashRedirect: true,
   env: {

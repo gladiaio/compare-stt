@@ -9,6 +9,7 @@ declare global {
     posthog?: {
       capture: (event: string, properties?: Record<string, unknown>) => void;
       __loaded?: boolean;
+      __SV?: number;
     };
   }
 }
@@ -27,7 +28,9 @@ function PageViewTrackerInner() {
         ? `${window.location.origin}${pathWithQs}`
         : pathWithQs;
 
-    window.dataLayer = window.dataLayer || [];
+    if (!Array.isArray(window.dataLayer)) {
+      window.dataLayer = [];
+    }
     window.dataLayer.push({
       event: "page_view",
       page_path: pathWithQs,
@@ -35,11 +38,12 @@ function PageViewTrackerInner() {
     });
 
     const capture = () => {
-      if (window.posthog?.capture) {
-        window.posthog.capture("$pageview", { $current_url: url });
-        return true;
-      }
-      return false;
+      // Wait until the real SDK is loaded — the stub's capture() uses .push()
+      // and throws if window.posthog was replaced by a non-array object.
+      if (!window.posthog?.__loaded) return false;
+      if (typeof window.posthog.capture !== "function") return false;
+      window.posthog.capture("$pageview", { $current_url: url });
+      return true;
     };
 
     if (capture()) return;

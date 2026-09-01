@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
+import { BasePathFetchFix } from "@/components/tracking/base-path-fetch-fix";
 import {
   GladiaAnalytics,
   GladiaAnalyticsNoscript,
@@ -73,6 +74,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`dark ${manrope.variable} ${geistMono.variable}`}>
       <body className={`${manrope.className} antialiased`}>
+        <BasePathFetchFix />
         <GladiaAnalyticsNoscript />
         <GladiaAnalytics />
         <PageViewTracker />
