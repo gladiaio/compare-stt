@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
+import { DEFAULT_BASE_PATH } from "@/lib/base-path-fetch";
 
 type NavItem = {
   key: string;
@@ -11,6 +12,8 @@ type NavItem = {
   active: boolean;
   disabled?: boolean;
   tooltip?: string;
+  /** When set, render a plain <a> so basePath is not re-prefixed (no trailing slash). */
+  absolute?: boolean;
 };
 
 export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean }) {
@@ -26,8 +29,20 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
     };
   }
 
+  // Link href="/" + basePath becomes "/compare-stt-apis/" (trailing slash).
+  // That path is not rewritten to this app on www.gladia.io — use the
+  // bare basePath without a trailing slash for Compare.
+  const compareHref = process.env.NEXT_PUBLIC_BASE_PATH || DEFAULT_BASE_PATH;
+
   const items: NavItem[] = [
-    { key: "compare", href: "/", label: "Compare", active: pathname === "/" },
+    {
+      key: "compare",
+      href: compareHref,
+      label: "Compare",
+      active: pathname === "/",
+      // Absolute site path — skip next/link basePath prefixing.
+      absolute: true,
+    },
     showLeaderboard
       ? {
           key: "leaderboard",
@@ -150,6 +165,7 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
               ref={setItemRef(item.key)}
               href={item.href}
               active={item.active}
+              absolute={item.absolute}
             >
               {item.label}
             </NavLink>
@@ -178,17 +194,25 @@ const DisabledNavLink = forwardRef<
 
 const NavLink = forwardRef<
   HTMLAnchorElement,
-  { href: string; active: boolean; children: React.ReactNode }
->(function NavLink({ href, active, children }, ref) {
+  { href: string; active: boolean; absolute?: boolean; children: React.ReactNode }
+>(function NavLink({ href, active, absolute, children }, ref) {
+  const className =
+    "relative z-10 rounded-[var(--radius-full)] px-4 py-2 text-sm transition-colors duration-160";
+  const style = {
+    color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)",
+  };
+
+  // Plain <a> avoids next/link turning "/" into "/compare-stt-apis/".
+  if (absolute) {
+    return (
+      <a ref={ref} href={href} className={className} style={style}>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <Link
-      ref={ref}
-      href={href}
-      className="relative z-10 rounded-[var(--radius-full)] px-4 py-2 text-sm transition-colors duration-160"
-      style={{
-        color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)",
-      }}
-    >
+    <Link ref={ref} href={href} className={className} style={style}>
       {children}
     </Link>
   );
