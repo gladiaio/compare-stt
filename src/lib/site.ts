@@ -1,4 +1,4 @@
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "/compare-stt-apis";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "/speech-to-text-api-comparison";
 
 /** Canonical origin for SEO metadata, canonicals, sitemap, and robots. */
 export const SITE_ORIGIN = (

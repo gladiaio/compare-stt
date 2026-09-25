@@ -16,7 +16,7 @@ function test(name: string, fn: () => void) {
   }
 }
 
-const base = "/compare-stt-apis";
+const base = "/speech-to-text-api-comparison";
 const origin = "https://www.gladia.io";
 
 test("strips trailing slash from bare basePath", () => {

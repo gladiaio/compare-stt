@@ -1,9 +1,9 @@
-/** Base path used when the app is mounted under www.gladia.io/compare-stt-apis */
-export const DEFAULT_BASE_PATH = "/compare-stt-apis";
+/** Base path used when the app is mounted under www.gladia.io/speech-to-text-api-comparison */
+export const DEFAULT_BASE_PATH = "/speech-to-text-api-comparison";
 
 /**
  * Strip a trailing slash from the bare basePath index URL.
- * Next.js joins basePath + "/" → "/compare-stt-apis/", which the marketing
+ * Next.js joins basePath + "/" → "/speech-to-text-api-comparison/", which the marketing
  * proxy does not rewrite to this app.
  */
 export function normalizeBasePathFetchUrl(

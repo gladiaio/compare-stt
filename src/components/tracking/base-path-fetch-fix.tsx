@@ -1,7 +1,7 @@
 import { DEFAULT_BASE_PATH } from "@/lib/base-path-fetch";
 
 /**
- * Next.js basePath joins "/" as "/compare-stt-apis/", and RSC flight
+ * Next.js basePath joins "/" as "/speech-to-text-api-comparison/", and RSC flight
  * requests use that trailing-slash URL. On www.gladia.io the marketing
  * proxy only rewrites the no-slash path to this app; the slash variant
  * falls through to Webflow (301 → gladia-0c772dnew.webflow.io) and

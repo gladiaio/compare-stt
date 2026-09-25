@@ -1,12 +1,14 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
-const BASE_PATH = "/compare-stt-apis";
+const BASE_PATH = "/speech-to-text-api-comparison";
+const LEGACY_BASE_PATH = "/compare-stt-apis";
+const PUBLIC_APP_URL = `https://www.gladia.io${BASE_PATH}`;
 
 const nextConfig: NextConfig = {
   basePath: BASE_PATH,
   // Keep URLs without a trailing slash. With basePath, Next still requests the
-  // index as "/compare-stt-apis/" for RSC; see BasePathFetchFix. On
+  // index as "/speech-to-text-api-comparison/" for RSC; see BasePathFetchFix. On
   // www.gladia.io that slash path is not rewritten to this app (Webflow
   // catch-all), so we also avoid emitting trailing-slash HTML links.
   trailingSlash: false,
@@ -39,14 +41,26 @@ const nextConfig: NextConfig = {
     if (process.env.NODE_ENV !== "production") return [];
     return [
       {
-        source: "/",
-        destination: "https://www.gladia.io/compare-stt-apis",
+        source: LEGACY_BASE_PATH,
+        destination: PUBLIC_APP_URL,
         basePath: false,
         permanent: true,
       },
       {
-        source: "/:path((?!compare-stt-apis).*)",
-        destination: "https://www.gladia.io/compare-stt-apis/:path",
+        source: `${LEGACY_BASE_PATH}/:path*`,
+        destination: `${PUBLIC_APP_URL}/:path*`,
+        basePath: false,
+        permanent: true,
+      },
+      {
+        source: "/",
+        destination: PUBLIC_APP_URL,
+        basePath: false,
+        permanent: true,
+      },
+      {
+        source: "/:path((?!speech-to-text-api-comparison|compare-stt-apis).*)",
+        destination: `${PUBLIC_APP_URL}/:path`,
         basePath: false,
         permanent: true,
       },
@@ -54,7 +68,7 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     // PostHog reverse proxy — same hosts as gladia-marketing vercel.json.
-    // basePath: false so /ingest stays at domain root (not under /compare-stt-apis).
+    // basePath: false so /ingest stays at domain root (not under the app basePath).
     return [
       {
         source: "/ingest/static/:path*",

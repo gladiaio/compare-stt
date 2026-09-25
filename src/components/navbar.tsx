@@ -29,7 +29,7 @@ export function Navbar({ showLeaderboard = false }: { showLeaderboard?: boolean 
     };
   }
 
-  // Link href="/" + basePath becomes "/compare-stt-apis/" (trailing slash).
+  // Link href="/" + basePath becomes "/speech-to-text-api-comparison/" (trailing slash).
   // That path is not rewritten to this app on www.gladia.io — use the
   // bare basePath without a trailing slash for Compare.
   const compareHref = process.env.NEXT_PUBLIC_BASE_PATH || DEFAULT_BASE_PATH;
@@ -202,7 +202,7 @@ const NavLink = forwardRef<
     color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)",
   };
 
-  // Plain <a> avoids next/link turning "/" into "/compare-stt-apis/".
+  // Plain <a> avoids next/link turning "/" into "/speech-to-text-api-comparison/".
   if (absolute) {
     return (
       <a ref={ref} href={href} className={className} style={style}>
