@@ -3,7 +3,14 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const BASE_PATH = "/speech-to-text-api-comparison";
 const LEGACY_BASE_PATH = "/compare-stt-apis";
+/** Canonical public URL on www.gladia.io (requires marketing vercel rewrite). */
 const PUBLIC_APP_URL = `https://www.gladia.io${BASE_PATH}`;
+/**
+ * Same-origin app URL on compare-stt.com. Legacy redirects MUST land here —
+ * never only on gladia.io — so a missing/outdated marketing rewrite cannot
+ * 404-loop the arena (MAR-101).
+ */
+const SAME_ORIGIN_APP_URL = `https://compare-stt.com${BASE_PATH}`;
 
 const nextConfig: NextConfig = {
   basePath: BASE_PATH,
@@ -42,13 +49,13 @@ const nextConfig: NextConfig = {
     return [
       {
         source: LEGACY_BASE_PATH,
-        destination: PUBLIC_APP_URL,
+        destination: SAME_ORIGIN_APP_URL,
         basePath: false,
         permanent: true,
       },
       {
         source: `${LEGACY_BASE_PATH}/:path*`,
-        destination: `${PUBLIC_APP_URL}/:path*`,
+        destination: `${SAME_ORIGIN_APP_URL}/:path*`,
         basePath: false,
         permanent: true,
       },
