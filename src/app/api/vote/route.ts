@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verifyMatchToken, hashMatchToken } from "@/lib/match-token";
 import { getProviderBySlug } from "@/lib/providers";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { intEnv } from "@/lib/env";
 
 const MIN_VOTE_DELAY_MS = intEnv("MIN_VOTE_DELAY_MS", 3_000);
@@ -12,11 +12,8 @@ const RATE_LIMIT_WINDOW_MS = 60_000;
 
 export async function POST(request: Request) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    const { allowed, retryAfterMs } = checkRateLimit(
+    const ip = getClientIp(request);
+    const { allowed, retryAfterMs } = await checkRateLimit(
       `vote:${ip}`,
       RATE_LIMIT_VOTE,
       RATE_LIMIT_WINDOW_MS

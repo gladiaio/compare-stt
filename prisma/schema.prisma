@@ -57,3 +57,12 @@ model MatchToken {
   @@index([sessionId], map: "match_tokens_session_id_idx")
   @@map("match_tokens")
 }
+
+model RateLimit {
+  key         String   @id
+  windowStart DateTime @map("window_start")
+  count       Int
+
+  @@index([windowStart], map: "rate_limits_window_start_idx")
+  @@map("rate_limits")
+}

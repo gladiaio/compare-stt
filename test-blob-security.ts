@@ -61,7 +61,10 @@ mockModule("./src/lib/transcribe", {
   },
 });
 mockModule("./src/lib/match-token", { signMatchToken: () => "signed", hashMatchToken: () => "hashed" });
-mockModule("./src/lib/rate-limit", { checkRateLimit: () => ({ allowed: true, retryAfterMs: 0 }) });
+mockModule("./src/lib/rate-limit", {
+  checkRateLimit: async () => ({ allowed: true, retryAfterMs: 0 }),
+  getClientIp: () => "127.0.0.1",
+});
 mockModule("@vercel/blob/client", {
   handleUpload: async ({ body, onBeforeGenerateToken }: {
     body: { payload: { pathname: string; clientPayload: string | null } };

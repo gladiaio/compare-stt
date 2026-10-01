@@ -3,7 +3,7 @@ import { del, get } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { transcribeForProvider } from "@/lib/transcribe";
 import { signMatchToken, hashMatchToken } from "@/lib/match-token";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { intEnv } from "@/lib/env";
 import {
   InvalidArenaBlobUrlError,
@@ -63,11 +63,8 @@ export async function POST(request: Request) {
   let pathname: string | undefined;
 
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    const { allowed, retryAfterMs } = checkRateLimit(
+    const ip = getClientIp(request);
+    const { allowed, retryAfterMs } = await checkRateLimit(
       `transcribe:${ip}`,
       RATE_LIMIT_TRANSCRIBE,
       RATE_LIMIT_WINDOW_MS
