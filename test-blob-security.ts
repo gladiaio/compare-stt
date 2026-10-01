@@ -1,7 +1,6 @@
 /**
  * Security checks for /api/transcribe blob handling.
- * Expected to fail until the route stops attaching BLOB_READ_WRITE_TOKEN
- * to a raw fetch of a client-supplied blobUrl, and validates the URL first.
+ * Guards against credential leak via client blobUrl and unsafe del().
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

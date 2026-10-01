@@ -60,7 +60,7 @@ async function pickMatchup(providers: ProviderRecord[]) {
 }
 
 export async function POST(request: Request) {
-  let blobUrl: string | undefined;
+  let pathname: string | undefined;
 
   try {
     const ip =
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
       throw err;
     }
     // Only set after validation so cleanup never runs on attacker URLs
-    blobUrl = arenaBlob.url;
+    pathname = arenaBlob.pathname;
 
     let session = await prisma.session.findUnique({ where: { id: sessionId } });
     if (!session) {
@@ -172,8 +172,8 @@ export async function POST(request: Request) {
     console.error("Transcribe error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   } finally {
-    if (blobUrl) {
-      del(blobUrl).catch((err) => console.error("Blob cleanup failed:", err));
+    if (pathname) {
+      del(pathname).catch((err) => console.error("Blob cleanup failed:", err));
     }
   }
 }
