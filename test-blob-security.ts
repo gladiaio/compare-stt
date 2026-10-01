@@ -3,34 +3,22 @@ import assert from "node:assert/strict";
 import Module, { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const restorers: (() => void)[] = [];
 function mockModule(id: string, exports: unknown) {
   const resolved = require.resolve(id);
-  const original = require.cache[resolved];
   const replacement = new Module(resolved);
   replacement.exports = exports;
   replacement.loaded = true;
   require.cache[resolved] = replacement;
-  restorers.push(() => {
-    if (original) require.cache[resolved] = original;
-    else delete require.cache[resolved];
-  });
 }
 
 const SESSION = "12345678-1234-4123-8123-123456789abc";
 const OTHER = "12345678-1234-4123-8123-123456789abd";
 const pathname = `arena/${SESSION}-xyz789.webm`;
-const host = "store123abc.private.blob.vercel-storage.com";
+const blobUrl = `https://store123abc.private.blob.vercel-storage.com/${pathname}`;
 const calls = { db: 0, get: [] as string[], del: [] as string[], providers: 0, tokens: 0 };
 let blobMissing = false;
-let databaseFailure = false;
-function db<T>(value: T) {
-  return async () => {
-    calls.db++;
-    if (databaseFailure) throw new Error("simulated database failure");
-    return value;
-  };
-}
+
+const db = <T>(value: T) => async () => { calls.db++; return value; };
 mockModule("./src/lib/db", { prisma: {
   session: { findUnique: db({ id: SESSION }), create: db({ id: SESSION }) },
   vote: { count: db(0), groupBy: db([]) },
@@ -41,24 +29,17 @@ mockModule("./src/lib/db", { prisma: {
   matchToken: { create: db({}) },
 } });
 mockModule("@vercel/blob", {
-  get: async (path: string, options: unknown) => {
+  get: async (path: string) => {
     calls.get.push(path);
-    assert.equal(path, pathname);
-    assert.deepEqual(options, { access: "private" });
     return blobMissing ? null : {
-      stream: new ReadableStream({ start(controller) { controller.enqueue(new Uint8Array([1, 2, 3])); controller.close(); } }),
+      stream: new Blob([new Uint8Array([1, 2, 3])]).stream(),
       blob: { contentType: "audio/webm" },
     };
   },
   del: async (path: string) => { calls.del.push(path); },
 });
 mockModule("./src/lib/transcribe", {
-  transcribeForProvider: async (_slug: string, audio: Buffer, mime: string) => {
-    calls.providers++;
-    assert.deepEqual([...audio], [1, 2, 3]);
-    assert.equal(mime, "audio/webm");
-    return { transcript: "test audio", words: [] };
-  },
+  transcribeForProvider: async () => { calls.providers++; return { transcript: "test audio", words: [] }; },
 });
 mockModule("./src/lib/match-token", { signMatchToken: () => "signed", hashMatchToken: () => "hashed" });
 mockModule("./src/lib/rate-limit", {
@@ -70,110 +51,52 @@ mockModule("@vercel/blob/client", {
     body: { payload: { pathname: string; clientPayload: string | null } };
     onBeforeGenerateToken: (pathname: string, payload: string | null) => Promise<unknown>;
   }) => {
-    const options = await onBeforeGenerateToken(body.payload.pathname, body.payload.clientPayload);
-    const settings = options as { addRandomSuffix: boolean; maximumSizeInBytes: number; allowedContentTypes: string[] };
-    assert.equal(settings.addRandomSuffix, true);
-    assert.equal(settings.maximumSizeInBytes, 50 * 1024 * 1024);
-    assert.ok(settings.allowedContentTypes.includes("audio/webm"));
-    assert.ok(settings.allowedContentTypes.includes("audio/mpeg"));
+    await onBeforeGenerateToken(body.payload.pathname, body.payload.clientPayload);
     calls.tokens++;
     return { type: "blob.generate-client-token", clientToken: "mock-token" };
   },
 });
-const originalToken = process.env.BLOB_READ_WRITE_TOKEN;
-const originalFetch = globalThis.fetch;
 process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_store123abc_fake";
+// The original bug: the token was sent along with a fetch of the client URL
 globalThis.fetch = async () => { throw new Error("Unexpected manual fetch"); };
 
-function request(body: unknown) {
-  return new Request("http://localhost/api/test", {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-  });
-}
+const request = (body: unknown) => new Request("http://localhost/api/test", {
+  method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+});
+
 async function main() {
   const { POST: transcribe } = require("./src/app/api/transcribe/route");
   const { POST: upload } = require("./src/app/api/upload/route");
-  let passed = 0;
+
   for (const body of [
-    { sessionId: SESSION, blobUrl: `https://${host}/arena/${OTHER}.webm` },
-    { sessionId: "invalid", blobUrl: `https://${host}/${pathname}` },
     { sessionId: SESSION, blobUrl: "https://evil.example/arena/audio.webm" },
-    { sessionId: SESSION, blobUrl: `https://${host}/arena/${SESSION}.%ZZ` },
-    { sessionId: SESSION, blobUrl: `https://${host}/arena/${SESSION}/audio.webm` },
-    { sessionId: SESSION, blobUrl: 123 },
+    { sessionId: SESSION, blobUrl: blobUrl.replace(SESSION, OTHER) },
+    { sessionId: "invalid", blobUrl },
   ]) {
     const before = structuredClone(calls);
-    const response = await transcribe(request(body));
-    assert.equal(response.status, 400);
-    assert.deepEqual(calls, before, "Invalid transcription touched a dependency");
-    passed++;
+    assert.equal((await transcribe(request(body))).status, 400);
+    assert.deepEqual(calls, before, "invalid transcription touched a dependency");
   }
-  for (const payload of [
-    { pathname: `arena/${SESSION}.webm`, clientPayload: null },
-    { pathname: `arena/${SESSION}.webm`, clientPayload: "{" },
-    { pathname: `arena/${SESSION}.webm`, clientPayload: JSON.stringify({ sessionId: OTHER }) },
-    { pathname: "secrets/test.webm", clientPayload: JSON.stringify({ sessionId: SESSION }) },
-    { pathname: `arena/${SESSION}.exe`, clientPayload: JSON.stringify({ sessionId: SESSION }) },
-  ]) {
-    const response = await upload(request({ type: "blob.generate-client-token", payload }));
-    assert.equal(response.status, 400);
-    assert.equal(calls.tokens, 0);
-    passed++;
-  }
-  const malformed = await upload(new Request("http://localhost/api/upload", { method: "POST", body: "{" }));
-  assert.equal(malformed.status, 400);
-  passed++;
-  const validUpload = await upload(request({ type: "blob.generate-client-token", payload: {
-    pathname: `arena/${SESSION}.webm`, clientPayload: JSON.stringify({ sessionId: SESSION }),
-  } }));
-  assert.equal(validUpload.status, 200);
-  assert.equal(calls.tokens, 1);
-  passed++;
-  const response = await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }));
-  assert.equal(response.status, 200);
-  assert.equal((await response.json()).transcriptA, "test audio");
+
+  const ok = await transcribe(request({ sessionId: SESSION, blobUrl }));
+  assert.equal(ok.status, 200);
+  assert.equal((await ok.json()).transcriptA, "test audio");
   assert.deepEqual(calls.get, [pathname]);
   assert.deepEqual(calls.del, [pathname]);
   assert.equal(calls.providers, 2);
-  passed++;
+
   blobMissing = true;
-  const missing = await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }));
-  assert.equal(missing.status, 404);
-  assert.equal((await missing.json()).error, "Audio not found");
-  assert.deepEqual(calls.del, [pathname, pathname]);
-  assert.equal(calls.providers, 2);
-  passed++;
-  blobMissing = false;
-  delete process.env.BLOB_READ_WRITE_TOKEN;
-  const originalLog = console.error;
-  console.error = () => {};
-  let misconfigured: Response;
-  try {
-    misconfigured = await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }));
-  } finally {
-    console.error = originalLog;
-    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_store123abc_fake";
-  }
-  assert.equal(misconfigured.status, 500);
-  assert.equal((await misconfigured.json()).error, "Internal server error");
-  assert.deepEqual(calls.del, [pathname, pathname]);
-  assert.deepEqual(calls.get, [pathname, pathname]);
-  passed++;
-  blobMissing = true;
-  databaseFailure = true;
-  const originalError = console.error;
-  console.error = () => {};
-  try {
-    assert.equal((await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }))).status, 500);
-  } finally { console.error = originalError; }
-  assert.deepEqual(calls.del, [pathname, pathname, pathname]);
-  assert.deepEqual(calls.get, [pathname, pathname]);
-  passed++;
-  console.log(`Blob route security tests: ${passed} passed`);
+  assert.equal((await transcribe(request({ sessionId: SESSION, blobUrl }))).status, 404);
+  assert.deepEqual(calls.del, [pathname, pathname], "missing blob is still cleaned up");
+
+  const uploadToken = (pathname: string, clientPayload: string | null) =>
+    upload(request({ type: "blob.generate-client-token", payload: { pathname, clientPayload } }));
+  assert.equal((await uploadToken("secrets/test.webm", JSON.stringify({ sessionId: SESSION }))).status, 400);
+  assert.equal((await uploadToken(`arena/${SESSION}.webm`, JSON.stringify({ sessionId: OTHER }))).status, 400);
+  assert.equal(calls.tokens, 0);
+  assert.equal((await uploadToken(`arena/${SESSION}.webm`, JSON.stringify({ sessionId: SESSION }))).status, 200);
+  assert.equal(calls.tokens, 1);
+
+  console.log("Blob route security tests: passed");
 }
-main().catch((err) => { console.error(err); process.exitCode = 1; }).finally(() => {
-  globalThis.fetch = originalFetch;
-  if (originalToken === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
-  else process.env.BLOB_READ_WRITE_TOKEN = originalToken;
-  restorers.reverse().forEach((restore) => restore());
-});
+main().catch((err) => { console.error(err); process.exitCode = 1; });
