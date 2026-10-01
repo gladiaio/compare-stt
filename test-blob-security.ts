@@ -25,6 +25,10 @@ const routeSrc = readFileSync(
   join(process.cwd(), "src/app/api/transcribe/route.ts"),
   "utf8"
 );
+const uploadSrc = readFileSync(
+  join(process.cwd(), "src/app/api/upload/route.ts"),
+  "utf8"
+);
 
 console.log("\nBlob security tests\n" + "=".repeat(60));
 
@@ -52,6 +56,14 @@ test("only deletes blobs under arena/", () => {
     routeSrc,
     /del\([^)]*pathname|del\([^)]*arena/,
     "route still calls del() on the unchecked client blobUrl"
+  );
+});
+
+test("upload token generation rejects non-arena pathnames", () => {
+  assert.match(
+    uploadSrc,
+    /pathname\.startsWith\(\s*["']arena\//,
+    "upload route does not constrain client upload pathnames to arena/"
   );
 });
 

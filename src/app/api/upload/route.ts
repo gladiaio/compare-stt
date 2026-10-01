@@ -31,7 +31,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async () => {
+      onBeforeGenerateToken: async (pathname) => {
+        if (!pathname.startsWith("arena/")) {
+          throw new Error("Upload pathname must be under arena/");
+        }
         return {
           allowedContentTypes: [
             "audio/webm",
