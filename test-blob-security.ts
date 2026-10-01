@@ -134,10 +134,29 @@ async function main() {
   assert.equal(calls.providers, 2);
   passed++;
   blobMissing = true;
-  assert.equal((await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }))).status, 500);
+  const missing = await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }));
+  assert.equal(missing.status, 404);
+  assert.equal((await missing.json()).error, "Audio not found");
   assert.deepEqual(calls.del, [pathname, pathname]);
   assert.equal(calls.providers, 2);
   passed++;
+  blobMissing = false;
+  delete process.env.BLOB_READ_WRITE_TOKEN;
+  const originalLog = console.error;
+  console.error = () => {};
+  let misconfigured: Response;
+  try {
+    misconfigured = await transcribe(request({ sessionId: SESSION, blobUrl: `https://${host}/${pathname}` }));
+  } finally {
+    console.error = originalLog;
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_store123abc_fake";
+  }
+  assert.equal(misconfigured.status, 500);
+  assert.equal((await misconfigured.json()).error, "Internal server error");
+  assert.deepEqual(calls.del, [pathname, pathname]);
+  assert.deepEqual(calls.get, [pathname, pathname]);
+  passed++;
+  blobMissing = true;
   databaseFailure = true;
   const originalError = console.error;
   console.error = () => {};

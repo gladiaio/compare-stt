@@ -37,8 +37,11 @@ test("getBlobStoreId reads store id from token", () => {
   assert.equal(getBlobStoreId(TOKEN), STORE_ID);
 });
 
-test("getBlobStoreId rejects missing token", () => {
-  assert.throws(() => getBlobStoreId(undefined), InvalidArenaBlobUrlError);
+test("getBlobStoreId treats a missing or malformed token as a server error", () => {
+  for (const token of [undefined, "vercel_blob_rw"]) {
+    assert.throws(() => getBlobStoreId(token), (e: unknown) =>
+      e instanceof Error && !(e instanceof InvalidArenaBlobUrlError));
+  }
 });
 
 test("accepts this store's private arena URL", () => {

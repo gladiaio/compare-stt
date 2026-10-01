@@ -135,7 +135,10 @@ export async function POST(request: Request) {
 
     // Fetch by pathname so the SDK builds our store URL (token never leaves to a client host)
     const blobResult = await get(arenaBlob.pathname, { access: "private" });
-    if (!blobResult?.stream) {
+    if (!blobResult) {
+      return NextResponse.json({ error: "Audio not found" }, { status: 404 });
+    }
+    if (!blobResult.stream) {
       return NextResponse.json({ error: "Failed to fetch audio from blob" }, { status: 500 });
     }
 

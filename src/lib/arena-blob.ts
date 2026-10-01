@@ -40,16 +40,19 @@ export function validateArenaUpload(pathname: string, clientPayload: string | nu
   }
 }
 
-/** Extract the store id from a Vercel Blob read-write token (`vercel_blob_rw_<storeId>_…`). */
+/**
+ * Extract the store id from a Vercel Blob read-write token (`vercel_blob_rw_<storeId>_…`).
+ * Throws a plain Error: a missing or malformed token is a server misconfiguration, not a bad request.
+ */
 export function getBlobStoreId(
   token: string | undefined = process.env.BLOB_READ_WRITE_TOKEN
 ): string {
   if (!token) {
-    throw new InvalidArenaBlobUrlError("BLOB_READ_WRITE_TOKEN is not set");
+    throw new Error("BLOB_READ_WRITE_TOKEN is not set");
   }
   const storeId = token.split("_")[3];
   if (!storeId) {
-    throw new InvalidArenaBlobUrlError("Invalid BLOB_READ_WRITE_TOKEN");
+    throw new Error("Invalid BLOB_READ_WRITE_TOKEN");
   }
   return storeId;
 }
