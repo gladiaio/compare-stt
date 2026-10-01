@@ -1,6 +1,7 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { validateArenaUpload } from "@/lib/arena-blob";
 
 const RATE_LIMIT_UPLOAD = 20;
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -25,16 +26,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const body = (await request.json()) as HandleUploadBody;
-
   try {
+    const body = (await request.json()) as HandleUploadBody;
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async (pathname) => {
-        if (!pathname.startsWith("arena/")) {
-          throw new Error("Upload pathname must be under arena/");
-        }
+      onBeforeGenerateToken: async (pathname, clientPayload) => {
+        validateArenaUpload(pathname, clientPayload);
         return {
           allowedContentTypes: [
             "audio/webm",

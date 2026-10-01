@@ -99,7 +99,7 @@ export async function POST(request: Request) {
 
     let arenaBlob;
     try {
-      arenaBlob = parseArenaBlobUrl(url);
+      arenaBlob = parseArenaBlobUrl(url, sessionId);
     } catch (err) {
       if (err instanceof InvalidArenaBlobUrlError) {
         return NextResponse.json({ error: err.message }, { status: 400 });

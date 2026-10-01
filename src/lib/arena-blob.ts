@@ -3,12 +3,40 @@
  * Only arena/ uploads in this project's private store are accepted.
  */
 
-const ARENA_PREFIX = "arena/";
+import { isArenaSessionId } from "./arena-session";
+
+const UPLOAD_EXTENSIONS = new Set([
+  "webm", "mp4", "wav", "mp3", "ogg", "flac", "audio",
+]);
 
 export class InvalidArenaBlobUrlError extends Error {
   constructor(message = "Invalid blob URL") {
     super(message);
     this.name = "InvalidArenaBlobUrlError";
+  }
+}
+
+export function assertArenaSessionId(value: unknown): asserts value is string {
+  if (!isArenaSessionId(value)) {
+    throw new InvalidArenaBlobUrlError("sessionId must be a canonical UUID v4");
+  }
+}
+
+/** Validate the unsuffixed pathname before issuing a client upload token. */
+export function validateArenaUpload(pathname: string, clientPayload: string | null): void {
+  let payload: unknown;
+  try {
+    payload = JSON.parse(clientPayload ?? "");
+  } catch {
+    throw new InvalidArenaBlobUrlError("Upload clientPayload must contain sessionId");
+  }
+  const sessionId = payload && typeof payload === "object" && "sessionId" in payload
+    ? payload.sessionId : undefined;
+  assertArenaSessionId(sessionId);
+  const prefix = `arena/${sessionId}.`;
+  if (typeof pathname !== "string" || !pathname.startsWith(prefix) ||
+      !UPLOAD_EXTENSIONS.has(pathname.slice(prefix.length))) {
+    throw new InvalidArenaBlobUrlError("Upload pathname must match sessionId and an allowed extension");
   }
 }
 
@@ -27,7 +55,7 @@ export function getBlobStoreId(
 }
 
 export interface ParsedArenaBlobUrl {
-  /** Path inside the blob store, e.g. `arena/session.webm-abc123`. */
+  /** Path inside the blob store, e.g. `arena/<sessionId>-abc123.webm`. */
   pathname: string;
   /** Canonical https URL for this store + pathname (no query/hash). */
   url: string;
@@ -35,12 +63,22 @@ export interface ParsedArenaBlobUrl {
 
 /**
  * Parse and validate a client-supplied blob URL.
- * Rejects anything that is not this store's private arena/ object.
+ * Rejects anything that is not this store's private object for this session.
+ * Matching a client-supplied session ID does not authenticate its owner.
  */
 export function parseArenaBlobUrl(
-  rawUrl: string,
+  rawUrl: unknown,
+  sessionId: unknown,
   options?: { storeId?: string; token?: string }
 ): ParsedArenaBlobUrl {
+  assertArenaSessionId(sessionId);
+  if (typeof rawUrl !== "string" || !rawUrl) {
+    throw new InvalidArenaBlobUrlError("blobUrl must be a non-empty string");
+  }
+  // URL parsing normalizes dot segments, so reject traversal before parsing.
+  if (/(?:^|\/)(?:\.|%2e){1,2}(?:\/|[?#]|$)/i.test(rawUrl)) {
+    throw new InvalidArenaBlobUrlError("Blob pathname is unsafe");
+  }
   const storeId = options?.storeId ?? getBlobStoreId(options?.token);
 
   let parsed: URL;
@@ -63,9 +101,16 @@ export function parseArenaBlobUrl(
   }
 
   // Strip leading slash; reject empty / traversal / absolute tricks
-  const pathname = decodeURIComponent(parsed.pathname.replace(/^\/+/, ""));
-  if (!pathname.startsWith(ARENA_PREFIX)) {
-    throw new InvalidArenaBlobUrlError("Blob pathname must be under arena/");
+  let pathname: string;
+  try {
+    pathname = decodeURIComponent(parsed.pathname.slice(1));
+  } catch {
+    throw new InvalidArenaBlobUrlError("Blob pathname has invalid encoding");
+  }
+  const prefix = `arena/${sessionId}`;
+  const remainder = pathname.slice(prefix.length);
+  if (!pathname.startsWith(prefix) || !/^[.-][A-Za-z0-9][A-Za-z0-9._-]*$/.test(remainder)) {
+    throw new InvalidArenaBlobUrlError("Blob pathname must match sessionId");
   }
   if (
     pathname.includes("..") ||
