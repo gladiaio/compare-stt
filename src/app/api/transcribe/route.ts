@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { del } from "@vercel/blob";
+import { del, get } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { transcribeForProvider } from "@/lib/transcribe";
 import { signMatchToken, hashMatchToken } from "@/lib/match-token";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { intEnv } from "@/lib/env";
+import {
+  InvalidArenaBlobUrlError,
+  parseArenaBlobUrl,
+} from "@/lib/arena-blob";
 
 export const maxDuration = 120;
 
@@ -56,14 +60,11 @@ async function pickMatchup(providers: ProviderRecord[]) {
 }
 
 export async function POST(request: Request) {
-  let blobUrl: string | undefined;
+  let pathname: string | undefined;
 
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    const { allowed, retryAfterMs } = checkRateLimit(
+    const ip = getClientIp(request);
+    const { allowed, retryAfterMs } = await checkRateLimit(
       `transcribe:${ip}`,
       RATE_LIMIT_TRANSCRIBE,
       RATE_LIMIT_WINDOW_MS
@@ -93,7 +94,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "blobUrl is required" }, { status: 400 });
     }
 
-    blobUrl = url;
+    let arenaBlob;
+    try {
+      arenaBlob = parseArenaBlobUrl(url, sessionId);
+    } catch (err) {
+      if (err instanceof InvalidArenaBlobUrlError) {
+        return NextResponse.json({ error: err.message }, { status: 400 });
+      }
+      throw err;
+    }
+    // Only set after validation so cleanup never runs on attacker URLs
+    pathname = arenaBlob.pathname;
 
     let session = await prisma.session.findUnique({ where: { id: sessionId } });
     if (!session) {
@@ -119,17 +130,18 @@ export async function POST(request: Request) {
 
     const { providerA, providerB } = await pickMatchup(providers);
 
-    const audioRes = await fetch(blobUrl, {
-      headers: {
-        Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-      },
-    });
-    if (!audioRes.ok) {
+    // Fetch by pathname so the SDK builds our store URL (token never leaves to a client host)
+    const blobResult = await get(arenaBlob.pathname, { access: "private" });
+    if (!blobResult) {
+      return NextResponse.json({ error: "Audio not found" }, { status: 404 });
+    }
+    if (!blobResult.stream) {
       return NextResponse.json({ error: "Failed to fetch audio from blob" }, { status: 500 });
     }
 
-    const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
-    const mimeType = clientMimeType || audioRes.headers.get("content-type") || "audio/webm";
+    const audioBuffer = Buffer.from(await new Response(blobResult.stream).arrayBuffer());
+    const mimeType =
+      clientMimeType || blobResult.blob.contentType || "audio/webm";
 
     const [resultA, resultB] = await Promise.all([
       transcribeForProvider(providerA.slug, audioBuffer, mimeType),
@@ -160,8 +172,8 @@ export async function POST(request: Request) {
     console.error("Transcribe error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   } finally {
-    if (blobUrl) {
-      del(blobUrl).catch((err) => console.error("Blob cleanup failed:", err));
+    if (pathname) {
+      del(pathname).catch((err) => console.error("Blob cleanup failed:", err));
     }
   }
 }

@@ -13,6 +13,7 @@ import { computeWordDiff } from "@/lib/diff";
 import { upload } from "@vercel/blob/client";
 import { incrementUploadCount } from "@/lib/upload-count";
 import { consumePendingAudio } from "@/lib/pending-audio";
+import { isArenaSessionId } from "@/lib/arena-session";
 
 type Phase = "input" | "transcribing" | "compare" | "voting" | "reveal";
 
@@ -58,7 +59,7 @@ export function ArenaPage() {
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("compare-stt-session") : null;
-    if (stored) {
+    if (isArenaSessionId(stored)) {
       setSessionId(stored);
     } else {
       const id = crypto.randomUUID();
@@ -72,6 +73,7 @@ export function ArenaPage() {
 
   const handleAudioSubmit = useCallback(
     async (blob: Blob) => {
+      if (!isArenaSessionId(sessionId)) return;
       setPhase("transcribing");
       setResult(null);
       setReveal(null);
@@ -94,6 +96,7 @@ export function ArenaPage() {
         const { url: blobUrl } = await upload(`arena/${sessionId}.${ext}`, blob, {
           access: "private",
           handleUploadUrl: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/upload`,
+          clientPayload: JSON.stringify({ sessionId }),
         });
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/transcribe`, {

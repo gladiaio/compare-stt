@@ -1,16 +1,14 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { validateArenaUpload } from "@/lib/arena-blob";
 
 const RATE_LIMIT_UPLOAD = 20;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
-  const { allowed, retryAfterMs } = checkRateLimit(
+  const ip = getClientIp(request);
+  const { allowed, retryAfterMs } = await checkRateLimit(
     `upload:${ip}`,
     RATE_LIMIT_UPLOAD,
     RATE_LIMIT_WINDOW_MS
@@ -25,13 +23,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const body = (await request.json()) as HandleUploadBody;
-
   try {
+    const body = (await request.json()) as HandleUploadBody;
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async () => {
+      onBeforeGenerateToken: async (pathname, clientPayload) => {
+        validateArenaUpload(pathname, clientPayload);
         return {
           allowedContentTypes: [
             "audio/webm",
