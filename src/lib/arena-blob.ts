@@ -98,7 +98,8 @@ export function parseArenaBlobUrl(
     throw new InvalidArenaBlobUrlError("Blob URL must not include credentials");
   }
 
-  const expectedHost = `${storeId}.private.blob.vercel-storage.com`;
+  // Token store ids are mixed-case but URL parsing lowercases the hostname
+  const expectedHost = `${storeId.toLowerCase()}.private.blob.vercel-storage.com`;
   if (parsed.hostname !== expectedHost) {
     throw new InvalidArenaBlobUrlError("Blob URL host is not this store");
   }

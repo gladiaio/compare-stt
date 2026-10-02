@@ -47,6 +47,11 @@ test("accepts this store's private arena URL for the session", () => {
   assert.deepEqual(parse(`https://${HOST}/${PATH}`), { pathname: PATH, url: `https://${HOST}/${PATH}` });
 });
 
+test("accepts the upload URL when the token's store id is mixed-case", () => {
+  const url = `https://pg1rfmz0vh0n4t7j.private.blob.vercel-storage.com/${PATH}`;
+  assert.equal(parseArenaBlobUrl(url, SESSION, { storeId: "PG1rFmz0Vh0n4t7J" }).pathname, PATH);
+});
+
 test("rejects foreign hosts, schemes, credentials and non-strings", () => {
   for (const url of [
     "https://evil.example/steal",
