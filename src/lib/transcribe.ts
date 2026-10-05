@@ -5,6 +5,7 @@ import { transcribeWithAssemblyAI } from "./providers/assemblyai";
 import { transcribeWithElevenLabs } from "./providers/elevenlabs";
 import { transcribeWithSpeechmatics } from "./providers/speechmatics";
 import { transcribeWithMistral } from "./providers/mistral";
+import { transcribeWithSmallest } from "./providers/smallest";
 
 export interface WordTimestamp {
   word: string;
@@ -28,6 +29,7 @@ const PROVIDER_MAP: Record<string, TranscribeFn | undefined> = {
   elevenlabs: transcribeWithElevenLabs,
   speechmatics: transcribeWithSpeechmatics,
   mistral: transcribeWithMistral,
+  smallest: transcribeWithSmallest,
 };
 
 const MAX_RETRIES = 2;
@@ -151,6 +153,7 @@ function sanitizeError(message: string, slug: string): string {
     elevenlabs: "ElevenLabs",
     speechmatics: "Speechmatics",
     mistral: "Mistral",
+    smallest: "Smallest AI",
   };
 
   const name = providerNames[slug] || slug;
