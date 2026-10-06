@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { del, get } from "@vercel/blob";
+import { get } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { transcribeForProvider } from "@/lib/transcribe";
 import { signMatchToken, hashMatchToken } from "@/lib/match-token";
@@ -9,6 +9,7 @@ import {
   InvalidArenaBlobUrlError,
   parseArenaBlobUrl,
 } from "@/lib/arena-blob";
+import { deleteBlobs } from "@/lib/blob-cleanup";
 
 export const maxDuration = 120;
 
@@ -172,8 +173,9 @@ export async function POST(request: Request) {
     console.error("Transcribe error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   } finally {
+    // Awaited: a serverless instance can be frozen right after the response
     if (pathname) {
-      del(pathname).catch((err) => console.error("Blob cleanup failed:", err));
+      await deleteBlobs(pathname);
     }
   }
 }
