@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/speech-to-text-api-comparison/api/cron/blob-sweep",
+      "schedule": "0 4 * * *"
+    }
+  ]
+}
