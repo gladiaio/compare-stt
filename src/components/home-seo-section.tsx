@@ -77,7 +77,7 @@ export function HomeSeoSection() {
           What the leaderboard shows
         </h2>
         <p>
-          STT accuracy is highly context-dependent — a model that excels at clean
+          STT accuracy is highly context-dependent. A model that excels at clean
           conference-call audio may struggle with phone-quality recordings,
           regional accents, or technical jargon. Vendor benchmarks rarely capture
           this variance. By aggregating thousands of blind human judgments across

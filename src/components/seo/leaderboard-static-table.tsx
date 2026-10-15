@@ -18,7 +18,7 @@ export function LeaderboardStaticTable({
     >
       <table id="leaderboard" className="w-full border-collapse text-sm">
         <caption className="mb-3 text-left text-base font-medium" style={{ color: "var(--color-text-primary)" }}>
-          Speech-to-text leaderboard — ELO rankings from blind community comparisons
+          Speech-to-text leaderboard: ELO rankings from blind community comparisons
         </caption>
         <thead>
           <tr

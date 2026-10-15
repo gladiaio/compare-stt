@@ -249,7 +249,7 @@ function UnlockedButHiddenTeaser() {
         </p>
         <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
           We&apos;re still collecting votes to make the rankings statistically meaningful.
-          Check back in a few days — the leaderboard will be revealed soon!
+          Check back in a few days. The leaderboard will be revealed soon!
         </p>
       </div>
     </div>
