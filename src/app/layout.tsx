@@ -31,17 +31,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
     default:
-      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test | Compare STT",
+      "Compare Speech-to-Text APIs: Blind STT Test | Compare STT",
     template: "%s | Compare STT",
   },
   description:
-    "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+    "Compare 6 speech-to-text APIs in blind head-to-head tests. Upload audio, vote on anonymous transcriptions, and see live ELO rankings from community comparisons.",
   icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logo.svg` },
   openGraph: {
     title:
-      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
+      "Blind STT Comparison: Gladia, Deepgram, AssemblyAI & More",
     description:
-      "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+      "Compare 6 speech-to-text APIs in blind head-to-head tests. Upload audio, vote on anonymous transcriptions, and see live ELO rankings from community comparisons.",
     url: PUBLIC_SITE_URL,
     siteName: "Compare STT",
     images: [
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Compare STT — Blind Speech-to-Text Comparison",
+        alt: "Compare STT: Blind Speech-to-Text Comparison",
       },
     ],
     type: "website",
@@ -57,9 +57,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
+      "Blind STT Comparison: Gladia, Deepgram, AssemblyAI & More",
     description:
-      "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+      "Compare 6 speech-to-text APIs in blind head-to-head tests. Upload audio, vote on anonymous transcriptions, and see live ELO rankings from community comparisons.",
     images: [OG_IMAGE],
   },
 };
