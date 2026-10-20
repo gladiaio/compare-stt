@@ -45,7 +45,9 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    if (process.env.NODE_ENV !== "production") return [];
+    // Vercel previews also build with NODE_ENV=production; redirecting them
+    // would send reviewers to the live www.gladia.io page.
+    if (process.env.NODE_ENV !== "production" || process.env.VERCEL_ENV === "preview") return [];
     return [
       {
         source: LEGACY_BASE_PATH,
