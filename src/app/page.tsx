@@ -31,10 +31,10 @@ function WebApplicationSchema() {
       priceCurrency: "USD",
     },
     featureList: [
-      "Blind head-to-head STT comparisons",
+      "Blind head-to-head speech-to-text API comparisons",
       "Live audio recording and file upload",
       "Community ELO leaderboard",
-      "Six commercial STT providers",
+      "Six commercial speech-to-text API providers",
     ],
   };
 
@@ -153,15 +153,14 @@ export default async function HomePage() {
   return (
     <>
       <WebApplicationSchema />
-      <ArenaPage />
+      <ArenaPage
+        heroLeaderboard={
+          leaderboard && (
+            <LeaderboardStaticTable data={leaderboard} variant="hero" />
+          )
+        }
+      />
       <div className="mx-auto max-w-2xl px-6 pb-16">
-        {leaderboard && (
-          <LeaderboardStaticTable
-            data={leaderboard}
-            title="Live speech-to-text API leaderboard"
-            linkToFullLeaderboard
-          />
-        )}
         <MethodologySection />
         <AboutFaq />
       </div>

@@ -15,7 +15,7 @@ interface FaqItem {
   content: ReactNode;
 }
 
-const FAQ_ITEMS: FaqItem[] = [
+export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Which speech-to-text API is the most accurate?",
     answer:
@@ -36,7 +36,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "How does Compare STT work?",
     answer:
-      "You upload or record audio. Two speech-to-text providers transcribe it anonymously. You read both transcripts and vote for the more accurate one. Votes feed an ELO ranking system that updates the public leaderboard.",
+      "You upload or record audio. Two speech-to-text providers transcribe it anonymously and you vote for the more accurate one. Votes feed an ELO ranking system that updates the public leaderboard.",
     content: (
       <p>
         You upload or record audio. Two speech-to-text providers transcribe it
@@ -55,7 +55,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "What is ELO scoring?",
     answer:
-      "ELO is a pairwise rating system originally used in chess. Each blind vote shifts provider ratings up or down based on expected vs. actual outcomes. Providers that consistently win comparisons climb the leaderboard.",
+      "ELO is a pairwise rating system originally used in chess. Each blind vote shifts provider ratings up or down based on expected vs. actual outcomes. See the full methodology and current standings on the leaderboard.",
     content: (
       <p>
         ELO is a pairwise rating system originally used in chess. Each blind
@@ -75,7 +75,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Which speech-to-text APIs does Compare STT compare?",
     answer:
-      "Six providers are in the arena: Gladia (Solaria-3), ElevenLabs (Scribe v2), Deepgram (Nova 3), AssemblyAI (Universal-3 Pro), Speechmatics (Enhanced), and Mistral (Voxtral Mini).",
+      "Six providers are in the arena: Gladia (Solaria-3), ElevenLabs (Scribe v2), Deepgram (Nova 3), AssemblyAI (Universal-3 Pro), Speechmatics (Enhanced), and Mistral (Voxtral Mini). Read about each provider's setup in the methodology.",
     content: (
       <p>
         Six providers are in the arena: Gladia (Solaria-3), ElevenLabs (Scribe
@@ -179,7 +179,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Is the comparison blind?",
     answer:
-      "Yes. Provider names and logos are hidden until after you vote. You only see two anonymous transcripts labeled Model A and Model B, which reduces brand bias in accuracy judgments.",
+      "Yes. Provider names and logos are hidden until after you vote. You only see two anonymous transcripts labeled Model A and Model B, reducing brand bias. Learn more in the methodology or read about the project.",
     content: (
       <p>
         Yes. Provider names and logos are hidden until after you vote. You only
@@ -199,7 +199,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "How often is the leaderboard updated?",
     answer:
-      "Rankings update continuously as new votes are submitted. ELO scores are recomputed from the full vote history, so every comparison can shift provider standings.",
+      "Rankings update continuously as new votes are submitted. ELO scores are recomputed from the full vote history, so every comparison can shift provider standings. See the live leaderboard for current results.",
     content: (
       <p>
         Rankings update continuously as new votes are submitted. ELO scores are
@@ -215,7 +215,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Who sponsors Compare STT?",
     answer:
-      "Compare STT is sponsored by Gladia, a speech-to-text API company. The benchmark is open source and community-driven; see the methodology page for full transparency on scoring and provider settings.",
+      "Compare STT is sponsored by Gladia, a speech-to-text API company. The benchmark is open source and community-driven; see the methodology for full transparency on scoring and provider settings.",
     content: (
       <p>
         Compare STT is sponsored by{" "}

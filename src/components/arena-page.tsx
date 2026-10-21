@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { HeroProviderLogos } from "@/components/hero-provider-logos";
 import { LeaderboardNewsBubble } from "@/components/leaderboard-news-bubble";
 import { AudioInputPicker } from "@/components/audio-input-picker";
@@ -46,7 +47,13 @@ interface SessionStats {
   providerWins: Record<string, { name: string; wins: number; appearances: number }>;
 }
 
-export function ArenaPage() {
+export function ArenaPage({
+  heroLeaderboard,
+}: {
+  /** Server-rendered leaderboard shown under the upload tool. */
+  heroLeaderboard?: ReactNode;
+} = {}) {
+  const router = useRouter();
   const [sessionId, setSessionId] = useState<string>("");
   const [phase, setPhase] = useState<Phase>("input");
   const [result, setResult] = useState<TranscriptionResult | null>(null);
@@ -154,12 +161,13 @@ export function ArenaPage() {
         const data: RevealData = await res.json();
         setReveal(data);
         setPhase("reveal");
+        if (heroLeaderboard) router.refresh();
       } catch (err) {
         console.error("Vote failed:", err);
         setPhase("compare");
       }
     },
-    [result]
+    [result, heroLeaderboard, router]
   );
 
   const handlePlayAgain = useCallback(() => {
@@ -212,13 +220,17 @@ export function ArenaPage() {
     && result.transcriptA === result.transcriptB;
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-88px)] max-w-6xl flex-col items-center px-6 py-12">
+    <div
+      className={`mx-auto flex min-h-[calc(100vh-88px)] max-w-6xl flex-col items-center px-6 ${
+        heroLeaderboard && phase === "input" ? "py-8" : "py-12"
+      }`}
+    >
       {/* Hero */}
       {phase === "input" && (
         <div className="flex w-full flex-1 flex-col items-center gap-10 animate-fade-in">
-          <div className="flex w-full flex-1 flex-col items-center justify-center gap-10">
+          <div className="flex w-full flex-1 flex-col items-center justify-center gap-8">
             <div className="flex flex-col items-center gap-4 text-center">
-              <LeaderboardNewsBubble />
+              {!heroLeaderboard && <LeaderboardNewsBubble />}
               <h1
                 className="type-hero-h1 text-[60px] leading-[1.2] tracking-[-2.5px]"
                 style={{ color: "var(--color-text-primary)" }}
@@ -238,6 +250,8 @@ export function ArenaPage() {
             </div>
 
             <AudioInputPicker onAudioSubmit={handleAudioSubmit} />
+
+            {heroLeaderboard}
 
             <HeroProviderLogos />
           </div>

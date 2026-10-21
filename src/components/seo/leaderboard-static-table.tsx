@@ -1,56 +1,65 @@
 import Link from "next/link";
 import type { LeaderboardData } from "@/lib/leaderboard-data";
 
+type Variant = "default" | "hidden" | "hero";
+
 export function LeaderboardStaticTable({
   data,
-  visuallyHidden = false,
-  title,
-  linkToFullLeaderboard = false,
+  variant = "default",
 }: {
   data: LeaderboardData;
-  visuallyHidden?: boolean;
-  /** Renders a visible H2 above the table instead of the default caption. */
-  title?: string;
-  linkToFullLeaderboard?: boolean;
+  /** "hidden" keeps the table crawlable but invisible; "hero" is the compact home card. */
+  variant?: Variant;
 }) {
   if (!data.isSignificant) return null;
 
   const sorted = data.leaderboard;
-  const caption =
-    "Speech-to-text leaderboard: ELO rankings from blind community comparisons";
+  const isHero = variant === "hero";
+  const cell = isHero ? "py-1" : "py-2";
+  const ciCell = isHero ? "hidden sm:table-cell" : "";
 
   return (
     <section
-      aria-label={title ? undefined : "Speech-to-text leaderboard rankings"}
-      aria-labelledby={title ? "static-leaderboard-heading" : undefined}
+      aria-label={isHero ? undefined : "Speech-to-text leaderboard rankings"}
+      aria-labelledby={isHero ? "hero-leaderboard-heading" : undefined}
       className={
-        visuallyHidden
+        variant === "hidden"
           ? "sr-only"
-          : title
-            ? "border-t pt-10 pb-10"
+          : isHero
+            ? "w-full max-w-xl rounded-[var(--radius-xl)] border px-5 pt-3 pb-2.5 text-left"
             : "mt-10"
       }
-      style={title ? { borderColor: "var(--color-border-tertiary)" } : undefined}
+      style={
+        isHero
+          ? {
+              background: "var(--color-bg-secondary)",
+              borderColor: "var(--color-border-tertiary)",
+            }
+          : undefined
+      }
     >
-      {title && (
+      {isHero && (
         <h2
-          id="static-leaderboard-heading"
-          className="type-section-title mb-4 text-xl"
-          style={{ color: "var(--color-text-primary)" }}
+          id="hero-leaderboard-heading"
+          className="mb-2 font-mono text-xs uppercase tracking-[0.16em]"
+          style={{ color: "var(--color-text-tertiary)" }}
         >
-          {title}
+          Live speech-to-text API leaderboard
         </h2>
       )}
-      <table id="leaderboard" className="w-full border-collapse text-sm">
+      <table
+        id="leaderboard"
+        className={`w-full border-collapse ${isHero ? "text-xs md:text-sm" : "text-sm"}`}
+      >
         <caption
-          className={title ? "sr-only" : "mb-3 text-left text-base font-medium"}
+          className={isHero ? "sr-only" : "mb-3 text-left text-base font-medium"}
           style={{ color: "var(--color-text-primary)" }}
         >
-          {caption}
+          Speech-to-text leaderboard: ELO rankings from blind community comparisons
         </caption>
         <thead>
           <tr
-            className="border-b text-left font-mono text-xs uppercase tracking-[0.16em]"
+            className="border-b text-left font-mono text-[10px] uppercase tracking-[0.16em] md:text-xs"
             style={{ borderColor: "var(--color-border-primary)", color: "var(--color-text-tertiary)" }}
           >
             <th scope="col" className="pb-2 pr-4">
@@ -62,10 +71,10 @@ export function LeaderboardStaticTable({
             <th scope="col" className="pb-2 pr-4 text-right">
               ELO score
             </th>
-            <th scope="col" className="pb-2 pr-4 text-right">
+            <th scope="col" className={`pb-2 pr-4 text-right ${isHero ? "pr-0 sm:pr-4" : ""}`}>
               Votes
             </th>
-            <th scope="col" className="pb-2 text-right">
+            <th scope="col" className={`pb-2 text-right ${ciCell}`}>
               95% CI
             </th>
           </tr>
@@ -74,19 +83,23 @@ export function LeaderboardStaticTable({
           {sorted.map((entry, index) => (
             <tr
               key={entry.id}
-              className="border-b"
+              className={isHero && index === sorted.length - 1 ? "" : "border-b"}
               style={{ borderColor: "var(--color-border-tertiary)" }}
             >
-              <td className="py-2 pr-4 font-mono tabular-nums">{index + 1}</td>
-              <td className="py-2 pr-4">
+              <td className={`${cell} pr-4 font-mono tabular-nums`}>{index + 1}</td>
+              <td className={`${cell} pr-4`}>
                 {entry.name}
                 {entry.model ? ` (${entry.model})` : ""}
               </td>
-              <td className="py-2 pr-4 text-right font-mono tabular-nums">{entry.rating}</td>
-              <td className="py-2 pr-4 text-right font-mono tabular-nums">
+              <td className={`${cell} pr-4 text-right font-mono tabular-nums`}>{entry.rating}</td>
+              <td
+                className={`${cell} pr-4 text-right font-mono tabular-nums ${isHero ? "pr-0 sm:pr-4" : ""}`}
+              >
                 {entry.totalMatches.toLocaleString("en-US")}
               </td>
-              <td className="py-2 text-right font-mono tabular-nums">{entry.confidenceInterval}</td>
+              <td className={`${cell} text-right font-mono tabular-nums ${ciCell}`}>
+                {entry.confidenceInterval}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -95,7 +108,7 @@ export function LeaderboardStaticTable({
         <p className="mt-2 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
           Based on {data.totalVotes.toLocaleString("en-US")} blind comparison
           {data.totalVotes !== 1 ? "s" : ""}. Last updated {data.lastUpdated}.
-          {linkToFullLeaderboard && (
+          {isHero && (
             <>
               {" "}
               See the{" "}
