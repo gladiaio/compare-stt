@@ -222,17 +222,25 @@ export function ArenaPage({
   return (
     <div
       className={`mx-auto flex min-h-[calc(100vh-88px)] max-w-6xl flex-col items-center px-6 ${
-        heroLeaderboard && phase === "input" ? "py-8" : "py-12"
+        heroLeaderboard && phase === "input"
+          ? "py-8 [@media(max-height:820px)]:py-5"
+          : "py-12"
       }`}
     >
       {/* Hero */}
       {phase === "input" && (
         <div className="flex w-full flex-1 flex-col items-center gap-10 animate-fade-in">
-          <div className="flex w-full flex-1 flex-col items-center justify-center gap-8">
+          <div
+            className={`flex w-full flex-1 flex-col items-center justify-center ${
+              heroLeaderboard ? "gap-8 [@media(max-height:820px)]:gap-5" : "gap-8"
+            }`}
+          >
             <div className="flex flex-col items-center gap-4 text-center">
               {!heroLeaderboard && <LeaderboardNewsBubble />}
               <h1
-                className="type-hero-h1 text-[60px] leading-[1.2] tracking-[-2.5px]"
+                className={`type-hero-h1 text-[60px] leading-[1.2] tracking-[-2.5px] ${
+                  heroLeaderboard ? "[@media(max-height:820px)]:text-[48px]" : ""
+                }`}
                 style={{ color: "var(--color-text-primary)" }}
               >
                 Which speech-to-text API
