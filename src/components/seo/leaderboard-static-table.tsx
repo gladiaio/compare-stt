@@ -1,24 +1,52 @@
+import Link from "next/link";
 import type { LeaderboardData } from "@/lib/leaderboard-data";
 
 export function LeaderboardStaticTable({
   data,
   visuallyHidden = false,
+  title,
+  linkToFullLeaderboard = false,
 }: {
   data: LeaderboardData;
   visuallyHidden?: boolean;
+  /** Renders a visible H2 above the table instead of the default caption. */
+  title?: string;
+  linkToFullLeaderboard?: boolean;
 }) {
   if (!data.isSignificant) return null;
 
   const sorted = data.leaderboard;
+  const caption =
+    "Speech-to-text leaderboard: ELO rankings from blind community comparisons";
 
   return (
     <section
-      aria-label="Speech-to-text leaderboard rankings"
-      className={visuallyHidden ? "sr-only" : "mt-10"}
+      aria-label={title ? undefined : "Speech-to-text leaderboard rankings"}
+      aria-labelledby={title ? "static-leaderboard-heading" : undefined}
+      className={
+        visuallyHidden
+          ? "sr-only"
+          : title
+            ? "border-t pt-10 pb-10"
+            : "mt-10"
+      }
+      style={title ? { borderColor: "var(--color-border-tertiary)" } : undefined}
     >
+      {title && (
+        <h2
+          id="static-leaderboard-heading"
+          className="type-section-title mb-4 text-xl"
+          style={{ color: "var(--color-text-primary)" }}
+        >
+          {title}
+        </h2>
+      )}
       <table id="leaderboard" className="w-full border-collapse text-sm">
-        <caption className="mb-3 text-left text-base font-medium" style={{ color: "var(--color-text-primary)" }}>
-          Speech-to-text leaderboard: ELO rankings from blind community comparisons
+        <caption
+          className={title ? "sr-only" : "mb-3 text-left text-base font-medium"}
+          style={{ color: "var(--color-text-primary)" }}
+        >
+          {caption}
         </caption>
         <thead>
           <tr
@@ -67,6 +95,20 @@ export function LeaderboardStaticTable({
         <p className="mt-2 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
           Based on {data.totalVotes.toLocaleString("en-US")} blind comparison
           {data.totalVotes !== 1 ? "s" : ""}. Last updated {data.lastUpdated}.
+          {linkToFullLeaderboard && (
+            <>
+              {" "}
+              See the{" "}
+              <Link
+                href="/leaderboard"
+                className="underline"
+                style={{ color: "var(--color-text-brand)" }}
+              >
+                full leaderboard
+              </Link>
+              .
+            </>
+          )}
         </p>
       )}
     </section>
