@@ -27,21 +27,22 @@ const manrope = Manrope({
   weight: ["300", "400", "500"],
 });
 
+const HOME_TITLE =
+  "Speech-to-text API comparison: blind test and live leaderboard";
+const HOME_DESCRIPTION =
+  "Compare speech-to-text APIs in a blind test. Upload audio, vote on two anonymous transcripts, and see the live ELO leaderboard for six STT API providers.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
-    default:
-      "Compare Speech-to-Text APIs: Blind STT Test | Compare STT",
+    default: HOME_TITLE,
     template: "%s | Compare STT",
   },
-  description:
-    "Compare 6 speech-to-text APIs in blind head-to-head tests. Upload audio, vote on anonymous transcriptions, and see live ELO rankings from community comparisons.",
+  description: HOME_DESCRIPTION,
   icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logo.svg` },
   openGraph: {
-    title:
-      "Blind STT Comparison: Gladia, Deepgram, AssemblyAI & More",
-    description:
-      "Compare 6 speech-to-text APIs in blind head-to-head tests. Upload audio, vote on anonymous transcriptions, and see live ELO rankings from community comparisons.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     url: PUBLIC_SITE_URL,
     siteName: "Compare STT",
     images: [
@@ -56,10 +57,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Blind STT Comparison: Gladia, Deepgram, AssemblyAI & More",
-    description:
-      "Compare 6 speech-to-text APIs in blind head-to-head tests. Upload audio, vote on anonymous transcriptions, and see live ELO rankings from community comparisons.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     images: [OG_IMAGE],
   },
 };

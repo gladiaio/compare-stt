@@ -129,8 +129,17 @@ export default function AboutPage() {
         >
           <li>We don&apos;t store your audio or transcriptions.</li>
           <li>
-            We don&apos;t track you: no cookies, no accounts, no IP
-            logging.
+            We don&apos;t ask for an account and don&apos;t log IP
+            addresses. Like gladia.io, the site uses analytics tags to
+            measure usage; see{" "}
+            <Link
+              href="/terms"
+              className="underline"
+              style={{ color: "var(--color-text-brand)" }}
+            >
+              Terms &amp; Privacy
+            </Link>
+            .
           </li>
           <li>We don&apos;t sell data (there&apos;s nothing to sell).</li>
           <li>

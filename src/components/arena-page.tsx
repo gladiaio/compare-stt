@@ -228,13 +228,13 @@ export function ArenaPage() {
                 is the most{" "}
                 <span className="type-hero-gradient-word">accurate</span>?
               </h1>
-              <h2
+              <p
                 className="type-hero-subtitle max-w-2xl text-base md:text-lg"
                 style={{ color: "var(--color-text-secondary)" }}
               >
                 Record your voice or upload an audio file. We&apos;ll transcribe it with
                 two providers. You compare, pick the best and learn who&apos;s behind it.
-              </h2>
+              </p>
             </div>
 
             <AudioInputPicker onAudioSubmit={handleAudioSubmit} />
