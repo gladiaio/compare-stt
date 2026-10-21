@@ -153,14 +153,11 @@ export default async function HomePage() {
   return (
     <>
       <WebApplicationSchema />
-      <ArenaPage
-        heroLeaderboard={
-          leaderboard && (
-            <LeaderboardStaticTable data={leaderboard} variant="hero" />
-          )
-        }
-      />
+      <ArenaPage compactHero={Boolean(leaderboard?.isSignificant)} />
       <div className="mx-auto max-w-2xl px-6 pb-16">
+        {leaderboard && (
+          <LeaderboardStaticTable data={leaderboard} variant="section" />
+        )}
         <MethodologySection />
         <AboutFaq />
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, useMemo, type ReactNode } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { HeroProviderLogos } from "@/components/hero-provider-logos";
 import { LeaderboardNewsBubble } from "@/components/leaderboard-news-bubble";
@@ -48,10 +48,13 @@ interface SessionStats {
 }
 
 export function ArenaPage({
-  heroLeaderboard,
+  compactHero = false,
 }: {
-  /** Server-rendered leaderboard shown under the upload tool. */
-  heroLeaderboard?: ReactNode;
+  /**
+   * Hero hugs its content so the server-rendered section below shows above
+   * the fold; server data is refreshed after each vote.
+   */
+  compactHero?: boolean;
 } = {}) {
   const router = useRouter();
   const [sessionId, setSessionId] = useState<string>("");
@@ -161,13 +164,13 @@ export function ArenaPage({
         const data: RevealData = await res.json();
         setReveal(data);
         setPhase("reveal");
-        if (heroLeaderboard) router.refresh();
+        if (compactHero) router.refresh();
       } catch (err) {
         console.error("Vote failed:", err);
         setPhase("compare");
       }
     },
-    [result, heroLeaderboard, router]
+    [result, compactHero, router]
   );
 
   const handlePlayAgain = useCallback(() => {
@@ -220,13 +223,19 @@ export function ArenaPage({
     && result.transcriptA === result.transcriptB;
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-88px)] max-w-6xl flex-col items-center px-6 py-12">
+    <div
+      className={`mx-auto flex max-w-6xl flex-col items-center px-6 ${
+        compactHero && phase === "input"
+          ? "pt-8 pb-4"
+          : "min-h-[calc(100vh-88px)] py-12"
+      }`}
+    >
       {/* Hero */}
       {phase === "input" && (
         <div className="flex w-full flex-1 flex-col items-center gap-10 animate-fade-in">
           <div
             className={`flex w-full flex-1 flex-col items-center ${
-              heroLeaderboard ? "gap-8" : "justify-center gap-10"
+              compactHero ? "gap-8" : "justify-center gap-10"
             }`}
           >
             <div className="flex flex-col items-center gap-4 text-center">
@@ -250,8 +259,6 @@ export function ArenaPage({
             </div>
 
             <AudioInputPicker onAudioSubmit={handleAudioSubmit} />
-
-            {heroLeaderboard}
 
             <HeroProviderLogos />
           </div>
