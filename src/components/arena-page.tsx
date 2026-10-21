@@ -226,7 +226,7 @@ export function ArenaPage({
     <div
       className={`mx-auto flex max-w-6xl flex-col items-center px-6 ${
         compactHero && phase === "input"
-          ? "pt-8 pb-4"
+          ? "pt-8 pb-10"
           : "min-h-[calc(100vh-88px)] py-12"
       }`}
     >
