@@ -59,16 +59,15 @@ export function CollapsibleText({
           <ChevronIcon open={open} />
         </span>
       </button>
-      {open && (
-        <div id={panelId} className="pb-4">
-          <div
-            className="text-sm leading-relaxed"
-            style={{ color: "var(--color-text-secondary)" }}
-          >
-            {children}
-          </div>
+      {/* Panel stays in the markup when closed so crawlers can read it. */}
+      <div id={panelId} className="pb-4" hidden={!open}>
+        <div
+          className="text-sm leading-relaxed"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          {children}
         </div>
-      )}
+      </div>
     </div>
   );
 }

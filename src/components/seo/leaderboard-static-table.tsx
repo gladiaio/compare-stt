@@ -1,24 +1,49 @@
+import Link from "next/link";
 import type { LeaderboardData } from "@/lib/leaderboard-data";
+
+type Variant = "default" | "hidden" | "section";
 
 export function LeaderboardStaticTable({
   data,
-  visuallyHidden = false,
+  variant = "default",
 }: {
   data: LeaderboardData;
-  visuallyHidden?: boolean;
+  /** "hidden" keeps the table crawlable but invisible; "section" is the home page block. */
+  variant?: Variant;
 }) {
   if (!data.isSignificant) return null;
 
   const sorted = data.leaderboard;
+  const isSection = variant === "section";
 
   return (
     <section
-      aria-label="Speech-to-text leaderboard rankings"
-      className={visuallyHidden ? "sr-only" : "mt-10"}
+      aria-label={isSection ? undefined : "Speech-to-text leaderboard rankings"}
+      aria-labelledby={isSection ? "static-leaderboard-heading" : undefined}
+      className={
+        variant === "hidden"
+          ? "sr-only"
+          : isSection
+            ? "border-t pt-6 pb-10"
+            : "mt-10"
+      }
+      style={isSection ? { borderColor: "var(--color-border-tertiary)" } : undefined}
     >
+      {isSection && (
+        <h2
+          id="static-leaderboard-heading"
+          className="type-section-title mb-4 text-xl"
+          style={{ color: "var(--color-text-primary)" }}
+        >
+          Live speech-to-text API leaderboard
+        </h2>
+      )}
       <table id="leaderboard" className="w-full border-collapse text-sm">
-        <caption className="mb-3 text-left text-base font-medium" style={{ color: "var(--color-text-primary)" }}>
-          Speech-to-text leaderboard — ELO rankings from blind community comparisons
+        <caption
+          className={isSection ? "sr-only" : "mb-3 text-left text-base font-medium"}
+          style={{ color: "var(--color-text-primary)" }}
+        >
+          Speech-to-text leaderboard: ELO rankings from blind community comparisons
         </caption>
         <thead>
           <tr
@@ -67,6 +92,20 @@ export function LeaderboardStaticTable({
         <p className="mt-2 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
           Based on {data.totalVotes.toLocaleString("en-US")} blind comparison
           {data.totalVotes !== 1 ? "s" : ""}. Last updated {data.lastUpdated}.
+          {isSection && (
+            <>
+              {" "}
+              See the{" "}
+              <Link
+                href="/leaderboard"
+                className="underline"
+                style={{ color: "var(--color-text-brand)" }}
+              >
+                full leaderboard
+              </Link>
+              .
+            </>
+          )}
         </p>
       )}
     </section>

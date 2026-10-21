@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { HeroProviderLogos } from "@/components/hero-provider-logos";
 import { LeaderboardNewsBubble } from "@/components/leaderboard-news-bubble";
 import { AudioInputPicker } from "@/components/audio-input-picker";
@@ -46,7 +47,16 @@ interface SessionStats {
   providerWins: Record<string, { name: string; wins: number; appearances: number }>;
 }
 
-export function ArenaPage() {
+export function ArenaPage({
+  compactHero = false,
+}: {
+  /**
+   * Hero hugs its content so the server-rendered section below shows above
+   * the fold; server data is refreshed after each vote.
+   */
+  compactHero?: boolean;
+} = {}) {
+  const router = useRouter();
   const [sessionId, setSessionId] = useState<string>("");
   const [phase, setPhase] = useState<Phase>("input");
   const [result, setResult] = useState<TranscriptionResult | null>(null);
@@ -154,12 +164,13 @@ export function ArenaPage() {
         const data: RevealData = await res.json();
         setReveal(data);
         setPhase("reveal");
+        if (compactHero) router.refresh();
       } catch (err) {
         console.error("Vote failed:", err);
         setPhase("compare");
       }
     },
-    [result]
+    [result, compactHero, router]
   );
 
   const handlePlayAgain = useCallback(() => {
@@ -212,11 +223,21 @@ export function ArenaPage() {
     && result.transcriptA === result.transcriptB;
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-88px)] max-w-6xl flex-col items-center px-6 py-12">
+    <div
+      className={`mx-auto flex max-w-6xl flex-col items-center px-6 ${
+        compactHero && phase === "input"
+          ? "pt-8 pb-10"
+          : "min-h-[calc(100vh-88px)] py-12"
+      }`}
+    >
       {/* Hero */}
       {phase === "input" && (
         <div className="flex w-full flex-1 flex-col items-center gap-10 animate-fade-in">
-          <div className="flex w-full flex-1 flex-col items-center justify-center gap-10">
+          <div
+            className={`flex w-full flex-1 flex-col items-center ${
+              compactHero ? "gap-8" : "justify-center gap-10"
+            }`}
+          >
             <div className="flex flex-col items-center gap-4 text-center">
               <LeaderboardNewsBubble />
               <h1
@@ -228,13 +249,13 @@ export function ArenaPage() {
                 is the most{" "}
                 <span className="type-hero-gradient-word">accurate</span>?
               </h1>
-              <h2
+              <p
                 className="type-hero-subtitle max-w-2xl text-base md:text-lg"
                 style={{ color: "var(--color-text-secondary)" }}
               >
                 Record your voice or upload an audio file. We&apos;ll transcribe it with
                 two providers. You compare, pick the best and learn who&apos;s behind it.
-              </h2>
+              </p>
             </div>
 
             <AudioInputPicker onAudioSubmit={handleAudioSubmit} />

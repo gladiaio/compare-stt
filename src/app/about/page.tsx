@@ -5,14 +5,14 @@ import { publicUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Why we built Compare STT, the blind speech-to-text benchmark — how blind testing works, what we track, and who sponsors the project.",
+    "Why we built Compare STT, the blind speech-to-text benchmark. How 6 providers are tested anonymously, what data we keep, and who sponsors the project.",
   alternates: {
     canonical: publicUrl("/about"),
   },
   openGraph: {
     title: "About Compare STT",
     description:
-      "Why we built Compare STT, the blind speech-to-text benchmark — how blind testing works, what we track, and who sponsors the project.",
+      "Why we built Compare STT, the blind speech-to-text benchmark. How 6 providers are tested anonymously, what data we keep, and who sponsors the project.",
     url: publicUrl("/about"),
   },
 };
@@ -56,13 +56,13 @@ export default function AboutPage() {
         <p>
           Instead of trusting self-reported numbers, you test it yourself. Record
           your voice, upload a meeting snippet, drop in a podcast
-          clip&mdash;whatever reflects your real use case. Two providers
+          clip, whatever reflects your real use case. Two providers
           transcribe it blindly, side by side, and you decide which one got it
           right. No names. No bias. Just output.
         </p>
 
         <p>
-          Built for exploration&mdash;not a substitute for proper evaluation. For
+          Built for exploration, not a substitute for proper evaluation. For
           rigorous analysis, see the{" "}
           <a
             href="https://github.com/gladiaio/normalization/tree/main?tab=readme-ov-file#quick-start"
@@ -84,7 +84,7 @@ export default function AboutPage() {
             className="text-sm leading-relaxed"
             style={{ color: "var(--color-text-secondary)" }}
           >
-            &ldquo;The best benchmark is the one you can&apos;t game&mdash;because
+            &ldquo;The best benchmark is the one you can&apos;t game, because
             you don&apos;t know what&apos;s coming next, or who you&apos;re up
             against.&rdquo;
           </p>
@@ -109,7 +109,7 @@ export default function AboutPage() {
             &ldquo;Model B&rdquo;.
           </li>
           <li>
-            You pick the better transcription&mdash;or call it a tie.
+            You pick the better transcription, or call it a tie.
           </li>
           <li>
             Identities are revealed after your vote.
@@ -129,8 +129,17 @@ export default function AboutPage() {
         >
           <li>We don&apos;t store your audio or transcriptions.</li>
           <li>
-            We don&apos;t track you&mdash;no cookies, no accounts, no IP
-            logging.
+            We don&apos;t ask for an account and don&apos;t log IP
+            addresses. Like gladia.io, the site uses analytics tags to
+            measure usage; see{" "}
+            <Link
+              href="/terms"
+              className="underline"
+              style={{ color: "var(--color-text-brand)" }}
+            >
+              Terms &amp; Privacy
+            </Link>
+            .
           </li>
           <li>We don&apos;t sell data (there&apos;s nothing to sell).</li>
           <li>

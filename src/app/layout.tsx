@@ -27,21 +27,22 @@ const manrope = Manrope({
   weight: ["300", "400", "500"],
 });
 
+const HOME_TITLE =
+  "Speech-to-text API comparison: blind test and live leaderboard";
+const HOME_DESCRIPTION =
+  "Compare speech-to-text APIs in a blind test. Upload audio, vote on two anonymous transcripts, and see the live ELO leaderboard for six STT API providers.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
-    default:
-      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test | Compare STT",
+    default: HOME_TITLE,
     template: "%s | Compare STT",
   },
-  description:
-    "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+  description: HOME_DESCRIPTION,
   icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logo.svg` },
   openGraph: {
-    title:
-      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
-    description:
-      "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     url: PUBLIC_SITE_URL,
     siteName: "Compare STT",
     images: [
@@ -49,17 +50,15 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Compare STT — Blind Speech-to-Text Comparison",
+        alt: "Compare STT: Blind Speech-to-Text Comparison",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Compare Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral — Blind STT Test",
-    description:
-      "Blind comparison of speech-to-text APIs: Gladia, Deepgram, AssemblyAI, ElevenLabs, Speechmatics, Mistral. Upload audio, vote, and see the live ELO leaderboard.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     images: [OG_IMAGE],
   },
 };

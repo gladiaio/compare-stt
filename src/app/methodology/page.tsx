@@ -5,14 +5,14 @@ import { publicUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Methodology",
   description:
-    "Full transparency on how Compare STT works: matchmaking, scoring, provider integration, and anti-gaming measures.",
+    "Full transparency on how Compare STT scores 6 speech-to-text APIs: ELO matchmaking, blind voting, HMAC-signed tokens, and open-source anti-gaming measures.",
   alternates: {
     canonical: publicUrl("/methodology"),
   },
   openGraph: {
     title: "Compare STT Methodology",
     description:
-      "Full transparency on how Compare STT works: matchmaking, scoring, provider integration, and anti-gaming measures.",
+      "Full transparency on how Compare STT scores 6 speech-to-text APIs: ELO matchmaking, blind voting, HMAC-signed tokens, and open-source anti-gaming measures.",
     url: publicUrl("/methodology"),
   },
 };
@@ -85,7 +85,7 @@ export default function MethodologyPage() {
           >
             open on GitHub
           </a>
-          &mdash;nothing is hidden.
+          . Nothing is hidden.
         </p>
 
         {/* ── 1. Providers ── */}
@@ -145,7 +145,7 @@ export default function MethodologyPage() {
           times with exponential backoff.
         </p>
 
-        <CodeBlock title="src/lib/transcribe.ts — provider dispatch (simplified)">
+        <CodeBlock title="src/lib/transcribe.ts: provider dispatch (simplified)">
 {`const [resultA, resultB] = await Promise.all([
   transcribeForProvider(providerA.slug, audioBuffer, mimeType),
   transcribeForProvider(providerB.slug, audioBuffer, mimeType),
@@ -195,7 +195,7 @@ export default function MethodologyPage() {
           time, preventing popular pairs from dominating the dataset.
         </p>
 
-        <CodeBlock title="src/app/api/transcribe/route.ts — matchmaking (simplified)">
+        <CodeBlock title="src/app/api/transcribe/route.ts: matchmaking (simplified)">
 {`// Count votes per unordered pair
 const pairCounts = await prisma.vote.groupBy({
   by: ["providerAId", "providerBId"],
@@ -244,7 +244,7 @@ const swap = Math.random() < 0.5;`}
           transaction. Each token can only be used once.
         </p>
 
-        <CodeBlock title="src/lib/match-token.ts — single-use anti-tamper token">
+        <CodeBlock title="src/lib/match-token.ts: single-use anti-tamper token">
 {`// Sign: server → client (embedded in transcribe response)
 const payload = \`\${sessionId}.\${providerAId}.\${providerBId}.\${issuedAt}\`;
 const signature = crypto
@@ -254,8 +254,8 @@ const signature = crypto
 return \`\${payload}.\${signature}\`;
 
 // Verify: client → server (submitted with vote)
-// 1. Recompute HMAC and compare — reject if mismatch
-// 2. Look up token hash in DB — reject if missing
+// 1. Recompute HMAC and compare; reject if mismatch
+// 2. Look up token hash in DB; reject if missing
 // 3. Reject if already consumed (consumed_at IS NOT NULL)
 // 4. Mark consumed + create vote in one transaction`}
         </CodeBlock>
@@ -321,7 +321,7 @@ return \`\${payload}.\${signature}\`;
           displays exact ELO scores, sorted by descending rating.
         </p>
 
-        <CodeBlock title="src/lib/elo.ts — rating computation (simplified)">
+        <CodeBlock title="src/lib/elo.ts: rating computation (simplified)">
 {`const K = 32;
 const INITIAL_RATING = 1500;
 
@@ -388,7 +388,7 @@ for (const vote of votes) {
           </li>
           <li>
             <strong>Minimum vote delay:</strong> votes submitted too quickly
-            after transcription are rejected — a human needs time to listen and
+            after transcription are rejected. A human needs time to listen and
             compare both results.
           </li>
           <li>
@@ -458,7 +458,7 @@ for (const vote of votes) {
           The database stores exactly three things per vote:
         </p>
 
-        <CodeBlock title="prisma/schema.prisma — Vote model">
+        <CodeBlock title="prisma/schema.prisma: Vote model">
 {`model Vote {
   id          String   @id
   sessionId   String   // anonymous session identifier

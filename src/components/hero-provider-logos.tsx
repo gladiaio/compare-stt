@@ -24,7 +24,7 @@ export function HeroProviderLogos() {
             <div className="relative h-5 w-24 opacity-50 transition-opacity duration-160 hover:opacity-80 md:h-6 md:w-28">
               <Image
                 src={`${BASE_PATH}${provider.logoUrl}`}
-                alt={provider.name}
+                alt={`${provider.name} ${provider.model}`}
                 fill
                 className="object-contain object-center"
               />
