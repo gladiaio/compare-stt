@@ -11,14 +11,14 @@ import { publicUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Leaderboard",
   description:
-    "Community-driven ELO rankings of speech-to-text providers from blind side-by-side comparisons.",
+    "Live ELO rankings of 6 speech-to-text providers from blind community comparisons. See how Gladia, Deepgram, AssemblyAI, and others perform on real audio.",
   alternates: {
     canonical: publicUrl("/leaderboard"),
   },
   openGraph: {
     title: "STT Leaderboard | Compare STT",
     description:
-      "Community-driven ELO rankings of speech-to-text providers from blind side-by-side comparisons.",
+      "Live ELO rankings of 6 speech-to-text providers from blind community comparisons. See how Gladia, Deepgram, AssemblyAI, and others perform on real audio.",
     url: publicUrl("/leaderboard"),
   },
 };
@@ -42,7 +42,7 @@ export default async function LeaderboardPage() {
       </div>
       <div className="mx-auto max-w-4xl px-6 pb-12">
         {/* Crawler-friendly snapshot: always in HTML source, hidden from sighted users */}
-        <LeaderboardStaticTable data={data} visuallyHidden />
+        <LeaderboardStaticTable data={data} variant="hidden" />
       </div>
     </>
   );

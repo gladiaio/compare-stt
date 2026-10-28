@@ -5,14 +5,14 @@ import { publicUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Terms & Privacy",
   description:
-    "Terms of use and privacy policy for Compare STT — audio handling, anonymous voting, data retention, and third-party provider policies.",
+    "Terms of use and privacy policy for Compare STT. How audio is handled, why votes are anonymous, what data is stored, and third-party provider policies.",
   alternates: {
     canonical: publicUrl("/terms"),
   },
   openGraph: {
     title: "Terms & Privacy | Compare STT",
     description:
-      "Terms of use and privacy policy for Compare STT — audio handling, anonymous voting, data retention, and third-party provider policies.",
+      "Terms of use and privacy policy for Compare STT. How audio is handled, why votes are anonymous, what data is stored, and third-party provider policies.",
     url: publicUrl("/terms"),
   },
 };
@@ -90,7 +90,7 @@ export default function TermsPage() {
             Votes are fully anonymous. We do not require an account, do not
             collect IP addresses, and do not store any personal identifiers.
             Sessions are identified by a randomly generated UUID stored in your
-            browser&apos;s local storage — this ID cannot be traced back to any
+            browser&apos;s local storage. This ID cannot be traced back to any
             individual. By voting, you agree that your votes become the property
             of Compare STT and may be used to compute and publish leaderboard
             rankings.
