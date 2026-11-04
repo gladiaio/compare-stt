@@ -13,6 +13,7 @@ const providers = [
   { name: "AssemblyAI", slug: "assemblyai", logoUrl: "/providers/assemblyai.svg" },
   { name: "Speechmatics", slug: "speechmatics", logoUrl: "/providers/speechmatics.svg" },
   { name: "Mistral", slug: "mistral", logoUrl: "/providers/mistral.svg" },
+  { name: "Smallest AI", slug: "smallest", logoUrl: "/providers/smallest.svg" },
 ];
 
 const removedSlugs = ["soniox", "openai-whisper"];
