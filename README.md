@@ -2,6 +2,8 @@
 
 Blind comparison of speech-to-text providers. Record or upload audio, compare two anonymous transcriptions side by side, and vote for the best one. Community votes feed into an ELO-based leaderboard.
 
+[![Speech-to-text API ELO leaderboard](https://www.gladia.io/speech-to-text-api-comparison/api/leaderboard.svg)](https://www.gladia.io/speech-to-text-api-comparison)
+
 Try it at [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech-to-text-api-comparison).
 
 ## Providers
@@ -12,15 +14,6 @@ Try it at [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech
 - [Speechmatics](https://speechmatics.com) — Enhanced
 - [Mistral](https://mistral.ai) — Voxtral Mini
 - [Deepgram](https://deepgram.com) — Nova 3
-
-## Results
-
-Live ELO standings from community blind votes, rendered by the app itself and refreshed every few minutes:
-
-[![Speech-to-text API ELO leaderboard](https://www.gladia.io/speech-to-text-api-comparison/api/leaderboard.svg)](https://www.gladia.io/speech-to-text-api-comparison)
-
-- **Live leaderboard and blind test**: [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech-to-text-api-comparison)
-- **WER benchmarks across datasets**: [gladia.io/competitors/benchmarks](https://www.gladia.io/competitors/benchmarks)
 
 ## Getting started
 
@@ -54,13 +47,13 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Copy `.env.example` to `.env`. The defaults work with the Docker Compose setup.
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `GLADIA_API_KEY` | [Gladia](https://gladia.io) API key |
-| `DEEPGRAM_API_KEY` | [Deepgram](https://deepgram.com) API key |
-| `ASSEMBLYAI_API_KEY` | [AssemblyAI](https://assemblyai.com) API key |
-| `ELEVENLABS_API_KEY` | [ElevenLabs](https://elevenlabs.io) API key |
+| Variable               | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `DATABASE_URL`         | PostgreSQL connection string                     |
+| `GLADIA_API_KEY`       | [Gladia](https://gladia.io) API key              |
+| `DEEPGRAM_API_KEY`     | [Deepgram](https://deepgram.com) API key         |
+| `ASSEMBLYAI_API_KEY`   | [AssemblyAI](https://assemblyai.com) API key     |
+| `ELEVENLABS_API_KEY`   | [ElevenLabs](https://elevenlabs.io) API key      |
 | `SPEECHMATICS_API_KEY` | [Speechmatics](https://speechmatics.com) API key |
 
 ## Stack
