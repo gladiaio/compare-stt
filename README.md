@@ -2,7 +2,11 @@
 
 Blind comparison of speech-to-text providers. Record or upload audio, compare two anonymous transcriptions side by side, and vote for the best one. Community votes feed into an ELO-based leaderboard.
 
-[![Speech-to-text API ELO leaderboard](https://www.gladia.io/speech-to-text-api-comparison/api/leaderboard.svg)](https://www.gladia.io/speech-to-text-api-comparison/leaderboard)
+<p align="center">
+  <a href="https://www.gladia.io/speech-to-text-api-comparison/leaderboard">
+    <img src="https://www.gladia.io/speech-to-text-api-comparison/api/leaderboard.svg" alt="Speech-to-text API ELO leaderboard" width="720">
+  </a>
+</p>
 
 Try it at [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech-to-text-api-comparison).
 
