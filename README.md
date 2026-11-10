@@ -2,13 +2,22 @@
 
 Blind comparison of speech-to-text providers. Record or upload audio, compare two anonymous transcriptions side by side, and vote for the best one. Community votes feed into an ELO-based leaderboard.
 
+<p align="center">
+  <a href="https://www.gladia.io/speech-to-text-api-comparison/leaderboard">
+    <img src="https://www.gladia.io/speech-to-text-api-comparison/api/leaderboard.svg" alt="Speech-to-text API ELO leaderboard" width="720">
+  </a>
+</p>
+
+Try it at [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech-to-text-api-comparison).
+
 ## Providers
 
 - [Gladia](https://gladia.io) — Solaria-3
 - [ElevenLabs](https://elevenlabs.io) — Scribe v2
-- [Deepgram](https://deepgram.com) — Nova 3
-- [AssemblyAI](https://assemblyai.com) — Best
+- [AssemblyAI](https://assemblyai.com) — Universal-3 Pro
 - [Speechmatics](https://speechmatics.com) — Enhanced
+- [Mistral](https://mistral.ai) — Voxtral Mini
+- [Deepgram](https://deepgram.com) — Nova 3
 
 ## Getting started
 
@@ -42,13 +51,13 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Copy `.env.example` to `.env`. The defaults work with the Docker Compose setup.
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `GLADIA_API_KEY` | [Gladia](https://gladia.io) API key |
-| `DEEPGRAM_API_KEY` | [Deepgram](https://deepgram.com) API key |
-| `ASSEMBLYAI_API_KEY` | [AssemblyAI](https://assemblyai.com) API key |
-| `ELEVENLABS_API_KEY` | [ElevenLabs](https://elevenlabs.io) API key |
+| Variable               | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `DATABASE_URL`         | PostgreSQL connection string                     |
+| `GLADIA_API_KEY`       | [Gladia](https://gladia.io) API key              |
+| `DEEPGRAM_API_KEY`     | [Deepgram](https://deepgram.com) API key         |
+| `ASSEMBLYAI_API_KEY`   | [AssemblyAI](https://assemblyai.com) API key     |
+| `ELEVENLABS_API_KEY`   | [ElevenLabs](https://elevenlabs.io) API key      |
 | `SPEECHMATICS_API_KEY` | [Speechmatics](https://speechmatics.com) API key |
 
 ## Stack

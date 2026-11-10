@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
   },
+  // The leaderboard SVG route inlines provider logos read from public/.
+  outputFileTracingIncludes: {
+    "/api/leaderboard.svg": ["./public/providers/*.svg"],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.prod.website-files.com" },
