@@ -15,18 +15,9 @@ Try it at [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech
 
 ## Results
 
-Current ELO standings from community blind votes (snapshot of 2026-11-10, 1,026 votes, statistically significant):
+Live ELO standings from community blind votes, rendered by the app itself and refreshed every few minutes:
 
-| Rank | Provider | Model | ELO | Win rate | Matches |
-|---:|---|---|---:|---:|---:|
-| 1 | ElevenLabs | Scribe v2 | 1573 | 49.6% | 341 |
-| 2 | Gladia | Solaria-3 | 1555 | 49.9% | 341 |
-| 3 | AssemblyAI | Universal-3 Pro | 1527 | 45.3% | 342 |
-| 4 | Speechmatics | Enhanced | 1487 | 30.7% | 342 |
-| 5 | Mistral | Voxtral Mini | 1480 | 42.0% | 345 |
-| 6 | Deepgram | Nova 3 | 1378 | 22.6% | 341 |
-
-Win rate counts ties as non-wins. The table is a snapshot; the live leaderboard updates with every vote.
+[![Speech-to-text API ELO leaderboard](https://www.gladia.io/speech-to-text-api-comparison/api/leaderboard.svg)](https://www.gladia.io/speech-to-text-api-comparison)
 
 - **Live leaderboard and blind test**: [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech-to-text-api-comparison)
 - **WER benchmarks across datasets**: [gladia.io/competitors/benchmarks](https://www.gladia.io/competitors/benchmarks)
