@@ -123,6 +123,7 @@ export default function MethodologyPage() {
                 ["ElevenLabs", "Scribe v2", "Default"],
                 ["Speechmatics", "Enhanced", "Language: auto, enhanced operating point"],
                 ["Mistral", "Voxtral Mini", "Word-level timestamps"],
+                ["Oruk", "Fourier 2B", "English, default decoding"],
               ].map(([name, model, settings]) => (
                 <tr
                   key={name}

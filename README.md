@@ -18,6 +18,7 @@ Try it at [gladia.io/speech-to-text-api-comparison](https://www.gladia.io/speech
 - [Speechmatics](https://speechmatics.com) — Enhanced
 - [Mistral](https://mistral.ai) — Voxtral Mini
 - [Deepgram](https://deepgram.com) — Nova 3
+- [Oruk](https://oruk.ai) — Fourier 2B (English)
 
 ## Getting started
 
@@ -59,6 +60,7 @@ Copy `.env.example` to `.env`. The defaults work with the Docker Compose setup.
 | `ASSEMBLYAI_API_KEY`   | [AssemblyAI](https://assemblyai.com) API key     |
 | `ELEVENLABS_API_KEY`   | [ElevenLabs](https://elevenlabs.io) API key      |
 | `SPEECHMATICS_API_KEY` | [Speechmatics](https://speechmatics.com) API key |
+| `ORUK_API_KEY`         | [Oruk](https://oruk.ai) API key                  |
 
 ## Stack
 

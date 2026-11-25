@@ -13,6 +13,7 @@ export const PROVIDERS: ProviderDef[] = [
   { name: "AssemblyAI", slug: "assemblyai", logoUrl: "/providers/assemblyai.svg", color: "#0055FF", model: "Universal-3 Pro" },
   { name: "Speechmatics", slug: "speechmatics", logoUrl: "/providers/speechmatics.svg", color: "#FF3D00", model: "Enhanced" },
   { name: "Mistral", slug: "mistral", logoUrl: "/providers/mistral.svg", color: "#FF7000", model: "Voxtral Mini" },
+  { name: "Oruk", slug: "oruk", logoUrl: "/providers/oruk.svg", color: "#38BDF8", model: "Fourier 2B" },
 ];
 
 export function getProviderBySlug(slug: string): ProviderDef | undefined {

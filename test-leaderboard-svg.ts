@@ -98,7 +98,7 @@ test("rejects markup that is not an SVG", () => {
 });
 
 test("renders every bundled provider logo", () => {
-  for (const slug of ["assemblyai", "deepgram", "elevenlabs", "gladia", "mistral", "speechmatics"]) {
+  for (const slug of ["assemblyai", "deepgram", "elevenlabs", "gladia", "mistral", "oruk", "speechmatics"]) {
     const raw = readFileSync(`public/providers/${slug}.svg`, "utf8");
     assert(inlineLogo(raw, slug, 0, 0) !== null, `${slug} logo could not be inlined`);
   }

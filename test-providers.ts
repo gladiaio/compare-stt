@@ -5,7 +5,7 @@ import path from "path";
 dotenv.config({ path: ".env.local" });
 import { transcribeForProvider } from "./src/lib/transcribe";
 
-const SLUGS = ["gladia", "deepgram", "assemblyai", "elevenlabs", "speechmatics", "mistral"];
+const SLUGS = ["gladia", "deepgram", "assemblyai", "elevenlabs", "speechmatics", "mistral", "oruk"];
 
 const TEST_DIR = path.join(path.dirname(new URL(import.meta.url).pathname), "test-audio");
 
